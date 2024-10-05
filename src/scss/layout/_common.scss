@@ -1,0 +1,81 @@
+@font-face {
+    font-family: "Open Sans";
+    font-display: swap;
+    src: url('@/assets/fonts/OpenSans.woff2');
+}
+
+//'phone': 480px,
+//'tablet': 768px,
+//'desktop': 1024px,
+//'desktop-lg': 1200px,
+//'desktop-xlg': 1440px
+
+:root {
+    --blue: #2e7bab;
+    --gray: #f0f0f0;
+    --gray-3: #979797;
+    --gray-4: #ccc;
+    --gray-7: #eee;
+    --gray-dark: #2e2e2e;
+    --red-dark: #931314;
+    --red-light: #f75050;
+    --red: #b71c1c;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    color: var(--blue);
+    text-decoration: none;
+}
+
+li {
+    list-style: none;
+}
+
+body {
+    font-size: 16px;
+    font-family: Open Sans, sans-serif;
+    color: #222;
+    //min-width: 320px;
+    text-rendering: optimizeSpeed;
+}
+
+section {
+    position: relative;
+    padding-top: clamp(40px, 6vw, 90px);
+    padding-bottom: clamp(80px, 6vw, 90px);
+
+    &:after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 0;
+        display: block;
+        width: 90%;
+        max-width: 1280px;
+        height: 1px;
+        background-color: var(--gray-4);
+
+        @media(width <= 480px) {
+            display: none;
+        }
+    }
+}
+
+.v-lazy-image,
+.v-lazy-image img {
+    transition: opacity 0.2s ease-in-out;
+    transform: translateZ(0);
+    will-change: contents;
+    opacity: 0;
+}
+
+.v-lazy-image-loaded {
+    opacity: 1;
+}
