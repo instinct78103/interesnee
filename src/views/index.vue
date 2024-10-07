@@ -4,6 +4,7 @@ import HomeHero from '@/components/home/HomeHero.vue';
 import HomeTechnologies from '@/components/home/HomeTechnologies.vue';
 import HomeNumbers from '@/components/home/HomeNumbers.vue';
 import HomeJoin from '@/components/home/HomeJoin.vue';
+import HomeCases from '@/components/home/HomeCases.vue';
 </script>
 
 <template>
@@ -12,6 +13,7 @@ import HomeJoin from '@/components/home/HomeJoin.vue';
   <HomeTechnologies />
   <HomeNumbers />
   <HomeJoin />
+  <HomeCases />
 </template>
 
 <style scoped>

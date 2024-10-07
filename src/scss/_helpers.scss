@@ -75,12 +75,12 @@
     border: 0;
     border-radius: 22.5px;
     outline: none;
-    background-color: var(--btn-color);
+    background-color: var(--btn-bg-color);
     cursor: pointer;
     transition: background 0.3s, color 0.3s;
     text-decoration: none;
 
     &:hover {
-        --btn-bg-color: hsl(from var(--btn-bg-color) h s calc(l - 10%));
+        --btn-bg-color: var(--red);
     }
 }
