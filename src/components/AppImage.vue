@@ -40,5 +40,6 @@ const x2Image = computed(() => props.x2 ? `${props.x2} 2x` : '');
 .image img {
   width: 100%;
   object-fit: cover;
+  display: block;
 }
 </style>

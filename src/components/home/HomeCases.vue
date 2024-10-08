@@ -5,7 +5,7 @@
     </RotatedHeading>
 
     <div :class="$style.wrapper">
-      <BaseSlider ref="slick" :is-manual-sliding="true" :options="sliderOpts">
+      <BaseSlider ref="slick" :is-manual-sliding="true" :options="sliderOpts" custom-styles="scroll-snap-type: x mandatory;display:flex;flex-wrap:nowrap;overflow-x:auto">
         <div v-for="(project, key) in projectsSlides" :key :class="$style.projectSlideWrapper">
           <div :class="$style.projectSlide">
             <app-image
@@ -75,33 +75,16 @@ const sliderOpts = {
   @media(width < 768px) {
     margin-inline: -15px;
   }
-
-  [class*='slick-slider'] {
-    margin-right: -15%;
-
-    @media(width < 768px) {
-      margin-right: 0;
-    }
-
-    ul li button {
-      width: 8px;
-      height: 8px;
-      padding: 0;
-      border: 0;
-      border-radius: 50%;
-      outline: none;
-      font-size: 0;
-      background-color: var(--dots-color);
-    }
-
-    ul li[class*='slick-active'] button {
-      background-color: var(--dots-active-color);
-    }
-  }
 }
 
+
+
 .projectSlideWrapper {
-  padding: 0 clamp(13%, 3vw, 30%) 35px 35px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  padding-block: 0 35px;
+  padding-inline: 35px;
+  min-width: 100%;
 
   @media(width < 768px) {
     padding: 0;
@@ -110,12 +93,18 @@ const sliderOpts = {
 
 .projectSlide {
   position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: 1fr;
+  align-items: center;
 }
 
 .picture {
-  box-shadow: -35px 35px 0 0 #f0f0f0;
+  box-shadow: -35px 35px 0 0 var(--gray);
   display: block;
   width: 100%;
+  grid-row: 1 / 1;
+  grid-column: 1 / span 10;
 
   @media(width < 768px) {
     box-shadow: none;
@@ -123,21 +112,19 @@ const sliderOpts = {
 }
 
 .desc {
-  $shadow: rgba(0, 0, 0, 0.12);
   border-radius: 2px;
   text-align: center;
   padding: 0 10px;
+  grid-row: 1 / 1;
+  grid-column: 8 / span 5;
+  height: fit-content;
 
   @media(width >= 768px) {
     width: 392px;
     padding: 64px 28px 58px;
     border: 1px solid #eee;
-    box-shadow: 0 1px 15px 0 $shadow;
+    box-shadow: 0 1px 15px 0 rgba(0, 0, 0, 0.12);
     background-color: #fff;
-    transform: translateY(-50%);
-    position: absolute;
-    top: 50%;
-    right: -20%;
   }
 
   @media(width < 1440px) {

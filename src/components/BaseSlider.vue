@@ -1,14 +1,26 @@
 <template>
-  <div>
+  <div ref="slider" :class="$style.slider" :style="customStyles" @mouseenter="stopAutoScroll" @mouseleave="resumeAutoScroll">
+    <button @click="scrollLeft" v-if="options?.arrows" class="leftArrow" :class="[$style.arrow, $style.leftArrow]">
+      <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
     <slot />
+    <button @click="autoScroll" v-if="options?.arrows" class="rightArrow" :class="[$style.arrow, $style.rightArrow]">
+      <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+
 const props = defineProps({
   options: {
     type: Object,
-    default: () => {},
+    default: () => ({}),
   },
   isManualInit: {
     type: Boolean,
@@ -26,132 +38,103 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
-})
+  customStyles: {
+    type: String,
+    default: '',
+  },
+});
 
-// export default {
-//   updated() {
-//     if (this.isManualSliding) {
-//       this.goTo(this.goSlide);
-//     }
-//   },
-//   mounted() {
-//     if (!this.isManualInit) {
-//       this.create();
-//     }
-//   },
-//   destroyed() {
-//     if (!this.isDestroyed) {
-//       $(this.$el).slick('unslick');
-//     }
-//   },
-//   methods: {
-//     create() {
-//       const $slick = $(this.$el);
-//       $slick.on('afterChange', this.onAfterChange);
-//       $slick.on('beforeChange', this.onBeforeChange);
-//       $slick.on('breakpoint', this.onBreakpoint);
-//       $slick.on('destroy', this.onDestroy);
-//       $slick.on('edge', this.onEdge);
-//       $slick.on('init', this.onInit);
-//       $slick.on('reInit', this.onReInit);
-//       $slick.on('setPosition', this.onSetPosition);
-//       $slick.on('swipe', this.onSwipe);
-//       $slick.on('lazyLoaded', this.onLazyLoaded);
-//       $slick.on('lazyLoadError', this.onLazyLoadError);
-//       $slick.slick(this.options);
-//     },
-//     destroy() {
-//       const $slick = $(this.$el);
-//       $slick.off('afterChange', this.onAfterChange);
-//       $slick.off('beforeChange', this.onBeforeChange);
-//       $slick.off('breakpoint', this.onBreakpoint);
-//       $slick.off('destroy', this.onDestroy);
-//       $slick.off('edge', this.onEdge);
-//       $slick.off('init', this.onInit);
-//       $slick.off('reInit', this.onReInit);
-//       $slick.off('setPosition', this.onSetPosition);
-//       $slick.off('swipe', this.onSwipe);
-//       $slick.off('lazyLoaded', this.onLazyLoaded);
-//       $slick.off('lazyLoadError', this.onLazyLoadError);
-//       $(this.$el).slick('unslick');
-//     },
-//     reSlick() {
-//       this.destroy();
-//       this.create();
-//     },
-//     next() {
-//       $(this.$el).slick('slickNext');
-//     },
-//     prev() {
-//       $(this.$el).slick('slickPrev');
-//     },
-//     pause() {
-//       $(this.$el).slick('slickPause');
-//     },
-//     play() {
-//       $(this.$el).slick('slickPlay');
-//     },
-//     goTo(index, dontAnimate) {
-//       $(this.$el).slick('slickGoTo', index, dontAnimate);
-//     },
-//     currentSlide() {
-//       return $(this.$el).slick('slickCurrentSlide');
-//     },
-//     add(element, index, addBefore) {
-//       $(this.$el).slick('slickAdd', element, index, addBefore);
-//     },
-//     remove(index, removeBefore) {
-//       $(this.$el).slick('slickRemove', index, removeBefore);
-//     },
-//     filter(filterData) {
-//       $(this.$el).slick('slickFilter', filterData);
-//     },
-//     unfilter() {
-//       $(this.$el).slick('slickUnfilter');
-//     },
-//     getOption(option) {
-//       $(this.$el).slick('slickGetOption', option);
-//     },
-//     setOption(option, value, refresh) {
-//       $(this.$el).slick('slickSetOption', option, value, refresh);
-//     },
-//     setPosition() {
-//       $(this.$el).slick('setPosition');
-//     },
-//     // Events
-//     onAfterChange(event, slick, currentSlide) {
-//       this.$emit('afterChange', event, slick, currentSlide);
-//     },
-//     onBeforeChange(event, slick, currentSlide, nextSlide) {
-//       this.$emit('beforeChange', event, slick, currentSlide, nextSlide);
-//     },
-//     onBreakpoint(event, slick, breakpoint) {
-//       this.$emit('breakpoint', event, slick, breakpoint);
-//     },
-//     onDestroy(event, slick) {
-//       this.$emit('destroy', event, slick);
-//     },
-//     onEdge(event, slick, direction) {
-//       this.$emit('edge', event, slick, direction);
-//     },
-//     onInit(event, slick) {
-//       this.$emit('init', event, slick);
-//     },
-//     onReInit(event, slick) {
-//       this.$emit('reInit', event, slick);
-//     },
-//     onSetPosition(event, slick) {
-//       this.$emit('setPosition', event, slick);
-//     },
-//     onSwipe(event, slick, direction) {
-//       this.$emit('swipe', event, slick, direction);
-//     },
-//     onLazyLoaded(event, slick, image, imageSource) {
-//       this.$emit('lazyLoaded', event, slick, image, imageSource);
-//     },
-//     onLazyLoadError(event, slick, image, imageSource) {
-//       this.$emit('lazyLoadError', event, slick, image, imageSource);
-//     },
-//   },
-// };
+const slider = ref(null);
+let intervalId = null;
+
+const scrollLeft = () => {
+  if (slider.value) {
+    slider.value.scrollBy({
+      left: -slider.value.clientWidth,
+      behavior: 'smooth',
+    });
+  }
+};
+
+const scrollRight = () => {
+  if (slider.value) {
+    slider.value.scrollBy({
+      left: slider.value.clientWidth,
+      behavior: 'smooth',
+    });
+  }
+};
+
+const autoScroll = () => {
+  if (slider.value) {
+    const currentScroll = slider.value.scrollLeft;
+    const slideWidth = slider.value.clientWidth;
+
+    // If the end of the scroll container is reached, reset to 0
+    if (currentScroll >= slider.value.scrollWidth - slideWidth) {
+      slider.value.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+      scrollRight(); // Scroll to the next slide
+    }
+  }
+};
+
+// Set up interval for auto-scrolling
+const startAutoScroll = () => {
+  intervalId = setInterval(autoScroll, 3000); // Change slide every 3 seconds
+};
+
+// Clear interval on component unmount
+onBeforeUnmount(() => {
+  if (intervalId) {
+    clearInterval(intervalId);
+  }
+});
+
+// Start auto-scrolling on component mount
+onMounted(() => {
+  startAutoScroll();
+});
+
+const stopAutoScroll = () => {
+  clearInterval(intervalId);
+};
+
+const resumeAutoScroll = () => {
+  startAutoScroll();
+};
+
 </script>
+<style lang="scss" module>
+
+.slider {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.arrow {
+  position: absolute;
+  border: none;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  top: 50%;
+  background: rgba(31, 45, 61, .5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  border-radius: 50%;
+}
+
+.leftArrow {
+  left: 0;
+}
+
+.rightArrow {
+  transform: rotate(0.5turn);
+  right: 0;
+}
+
+</style>
