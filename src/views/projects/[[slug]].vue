@@ -1,5 +1,8 @@
 <script setup>
 import { definePage } from 'unplugin-vue-router/runtime';
+import {useRoute} from 'vue-router/auto';
+const route = useRoute()
+const projectSlug = route.params.slug
 
 const test = definePage({
   meta: {
@@ -10,7 +13,7 @@ const test = definePage({
 </script>
 
 <template>
-  {{test.meta}}
+  {{test.meta}} {{projectSlug}}
 </template>
 
 <style scoped>

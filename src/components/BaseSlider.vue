@@ -1,15 +1,11 @@
 <template>
   <div ref="slider" :class="$style.slider" :style="customStyles" @mouseenter="stopAutoScroll" @mouseleave="resumeAutoScroll">
     <button @click="scrollLeft" v-if="options?.arrows" class="leftArrow" :class="[$style.arrow, $style.leftArrow]">
-      <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-        <path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
+      <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
     </button>
     <slot />
     <button @click="autoScroll" v-if="options?.arrows" class="rightArrow" :class="[$style.arrow, $style.rightArrow]">
-      <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-        <path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
+      <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
     </button>
   </div>
 </template>
