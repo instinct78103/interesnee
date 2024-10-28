@@ -5,7 +5,7 @@
     :alt
     :srcset="`${x1Image}, ${x2Image}`"
     :src-placeholder="placeholder || ''"
-    :class="[$style.image, 'wqqwqwqw']"
+    :class="[$style.image]"
     use-picture
   />
   <picture

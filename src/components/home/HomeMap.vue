@@ -7,16 +7,14 @@
       </RotatedHeading>
 
       <div :class="$style.wrapper">
-        <h2 :class="$style.subHeading">
-          Мы находимся в нескольких городах
-        </h2>
+        <h2 :class="$style.subHeading">Мы находимся в нескольких городах</h2>
 
         <button
-          v-for="(item, index) in offices"
-          :key="index"
+          v-for="(item, key) in offices"
+          :key
           :class="[$style.placemarkBtn, item.className, {[$style.active]: selected === item.value, }, officeClasses[item.value]]"
           :aria-label="`Перейти на город ${item.city}`"
-          @click="setActiveMarker(item.value, index)"
+          @click="setActiveMarker(item.value, key)"
         >
           <HomeMapMark :is-active="selected === item.value" />
           <span :class="$style.placemarkCity">{{ item.city }}</span>
@@ -29,7 +27,6 @@
       <OfficeSlider
         :office="offices"
         :current-slider="currentSlide"
-        @sliderChanged="sliderChanged"
       />
     </div>
   </section>

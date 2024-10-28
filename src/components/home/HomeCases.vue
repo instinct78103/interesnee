@@ -5,7 +5,7 @@
     </RotatedHeading>
 
     <div :class="$style.wrapper">
-      <BaseSlider ref="slick" :is-manual-sliding="true" :options="sliderOpts" custom-styles="scroll-snap-type: x mandatory;display:flex;flex-wrap:nowrap;overflow-x:auto">
+      <BaseSlider ref="slick" :is-manual-sliding="true" :options="sliderOpts" custom-styles="scroll-snap-type: x mandatory;display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-behavior:smooth">
         <div v-for="(project, key) in projectsSlides" :key :class="$style.projectSlideWrapper">
           <div :class="$style.projectSlide">
             <app-image
@@ -37,12 +37,10 @@ const sliderOpts = {
   dots: false,
   arrows: true,
   autoplay: true,
+  autoplaySpeed: 3000,
   slidesToShow: 1,
   slidesToScroll: 1,
   draggable: true,
-  // dotsClass: this.$style.sliderDots,
-  // prevArrow: `<button type="button" class="${this.$style.sliderArrow} ${this.$style.sliderArrowLeft}" tabindex="0"><i class="el-icon-arrow-left"></i></button>`,
-  // nextArrow: `<button type="button" class="${this.$style.sliderArrow} ${this.$style.sliderArrowRight}" tabindex="0"><i class="el-icon-arrow-right"></i></button>`,
   responsive: [
     {
       breakpoint: 768,

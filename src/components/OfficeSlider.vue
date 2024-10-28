@@ -7,15 +7,16 @@
       :options="sliderOpts"
       :go-slide="currentSlider"
     >
-      <div
-        v-for="(value, index) in office"
-        :key="index"
-      >
-        <div :class="$style.office">
-          <div
-            :class="$style.officePhotos"
-            @click="openCarousel(value)"
-          >
+        <div :class="$style.office" v-for="(value, index) in office" :key="index">
+          <div :class="$style.officePhotos" @click="openCarousel(value)">
+              <app-image
+                v-for="(image, index) in value.images" :key="index"
+                :class="$style.carouselImg"
+                :x1="image.webp"
+                :webp="image.webp"
+                alt="Office photo"
+                lazy
+              />
             <!--            <el-carousel-->
             <!--              :interval="4000"-->
             <!--              :autoplay="true"-->
@@ -40,9 +41,9 @@
           </div>
           <div :class="$style.textWrap">
             <template v-if="value.link">
-              <a :href="value.link">
+              <router-link :to="`${value.link}`">
                 <p :class="$style.title">{{ value.city }}</p>
-              </a>
+              </router-link>
             </template>
             <template v-else>
               <p :class="$style.title">{{ value.city }}</p>
@@ -53,7 +54,6 @@
             </p>
           </div>
         </div>
-      </div>
     </BaseSlider>
 
     <!-- Office dialog -->
@@ -88,6 +88,7 @@
 </template>
 
 <script setup>
+import AppImage from '@/components/AppImage.vue';
 import BaseSlider from '@/components/BaseSlider.vue';
 import $style from './OfficeSlider.module.scss';
 

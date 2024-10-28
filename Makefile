@@ -13,7 +13,7 @@ npm_cmd:
 		-v /etc/passwd:/etc/passwd:ro \
 		-v /etc/group:/etc/group:ro \
 		-u $(USER):$(USER) \
-		-w $(HOME)/$(PROJECT_NAME) \
+		-w $(HOME) \
 		--env HOME=$(HOME) \
 		--network host \
 		node:$(TAG) npm $(CMD)

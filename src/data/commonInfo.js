@@ -21,7 +21,7 @@ export const offices = [
       },
     ],
     city: 'Рудный',
-    address: 'ул. Горняков, 70, оф. 413',
+    address: 'ул. Горняков, 70, оф. 422',
     value: 'rdn',
   },
   {

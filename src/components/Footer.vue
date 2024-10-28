@@ -75,7 +75,7 @@ const socialLinks = [
       <ul>
         <li v-for="socialLink in socialLinks">
           <a :href="socialLink.href" target="_blank">
-            <svg width="20" height="20"><use :xlink:href="`${spritePath}#icon-${socialLink.icon}`"></use></svg>
+            <svg width="20" height="20"><use :href="`${spritePath}#icon-${socialLink.icon}`"></use></svg>
           </a>
         </li>
       </ul>

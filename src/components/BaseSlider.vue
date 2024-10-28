@@ -1,19 +1,25 @@
 <template>
-  <div ref="slider" :class="$style.slider" :style="customStyles" @mouseenter="stopAutoScroll" @mouseleave="resumeAutoScroll">
-    <button @click="scrollLeft" v-if="options?.arrows" class="leftArrow" :class="[$style.arrow, $style.leftArrow]">
-      <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-    </button>
-    <slot />
-    <button @click="autoScroll" v-if="options?.arrows" class="rightArrow" :class="[$style.arrow, $style.rightArrow]">
-      <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
-    </button>
+
+  <button @click="scrollPrev" v-if="options?.arrows" class="leftArrow" :class="[$style.arrow, $style.leftArrow]">
+    <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
+  <div ref="slider" :class="[$style.slider, {[$style.fade]: options?.fade}]" :style="customStyles" @mouseenter="stopAutoScroll" @mouseleave="resumeAutoScroll">
+    <slot :activeSlide="slideIndex" :activeClass="$style.active" />
   </div>
+  <button @click="scrollNext" v-if="options?.arrows" class="rightArrow" :class="[$style.arrow, $style.rightArrow]">
+    <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
+
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue';
 
-defineProps({
+const props = defineProps({
   options: {
     type: Object,
     default: () => ({}),
@@ -41,63 +47,68 @@ defineProps({
 });
 
 const slider = ref(null);
+const numberOfSlides = computed(() => slider.value?.children.length || 0);
+const slideIndex = ref(props.goSlide);
+
+const scrollToSlide = (index) => {
+  if (!slider.value || index < 0 || index >= numberOfSlides.value) return;
+
+  const sliderWidth = slider.value.clientWidth;  // Width of the visible slider area
+  const slideWidth = slider.value.children[index].offsetWidth; // Width of each slide
+  const targetPosition = index * slideWidth;
+
+  // Adjust if the slideWidth is smaller than the slider width (peek behavior on desktop)
+  const adjustPosition = Math.min(targetPosition, slider.value.scrollWidth - sliderWidth);
+
+  slider.value.scrollTo({
+    left: adjustPosition,
+  });
+};
+
+function scrollPrev() {
+  slideIndex.value--;
+  if (slideIndex.value < 0) {
+    slideIndex.value++;
+  }
+}
+
+function scrollNext() {
+  slideIndex.value++;
+  if (slideIndex.value > numberOfSlides.value - 1) {
+    slideIndex.value = 0;
+  }
+}
+
+watch(() => props.goSlide, (newValue) => slideIndex.value = newValue);
+watch(slideIndex, (newValue) => scrollToSlide(newValue));
+
 let intervalId = null;
-
-const scrollLeft = () => {
-  if (slider.value) {
-    slider.value.scrollBy({
-      left: -slider.value.clientWidth,
-      behavior: 'smooth',
-    });
-  }
-};
-
-const scrollRight = () => {
-  if (slider.value) {
-    slider.value.scrollBy({
-      left: slider.value.clientWidth,
-      behavior: 'smooth',
-    });
-  }
-};
-
-const autoScroll = () => {
-  if (slider.value) {
-    const currentScroll = slider.value.scrollLeft;
-    const slideWidth = slider.value.clientWidth;
-
-    // If the end of the scroll container is reached, reset to 0
-    if (currentScroll >= slider.value.scrollWidth - slideWidth) {
-      slider.value.scrollTo({ left: 0, behavior: 'smooth' });
-    } else {
-      scrollRight(); // Scroll to the next slide
-    }
-  }
-};
 
 // Set up interval for auto-scrolling
 const startAutoScroll = () => {
-  intervalId = setInterval(autoScroll, 3000); // Change slide every 3 seconds
+  if (props?.options?.autoplay && props?.options?.autoplaySpeed) {
+    intervalId = setInterval(scrollNext, props?.options?.autoplaySpeed);
+  }
 };
 
-// Clear interval on component unmount
-onBeforeUnmount(() => {
+const stopAutoScroll = () => {
   if (intervalId) {
     clearInterval(intervalId);
   }
-});
+};
 
-// Start auto-scrolling on component mount
 onMounted(() => {
   startAutoScroll();
 });
 
-const stopAutoScroll = () => {
-  clearInterval(intervalId);
-};
+onBeforeUnmount(() => {
+  stopAutoScroll();
+});
 
 const resumeAutoScroll = () => {
-  startAutoScroll();
+  if (props?.options?.autoplay) {
+    startAutoScroll();
+  }
 };
 
 </script>
@@ -131,6 +142,23 @@ const resumeAutoScroll = () => {
 .rightArrow {
   transform: rotate(0.5turn);
   right: 0;
+}
+
+.fade {
+  display: grid;
+
+  > div {
+    grid-area: 1 / 1;
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
+    will-change: opacity;
+
+    &.active {
+      pointer-events: all;
+      opacity: 1;
+    }
+  }
 }
 
 </style>

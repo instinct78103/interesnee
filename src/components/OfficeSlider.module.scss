@@ -16,11 +16,22 @@ $slider-brake-point: 768px;
     padding: 0;
 }
 
+div:has(> .office) {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+}
+
 .office {
     text-align: center;
     margin: auto;
     justify-content: center;
     display: flex;
+    min-width: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
 
     @media (max-width: $slider-brake-point) {
         flex-direction: column;
@@ -29,10 +40,20 @@ $slider-brake-point: 768px;
 
 .officePhotos {
     cursor: pointer;
-    display: inline-block;
+    //display: inline-block;
     width: 50%;
     overflow: unset;
     margin-right: 20px;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+
+    > * {
+        min-width: 100%;
+        scroll-snap-stop: always;
+        scroll-snap-align: start;
+    }
 
     @media (max-width: $slider-brake-point) {
         width: 100%;
@@ -122,6 +143,7 @@ $slider-brake-point: 768px;
     color: var(--blue);
     font-size: 16px;
     line-height: 1.5;
+    text-wrap: balance;
 }
 
 /*========== Slider ===========*/

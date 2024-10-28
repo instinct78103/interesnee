@@ -2,16 +2,18 @@
 
   <background-animation ref="hero" :class="$style.root">
     <div :class="$style.row">
-      <base-slider :options="sliderOptions" :class="$style.slider">
-        <div v-for="(item, index) in heroSlides" :key="index" :class="[$style.heroItemWrapper, index === activeSlideIndex ? $style.active: '']">
-          <div :class="$style.heroItem">
-            <router-link :to="item.to" :class="$style.heroLink">
-              <h2 :class="$style.heroTitle" v-html="item.title" />
-              <p :class="$style.heroText" v-html="item.text" />
-            </router-link>
+      <BaseSlider :options="{ arrows: false, fade: true, autoplay: true, autoplaySpeed: 3000 }">
+        <template v-slot="{ activeSlide, activeClass }">
+          <div v-for="(item, index) in heroSlides" :key="index" :class="[$style.heroItemWrapper, {[activeClass]: index === activeSlide}]">
+            <div :class="$style.heroItem">
+              <router-link :to="item.to" :class="$style.heroLink">
+                <h2 :class="$style.heroTitle" v-html="item.title" />
+                <p :class="$style.heroText" v-html="item.text" />
+              </router-link>
+            </div>
           </div>
-        </div>
-      </base-slider>
+        </template>
+      </BaseSlider>
     </div>
 
     <router-link :to="projectsUrl" :class="$style.heroLink">
@@ -29,10 +31,13 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { PAGE_PROJECTS, PAGE_TEAM } from '@/router/index.js';
 import BackgroundAnimation from '@/components/home/BackgroundAnimation.vue';
 import BaseSlider from '@/components/BaseSlider.vue';
+
+defineProps({
+  activeClass: String,
+});
 
 const heroSlides = [
   {
@@ -68,25 +73,8 @@ const activities = [
   { icon: 'ic_web.svg', text: 'WEB' },
 ];
 
-const sliderOptions = {
-  arrows: false,
-  fade: true,
-  autoplay: true,
-  autoplaySpeed: 3000,
-  pauseOnFocus: false,
-};
-
 const projectsUrl = PAGE_PROJECTS;
 
-const activeSlideIndex = ref(0);
-
-onMounted(() => {
-  const intervalId = setInterval(() => activeSlideIndex.value = (activeSlideIndex.value + 1) % heroSlides.length, 3000);
-
-  onBeforeUnmount(() => {
-    clearInterval(intervalId);
-  });
-});
 </script>
 
 <style lang="scss" module>
@@ -192,22 +180,6 @@ onMounted(() => {
   font-weight: 700;
   color: #fff;
   text-transform: uppercase;
-}
-
-.slider {
-  display: grid;
-
-  > div {
-    grid-area: 1 / 1;
-    opacity: 0;
-    transition: opacity 0.5s;
-    pointer-events: none;
-
-    &.active {
-      pointer-events: all;
-      opacity: 1;
-    }
-  }
 }
 
 .heroLink {
