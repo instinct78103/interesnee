@@ -13,7 +13,7 @@ $lg: 1199px;
     overflow: hidden;
     position: relative;
 
-    @media(width <= 1024px) {
+    @media(width<=1024px) {
         height: 900px;
     }
 }
@@ -24,7 +24,20 @@ $lg: 1199px;
 
     @media (max-width: $lg) {
         background-size: 100% auto;
-        background-position: center clamp(28%, 4vw, 48%);
+        background-position: center 48%;
+    }
+
+    @media(width<=1024px) {
+        background-size: 100% auto;
+        background-position: center 48%;
+    }
+
+    @media(width < 768px) {
+        background-position: center 33%;
+    }
+
+    @media(width <= 480px) {
+        background-position: center 28%;
     }
 
     @media (max-width: 442px) {
@@ -106,8 +119,16 @@ $lg: 1199px;
     right: 29%;
 
     @media (max-width: $lg) {
-        top: clamp(22%, 3vw, 34%);
+        top: 34%;
         right: 35%;
+    }
+
+    @media(width < 768px) {
+        top: 24%;
+    }
+
+    @media(width <= 480px) {
+        top: 22%;
     }
 
     .placemarkCity {
@@ -143,8 +164,18 @@ $lg: 1199px;
     right: 32%;
 
     @media (max-width: $lg) {
-        top: clamp(26%, 3vw, 43%);
-        right: clamp(33%, 3vw, 38%);
+        top: 43%;
+        right: 38%;
+    }
+
+    @media(width <= 768px) {
+        top: 40%;
+        right: 33%;
+    }
+
+    @media(width <= 480px) {
+        top: 26%;
+        right: 33%;
     }
 }
 
@@ -153,8 +184,16 @@ $lg: 1199px;
     right: 14%;
 
     @media (max-width: $lg) {
-        top: clamp(22%, 3vw, 32.5%);
+        top: 32.5%;
         right: 25%;
+    }
+
+    @media(width <= 768px) {
+        top: 24%;
+    }
+
+    @media(width <= 480px) {
+        top: 22%;
     }
 }
 
@@ -176,7 +215,7 @@ $lg: 1199px;
         left: 21%;
     }
 
-    @media(width <= 1024px) {
+    @media(width<=1024px) {
         top: 41%;
         left: 23%;
     }
@@ -213,7 +252,7 @@ $lg: 1199px;
         left: 15%;
     }
 
-    @media(width <= 1024px) {
+    @media(width<=1024px) {
         top: 39%;
         left: 18%;
     }
@@ -254,7 +293,7 @@ $lg: 1199px;
         left: 12%;
     }
 
-    @media(width <= 1024px) {
+    @media(width<=1024px) {
         top: 47%;
         left: 14%;
     }
@@ -298,7 +337,7 @@ $lg: 1199px;
         right: 19.5%;
     }
 
-    @media(width <= 1024px) {
+    @media(width<=1024px) {
         top: 53%;
         right: 21%;
     }

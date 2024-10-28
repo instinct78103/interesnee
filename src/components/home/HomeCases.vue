@@ -95,6 +95,10 @@ const sliderOpts = {
   grid-template-columns: repeat(12, 1fr);
   grid-auto-rows: 1fr;
   align-items: center;
+
+  @media(width < 768px) {
+    grid-template-rows: 1fr fit-content(100%);
+  }
 }
 
 .picture {
@@ -105,6 +109,7 @@ const sliderOpts = {
   grid-column: 1 / span 10;
 
   @media(width < 768px) {
+    grid-column: 1 / -1;
     box-shadow: none;
   }
 }
@@ -135,6 +140,8 @@ const sliderOpts = {
 
   @media(width < 768px) {
     margin-top: 40px;
+    grid-row: 2;
+    grid-column: 1 / -1;
   }
 }
 

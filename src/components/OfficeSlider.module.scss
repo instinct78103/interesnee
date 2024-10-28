@@ -36,6 +36,12 @@ div:has(> .office) {
     @media (max-width: $slider-brake-point) {
         flex-direction: column;
     }
+
+    img {
+        @media(width <= 768px) {
+            max-height: 180px;
+        }
+    }
 }
 
 .officePhotos {
@@ -156,6 +162,7 @@ div:has(> .office) {
         transform: scale(1.05);
     }
 }
+
 /*===== End of Slider =========*/
 
 @media (width > $slider-brake-point) {
