@@ -1,5 +1,4 @@
 <template>
-
   <button @click="scrollPrev" v-if="options?.arrows" class="leftArrow" :class="[$style.arrow, $style.leftArrow]">
     <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
       <path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
@@ -17,7 +16,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue';
+import { ref, onMounted, computed, watch, inject, onUnmounted } from 'vue';
+import { useSlider } from '@/composables/useSlider.js';
 
 const props = defineProps({
   options: {
@@ -47,23 +47,14 @@ const props = defineProps({
 });
 
 const slider = ref(null);
+const { slideIndex } = useSlider(slider, props);
+
+const refSlideIndex = ref(slideIndex);
+
 const numberOfSlides = computed(() => slider.value?.children.length || 0);
-const slideIndex = ref(props.goSlide);
 
-const scrollToSlide = (index) => {
-  if (!slider.value || index < 0 || index >= numberOfSlides.value) return;
-
-  const sliderWidth = slider.value.clientWidth;  // Width of the visible slider area
-  const slideWidth = slider.value.children[index].offsetWidth; // Width of each slide
-  const targetPosition = index * slideWidth;
-
-  // Adjust if the slideWidth is smaller than the slider width (peek behavior on desktop)
-  const adjustPosition = Math.min(targetPosition, slider.value.scrollWidth - sliderWidth);
-
-  slider.value.scrollTo({
-    left: adjustPosition,
-  });
-};
+const activeIndex = inject('activeIndex', 0);
+const updateActiveIndex = inject('updateActiveIndex', null);
 
 function scrollPrev() {
   slideIndex.value--;
@@ -79,8 +70,15 @@ function scrollNext() {
   }
 }
 
-watch(() => props.goSlide, (newValue) => slideIndex.value = newValue);
-watch(slideIndex, (newValue) => scrollToSlide(newValue));
+if (updateActiveIndex) {
+  watch(refSlideIndex, (newValue) => {
+    updateActiveIndex(newValue);
+  });
+}
+
+watch(() => props.goSlide, (newValue) => {
+  refSlideIndex.value = newValue;
+});
 
 let intervalId = null;
 
@@ -101,7 +99,7 @@ onMounted(() => {
   startAutoScroll();
 });
 
-onBeforeUnmount(() => {
+onUnmounted(() => {
   stopAutoScroll();
 });
 
@@ -116,7 +114,7 @@ const resumeAutoScroll = () => {
 
 .slider {
   &::-webkit-scrollbar {
-    display: none;
+    //display: none;
   }
 }
 
