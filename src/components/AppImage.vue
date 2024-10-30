@@ -7,12 +7,14 @@
     :src-placeholder="placeholder || ''"
     :class="[$style.image]"
     use-picture
+    :width
+    :height
   />
   <picture
     v-else
     :class="$style.host">
     <source :srcset="webp" :class="$style.image" type="image/webp">
-    <img :srcset="`${x1Image}, ${x2Image}`" :alt :class="$style.image" decoding="async">
+    <img :srcset="`${x1Image}, ${x2Image}`" :alt :class="$style.image" decoding="async" :width :height>
   </picture>
 </template>
 
@@ -28,6 +30,8 @@ const props = defineProps({
   alt: { type: String, default: '' },
   lazy: { type: Boolean, default: false },
   placeholder: { type: String, default: '' },
+  width: { type: Number },
+  height: { type: Number },
 });
 
 const x1Image = computed(() => props.x1 ? `${props.x1} 1x` : '');

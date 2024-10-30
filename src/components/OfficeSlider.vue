@@ -12,8 +12,10 @@
             :class="$style.carouselImg"
             :x1="image.webp"
             :webp="image.webp"
-            alt="Office photo"
+            :alt="value.city"
             lazy
+            :width="200"
+            :height="180"
           />
         </div>
         <div :class="$style.textWrap">
