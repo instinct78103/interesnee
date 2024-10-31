@@ -1,10 +1,7 @@
 import { ref, onMounted, watch, onUnmounted } from 'vue';
 
-export function useSlider(sliderRef, props) {
-  const slider = ref(null);
+export function useSlider(sliderRef) {
   const slideIndex = ref(0);
-  let intervalId = null;
-  const numberOfSlides = ref(0);
   let observer = null;
   let scrollTimeout = null;
 
@@ -26,52 +23,6 @@ export function useSlider(sliderRef, props) {
 
   watch(slideIndex, (newVal) => scrollToSlide(newVal));
 
-  const scrollNext = () => {
-    if (!slider.value) return;
-    slideIndex.value = (slideIndex.value + 1) % numberOfSlides.value;
-  };
-
-  const scrollPrev = () => {
-    if (!slider.value) return;
-    slideIndex.value = (slideIndex.value - 1 + numberOfSlides.value) % numberOfSlides.value;
-  };
-
-  const startAutoScroll = () => {
-    if (props.options.autoplay && !intervalId) {
-      intervalId = setInterval(scrollNext, props.options.autoplaySpeed);
-    }
-  };
-
-  const stopAutoScroll = () => {
-    if (intervalId) {
-      clearInterval(intervalId);
-      intervalId = null;
-    }
-  };
-
-  // Watch for autoplay prop to start/stop autoplay dynamically
-  // watch(() => props.options.autoplay, (newValue) => {
-  //   if (newValue) {
-  //     startAutoScroll();
-  //   } else {
-  //     stopAutoScroll();
-  //   }
-  // });
-
-  // Observer to pause autoplay when the slider is not visible
-  const visibilityObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          startAutoScroll();
-        } else {
-          stopAutoScroll();
-        }
-      });
-    },
-    { threshold: 0.5 }, // Trigger when 50% of the slider is in view
-  );
-
   const observeSlides = () => {
     if (!sliderRef.value) return;
 
@@ -89,45 +40,10 @@ export function useSlider(sliderRef, props) {
     [...sliderRef.value.children].forEach((slide) => observer.observe(slide));
   };
 
-  // onMounted(() => {
-  //   if (slider.value) {
-  //     numberOfSlides.value = slider.value.children.length;
-  //     visibilityObserver.observe(slider.value); // Start observing slider visibility
-  //     nextTick(updateActiveSlideObserver); // Observe individual slides after DOM updates
-  //   }
-  //
-  //   if (props.options.autoplay) {
-  //     startAutoScroll();
-  //   }
-  // });
-
-  onMounted(() => {
-    observeSlides();
-  });
-
-  // onBeforeUnmount(() => {
-  //   if (observer) {
-  //     observer.disconnect();
-  //     observer = null;
-  //   }
-  // });
-
+  onMounted(() => observeSlides());
   onUnmounted(() => observer.disconnect());
 
-  // Optionally handle mouseenter/mouseleave to pause/resume autoplay
-  const resumeAutoScroll = () => {
-    if (props.options.autoplay) {
-      startAutoScroll();
-    }
-  };
-
   return {
-    slider,
     slideIndex,
-    scrollNext,
-    scrollPrev,
-    stopAutoScroll,
-    resumeAutoScroll,
-    scrollToSlide,
   };
 }
