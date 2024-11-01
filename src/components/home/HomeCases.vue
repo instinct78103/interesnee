@@ -5,23 +5,25 @@
     </RotatedHeading>
 
     <div :class="$style.wrapper">
-      <BaseSlider ref="slick" :is-manual-sliding="true" :options="sliderOpts" custom-styles="scroll-snap-type: x mandatory;display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-behavior:smooth">
-        <div v-for="(project, key) in projectsSlides" :key :class="$style.projectSlideWrapper">
-          <div :class="$style.projectSlide">
-            <app-image
-              :class="$style.picture"
-              :x1="project.thumbnail.x1"
-              :x2="project.thumbnail.x2"
-              :webp="project.thumbnail.webp"
-              :alt="project.name"
-            />
-            <div :class="$style.desc">
-              <p :class="$style.title">{{ project.name }}</p>
-              <p :class="$style.text">{{ project.shortDescription }}</p>
-              <router-link :class="$style.button" :to="`/projects/${project.slug}`">Подробнее</router-link>
+      <BaseSlider :is-manual-sliding="true" :options="sliderOpts" custom-styles="scroll-snap-type: x mandatory;display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-behavior:smooth">
+        <template #slider="{ sliderRef, activeClass, activeSlide }">
+          <div v-for="(project, key) in projectsSlides" :key :class="[$style.projectSlideWrapper, {[activeClass]: key === activeSlide}]">
+            <div :class="$style.projectSlide">
+              <app-image
+                :class="$style.picture"
+                :x1="project.thumbnail.x1"
+                :x2="project.thumbnail.x2"
+                :webp="project.thumbnail.webp"
+                :alt="project.name"
+              />
+              <div :class="$style.desc">
+                <p :class="$style.title">{{ project.name }}</p>
+                <p :class="$style.text">{{ project.shortDescription }}</p>
+                <router-link :class="$style.button" :to="`/projects/${project.slug}`">Подробнее</router-link>
+              </div>
             </div>
           </div>
-        </div>
+        </template>
       </BaseSlider>
     </div>
 
@@ -74,7 +76,6 @@ const sliderOpts = {
     margin-inline: -15px;
   }
 }
-
 
 
 .projectSlideWrapper {

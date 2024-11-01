@@ -21,12 +21,31 @@ let dots = ref([]);
 let dotsCount = ref(0);
 let containerWidth = ref(0);
 let containerHeight = ref(0);
+let visibilitySection = null;
 
 const dotsColor = '#f75050';
 const translateZMin = -725;
 const translateZMax = 600;
 const containerAnimationMap = {
   perspective: [50, 215],
+};
+const isVisible = ref(false);
+
+const observeSection = () => {
+  visibilitySection = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+
+      isVisible.value = entry.isIntersecting;
+
+      if (isVisible.value) {
+        initialize();
+      } else {
+        destroy();
+      }
+    });
+  }, { threshold: 0.1 });
+
+  visibilitySection.observe(root.value);
 };
 
 const randomNumb = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -78,6 +97,7 @@ const animateContainer = () => {
 };
 
 const initialize = () => {
+  if (!isVisible.value) return;
   container.value = document.createElement('div');
   container.value.className = $style.dotsContainer;
   root.value.appendChild(container.value);
@@ -109,11 +129,12 @@ const handleResize = debounce(() => {
 
 onMounted(() => {
   window.addEventListener('resize', handleResize, { passive: true });
-  initialize();
+  observeSection();
 });
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize);
+  visibilitySection.disconnect();
   destroy();
 });
 </script>

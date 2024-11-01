@@ -3,7 +3,7 @@
   <background-animation ref="hero" :class="$style.root">
     <div :class="$style.row">
       <BaseSlider :options="{ arrows: false, fade: true, autoplay: true, autoplaySpeed: 3000 }">
-        <template v-slot="{ activeSlide, activeClass }">
+        <template #slider="{sliderRef, activeSlide, activeClass}">
           <div v-for="(item, index) in heroSlides" :key="index" :class="[$style.heroItemWrapper, {[activeClass]: index === activeSlide}]">
             <div :class="$style.heroItem">
               <router-link :to="item.to" :class="$style.heroLink">
@@ -34,6 +34,9 @@
 import { PAGE_PROJECTS, PAGE_TEAM } from '@/router/index.js';
 import BackgroundAnimation from '@/components/home/BackgroundAnimation.vue';
 import BaseSlider from '@/components/BaseSlider.vue';
+import {ref} from 'vue';
+
+const activeSlide = ref(0)
 
 defineProps({
   activeClass: String,

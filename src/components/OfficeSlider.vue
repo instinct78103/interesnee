@@ -5,6 +5,7 @@
       :options="sliderOpts"
       :go-slide="currentSlider"
     >
+      <template #slider="{ sliderRef }">
       <div :class="$style.office" v-for="(value, index) in office" :key="index">
         <div :class="$style.officePhotos" @click="openCarousel(value)">
           <app-image
@@ -33,6 +34,7 @@
           </p>
         </div>
       </div>
+      </template>
     </BaseSlider>
   </div>
 </template>

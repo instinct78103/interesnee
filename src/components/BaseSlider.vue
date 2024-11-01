@@ -5,7 +5,7 @@
     </svg>
   </button>
   <div ref="slider" :class="[$style.slider, {[$style.fade]: options?.fade}]" :style="customStyles" @mouseenter="stopAutoScroll" @mouseleave="resumeAutoScroll">
-    <slot :activeSlide="slideIndex" :activeClass="$style.active" />
+    <slot name="slider" :activeSlide="slideIndex" :activeClass="$style.active"/>
   </div>
   <button @click="scrollNext" v-if="options?.arrows" class="rightArrow" :class="[$style.arrow, $style.rightArrow]">
     <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch, inject, onUnmounted } from 'vue';
+import { ref, watch, inject } from 'vue';
 import { useSlider } from '@/composables/useSlider.js';
 
 const props = defineProps({
@@ -47,67 +47,18 @@ const props = defineProps({
 });
 
 const slider = ref(null);
-const { slideIndex } = useSlider(slider, props);
+const { slideIndex, scrollNext, scrollPrev, stopAutoScroll, resumeAutoScroll } = useSlider(slider, props);
 
 const refSlideIndex = ref(slideIndex);
-
-const numberOfSlides = computed(() => slider.value?.children.length || 0);
 
 const activeIndex = inject('activeIndex', 0);
 const updateActiveIndex = inject('updateActiveIndex', null);
 
-function scrollPrev() {
-  slideIndex.value--;
-  if (slideIndex.value < 0) {
-    slideIndex.value++;
-  }
-}
-
-function scrollNext() {
-  slideIndex.value++;
-  if (slideIndex.value > numberOfSlides.value - 1) {
-    slideIndex.value = 0;
-  }
-}
-
 if (updateActiveIndex) {
-  watch(refSlideIndex, (newValue) => {
-    updateActiveIndex(newValue);
-  });
+  watch(refSlideIndex, (newValue) => updateActiveIndex(newValue));
 }
 
-watch(() => props.goSlide, (newValue) => {
-  refSlideIndex.value = newValue;
-});
-
-let intervalId = null;
-
-// Set up interval for auto-scrolling
-const startAutoScroll = () => {
-  if (props?.options?.autoplay && props?.options?.autoplaySpeed) {
-    intervalId = setInterval(scrollNext, props?.options?.autoplaySpeed);
-  }
-};
-
-const stopAutoScroll = () => {
-  if (intervalId) {
-    clearInterval(intervalId);
-  }
-};
-
-onMounted(() => {
-  startAutoScroll();
-});
-
-onUnmounted(() => {
-  stopAutoScroll();
-});
-
-const resumeAutoScroll = () => {
-  if (props?.options?.autoplay) {
-    startAutoScroll();
-  }
-};
+watch(() => props.goSlide, (newValue) => refSlideIndex.value = newValue);
 
 </script>
 <style lang="scss" module>
