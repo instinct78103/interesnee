@@ -65,7 +65,7 @@ watch(() => props.goSlide, (newValue) => refSlideIndex.value = newValue);
 
 .slider {
   &::-webkit-scrollbar {
-    //display: none;
+    display: none;
   }
 }
 

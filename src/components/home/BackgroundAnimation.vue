@@ -40,7 +40,9 @@ const observeSection = () => {
       if (isVisible.value) {
         initialize();
       } else {
-        destroy();
+        if (container.value) {
+          destroy();
+        }
       }
     });
   }, { threshold: 0.1 });

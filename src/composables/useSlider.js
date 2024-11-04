@@ -83,12 +83,12 @@ export function useSlider(sliderRef, props) {
 
   onMounted(() => {
     startAutoScroll()
-    observeSlides();
+    // observeSlides();
     observeVisibility()
   });
   onUnmounted(() => {
-    observer?.disconnect();
-    observeVisibility?.disconnect();
+    // observer?.disconnect();
+    visibilityObserver?.disconnect();
     stopAutoScroll();
   });
 
@@ -112,5 +112,6 @@ export function useSlider(sliderRef, props) {
     scrollPrev,
     stopAutoScroll,
     resumeAutoScroll,
+    observeSlides,
   };
 }

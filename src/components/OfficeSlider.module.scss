@@ -28,10 +28,13 @@ div:has(> .office) {
     text-align: center;
     margin: auto;
     justify-content: center;
-    display: flex;
+    display: grid;
+    grid-template-columns: 250px auto;
+    grid-template-rows: auto fit-content(100%);
     min-width: 100%;
     scroll-snap-align: start;
     scroll-snap-stop: always;
+    column-gap: 20px;
 
     @media (max-width: $slider-brake-point) {
         flex-direction: column;
@@ -46,14 +49,12 @@ div:has(> .office) {
 
 .officePhotos {
     cursor: pointer;
-    //display: inline-block;
-    width: 50%;
     overflow: unset;
-    margin-right: 20px;
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
+    grid-column: 1;
 
     > * {
         min-width: 100%;
@@ -61,11 +62,38 @@ div:has(> .office) {
         scroll-snap-align: start;
     }
 
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
     @media (max-width: $slider-brake-point) {
         width: 100%;
     }
 
     ul li button {
+        //width: 8px;
+        //height: 8px;
+        //padding: 0;
+        //border: 0;
+        //border-radius: 50%;
+        //outline: none;
+        //font-size: 0;
+        //background-color: var(--dots-color);
+    }
+
+    ul li[class*='is-active'] button {
+        background-color: var(--dots-active-color);
+    }
+}
+
+.indicatorsList {
+    display: flex;
+    grid-column: 1 / span 1;
+    grid-row: 2;
+    gap: 8px;
+    justify-content: center;
+
+    button {
         width: 8px;
         height: 8px;
         padding: 0;
@@ -74,10 +102,6 @@ div:has(> .office) {
         outline: none;
         font-size: 0;
         background-color: var(--dots-color);
-    }
-
-    ul li[class*='is-active'] button {
-        background-color: var(--dots-active-color);
     }
 }
 
@@ -131,6 +155,7 @@ div:has(> .office) {
     max-width: 330px;
     margin: auto 0;
     user-select: text;
+    grid-column: 2;
 
     @media (max-width: $slider-brake-point) {
         text-align: center;

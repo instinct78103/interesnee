@@ -5,44 +5,60 @@
       :options="sliderOpts"
       :go-slide="currentSlider"
     >
-      <template #slider="{ sliderRef }">
-      <div :class="$style.office" v-for="(value, index) in office" :key="index">
-        <div :class="$style.officePhotos" @click="openCarousel(value)">
-          <app-image
-            v-for="(image, index) in value.images" :key="index"
-            :class="$style.carouselImg"
-            :x1="image.webp"
-            :webp="image.webp"
-            :alt="value.city"
-            lazy
-            :width="200"
-            :height="180"
-          />
-        </div>
-        <div :class="$style.textWrap">
-          <template v-if="value.link">
-            <router-link :to="`${value.link}`">
+      <template #slider>
+        <div :class="$style.office" v-for="(value, index) in office" :key="index">
+          <div :class="$style.officePhotos" @click="openCarousel(value)" :ref="el => imagesSliderRefs[index] = el">
+            <app-image
+              v-for="(image, index) in value.images" :key="index"
+              :class="$style.carouselImg"
+              :x1="image.webp"
+              :webp="image.webp"
+              :alt="value.city"
+              lazy
+              :width="200"
+              :height="180"
+            />
+          </div>
+
+          <ul :class="$style.indicatorsList" v-if="value.images.length > 1">
+            <li v-for="(_, key) in value.images" :key>
+              <button @click="scrollToImage(index, key)"></button>
+            </li>
+          </ul>
+          <div :class="$style.textWrap">
+            <template v-if="value.link">
+              <router-link :to="`${value.link}`">
+                <p :class="$style.title">{{ value.city }}</p>
+              </router-link>
+            </template>
+            <template v-else>
               <p :class="$style.title">{{ value.city }}</p>
-            </router-link>
-          </template>
-          <template v-else>
-            <p :class="$style.title">{{ value.city }}</p>
-          </template>
-          <p :class="$style.address">
-            {{ value.address }} <br>
-            {{ value.tel }}
-          </p>
+            </template>
+            <p :class="$style.address">
+              {{ value.address }} <br>
+              {{ value.tel }}
+            </p>
+          </div>
         </div>
-      </div>
       </template>
     </BaseSlider>
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import AppImage from '@/components/AppImage.vue';
 import BaseSlider from '@/components/BaseSlider.vue';
 import $style from './OfficeSlider.module.scss';
+
+const imagesSliderRefs = ref([]);
+const scrollToImage = (idx, buttonClickedIndex) => imagesSliderRefs.value[idx]
+  .children[buttonClickedIndex]
+  .scrollIntoView({
+    behavior: 'smooth',
+    block: 'nearest',
+    inline: 'center',
+  });
 
 const sliderOpts = {
   dots: false,
