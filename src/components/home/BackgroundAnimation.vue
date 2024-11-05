@@ -113,7 +113,7 @@ const initialize = () => {
 const destroy = () => {
   Velocity(container.value, 'stop');
   Velocity(dots.value, 'stop');
-  container.value.remove();
+  container.value?.remove();
 };
 
 const debounce = (func, wait) => {
@@ -136,7 +136,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize);
-  visibilitySection.disconnect();
+  visibilitySection?.disconnect();
   destroy();
 });
 </script>

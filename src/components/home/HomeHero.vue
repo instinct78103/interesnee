@@ -1,19 +1,14 @@
 <template>
-
   <background-animation ref="hero" :class="$style.root">
-    <div :class="$style.row">
-      <BaseSlider :options="{ arrows: false, fade: true, autoplay: true, autoplaySpeed: 3000 }">
-        <template #slider="{sliderRef, activeSlide, activeClass}">
-          <div v-for="(item, index) in heroSlides" :key="index" :class="[$style.heroItemWrapper, {[activeClass]: index === activeSlide}]">
-            <div :class="$style.heroItem">
-              <router-link :to="item.to" :class="$style.heroLink">
-                <h2 :class="$style.heroTitle" v-html="item.title" />
-                <p :class="$style.heroText" v-html="item.text" />
-              </router-link>
-            </div>
-          </div>
-        </template>
-      </BaseSlider>
+    <div :class="$style.row" ref="sliderRef">
+      <div v-for="(item, index) in heroSlides" :key="index" :class="[$style.heroItemWrapper, {[$style.active]: index === currentIndex}]">
+        <div :class="$style.heroItem">
+          <router-link :to="item.to" :class="$style.heroLink">
+            <h2 :class="$style.heroTitle" v-html="item.title" />
+            <p :class="$style.heroText" v-html="item.text" />
+          </router-link>
+        </div>
+      </div>
     </div>
 
     <router-link :to="projectsUrl" :class="$style.heroLink">
@@ -27,20 +22,17 @@
       </div>
     </router-link>
   </background-animation>
-
 </template>
 
 <script setup>
 import { PAGE_PROJECTS, PAGE_TEAM } from '@/router/index.js';
 import BackgroundAnimation from '@/components/home/BackgroundAnimation.vue';
-import BaseSlider from '@/components/BaseSlider.vue';
-import {ref} from 'vue';
+import { ref } from 'vue';
+import { useSlider2 } from '@/composables/useSlider2.js';
 
-const activeSlide = ref(0)
+const sliderRef = ref(null);
 
-defineProps({
-  activeClass: String,
-});
+const { currentIndex } = useSlider2(sliderRef, { autoplay: true, autoplaySpeed: 3000, });
 
 const heroSlides = [
   {
@@ -100,10 +92,29 @@ const projectsUrl = PAGE_PROJECTS;
   position: relative;
   z-index: 1;
   padding: 20px 0;
+  display: grid;
 }
 
 .heroItemWrapper {
+  grid-area: 1 / 1;
   text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  display: none;
+  transition: opacity .5s ease, display .5s ease allow-discrete;
+
+  &.active {
+    pointer-events: all;
+    opacity: 1;
+    display: block;
+    min-height: 170px;
+  }
+}
+
+@starting-style {
+  .heroItemWrapper.active {
+    opacity: 0;
+  }
 }
 
 .heroItem {
@@ -112,6 +123,8 @@ const projectsUrl = PAGE_PROJECTS;
   vertical-align: top;
   text-align: center;
   padding: 20px 30px 30px;
+  max-width: 640px;
+  text-wrap: balance;
 
   @media(width < 768px) {
     padding: 20px;

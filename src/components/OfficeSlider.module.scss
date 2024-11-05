@@ -69,21 +69,10 @@ div:has(> .office) {
     @media (max-width: $slider-brake-point) {
         width: 100%;
     }
+}
 
-    ul li button {
-        //width: 8px;
-        //height: 8px;
-        //padding: 0;
-        //border: 0;
-        //border-radius: 50%;
-        //outline: none;
-        //font-size: 0;
-        //background-color: var(--dots-color);
-    }
-
-    ul li[class*='is-active'] button {
-        background-color: var(--dots-active-color);
-    }
+.isActive {
+    background-color: var(--dots-active-color) !important;
 }
 
 .indicatorsList {
@@ -102,6 +91,10 @@ div:has(> .office) {
         outline: none;
         font-size: 0;
         background-color: var(--dots-color);
+
+        &:hover {
+            cursor: pointer;
+        }
     }
 }
 

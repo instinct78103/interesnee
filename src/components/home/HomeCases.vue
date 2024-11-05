@@ -5,7 +5,7 @@
     </RotatedHeading>
 
     <div :class="$style.wrapper">
-      <BaseSlider :is-manual-sliding="true" :options="sliderOpts" custom-styles="scroll-snap-type: x mandatory;display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-behavior:smooth">
+      <BaseSlider :options="sliderOpts" custom-styles="scroll-snap-type: x mandatory;display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-behavior:smooth">
         <template #slider="{ sliderRef, activeClass, activeSlide }">
           <div v-for="(project, key) in projectsSlides" :key :class="[$style.projectSlideWrapper, {[activeClass]: key === activeSlide}]">
             <div :class="$style.projectSlide">
@@ -34,6 +34,18 @@ import RotatedHeading from '@/components/RotatedHeading.vue';
 import BaseSlider from '@/components/BaseSlider.vue';
 import AppImage from '@/components/AppImage.vue';
 import { projectsSlides } from '@/data/projects.js';
+import { ref, watch } from 'vue';
+
+const sliderRef = ref(null);
+import { useSlider2 } from '@/composables/useSlider2.js';
+
+const { currentIndex } = useSlider2(sliderRef, { autoplay: true, autoplaySpeed: 3000 });
+
+watch(currentIndex, newValue => sliderRef.value.children[newValue].scrollIntoView({
+  behavior: 'smooth',
+  inline: 'start',
+  block: 'nearest',
+}));
 
 const sliderOpts = {
   dots: false,
@@ -71,6 +83,11 @@ const sliderOpts = {
   @extend %content;
 
   position: relative;
+  scroll-snap-type: x mandatory;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scroll-behavior: smooth;
 
   @media(width < 768px) {
     margin-inline: -15px;

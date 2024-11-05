@@ -9,8 +9,8 @@
         <div :class="$style.office" v-for="(value, index) in office" :key="index">
           <div :class="$style.officePhotos" @click="openCarousel(value)" :ref="el => imagesSliderRefs[index] = el">
             <app-image
-              v-for="(image, index) in value.images" :key="index"
-              :class="$style.carouselImg"
+              v-for="(image, imgIndex) in value.images" :key="imgIndex"
+              :class="[$style.carouselImg, {[$style.isActive]: imgIndex === sliders[index]?.currentIndex}]"
               :x1="image.webp"
               :webp="image.webp"
               :alt="value.city"
@@ -22,7 +22,7 @@
 
           <ul :class="$style.indicatorsList" v-if="value.images.length > 1">
             <li v-for="(_, key) in value.images" :key>
-              <button @click="scrollToImage(index, key)"></button>
+              <button :class="{ [$style.isActive]: innerIndexes[index]?.value === key }" @click="scrollToImage(index, key)"></button>
             </li>
           </ul>
           <div :class="$style.textWrap">
@@ -46,19 +46,78 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import AppImage from '@/components/AppImage.vue';
 import BaseSlider from '@/components/BaseSlider.vue';
 import $style from './OfficeSlider.module.scss';
+import { useSlider2 } from '@/composables/useSlider2.js';
 
 const imagesSliderRefs = ref([]);
-const scrollToImage = (idx, buttonClickedIndex) => imagesSliderRefs.value[idx]
-  .children[buttonClickedIndex]
-  .scrollIntoView({
-    behavior: 'smooth',
-    block: 'nearest',
-    inline: 'center',
+const sliders = ref([]);
+
+const scrollToImage = (idx, buttonClickedIndex) => {
+  const slider = sliders.value[idx];
+  if (slider) {
+    slider.scrollToSlide(buttonClickedIndex);
+    slider.currentIndex = buttonClickedIndex;
+  }
+};
+
+const props = defineProps({
+  office: {
+    type: Array,
+  },
+  currentSlider: {
+    type: Number,
+    default: 0,
+  },
+});
+
+const office = computed(() => props.office);
+
+const innerIndexes = ref([]);
+let innerObservers = [];
+
+const observeInnerSliders = () => {
+  imagesSliderRefs.value.forEach((innerSlider, i) => {
+
+    if (!innerSlider) return;
+
+    const currentInnerIndex = ref(0);
+    innerIndexes.value[i] = currentInnerIndex;
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+
+          if (entry.isIntersecting) {
+            currentInnerIndex.value = [...innerSlider.children].indexOf(entry.target);
+          }
+        });
+      }, { threshold: 0.6 },
+    );
+
+    [...innerSlider.children].forEach(slide => observer.observe(slide));
+    innerObservers.push(observer);
+
   });
+};
+
+// Set up slider functionality for each office
+onMounted(() => {
+  office.value.forEach((_, index) => {
+    const slider = useSlider2(imagesSliderRefs.value[index]);
+    sliders.value[index] = slider;
+  });
+
+  // imagesSliderRefs.value.forEach((slider, index) => {
+  //   const {currentIndex} = useSlider2(imagesSliderRefs.value[index]);
+  //   activeIndexes.value[index] = currentIndex
+  // })
+
+  observeInnerSliders();
+
+});
+onUnmounted(() => innerObservers.forEach(observer => observer.disconnect()));
 
 const sliderOpts = {
   dots: false,
@@ -78,16 +137,6 @@ const sliderOpts = {
     },
   ],
 };
-
-defineProps({
-  office: {
-    type: Array,
-  },
-  currentSlider: {
-    type: Number,
-    default: 0,
-  },
-});
 </script>
 
 <style lang="scss" module></style>
