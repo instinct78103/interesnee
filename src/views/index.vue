@@ -17,7 +17,3 @@ import HomeMap from '@/components/home/HomeMap.vue';
   <HomeCases />
   <HomeMap />
 </template>
-
-<style scoped>
-
-</style>

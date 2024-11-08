@@ -79,3 +79,21 @@
         --btn-bg-color: #f51f1f;
     }
 }
+
+%buttonWhite {
+    background-color: #fff;
+    color: var(--red);
+}
+
+%hoverBlock {
+    transition: all 0.8s cubic-bezier(0, 0, 0, 1);
+    will-change: transform;
+
+    img {
+        will-change: transform;
+    }
+
+    &:hover {
+        transform: scale(1.05);
+    }
+}

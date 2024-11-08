@@ -46,7 +46,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import AppImage from '@/components/AppImage.vue';
 import BaseSlider from '@/components/BaseSlider.vue';
 import $style from './OfficeSlider.module.scss';
@@ -105,14 +105,9 @@ const observeInnerSliders = () => {
 // Set up slider functionality for each office
 onMounted(() => {
   office.value.forEach((_, index) => {
-    const slider = useSlider2(imagesSliderRefs.value[index]);
+    const slider = useSlider2(imagesSliderRefs.value[index], {autoplay: true, autoplaySpeed: 3000 });
     sliders.value[index] = slider;
   });
-
-  // imagesSliderRefs.value.forEach((slider, index) => {
-  //   const {currentIndex} = useSlider2(imagesSliderRefs.value[index]);
-  //   activeIndexes.value[index] = currentIndex
-  // })
 
   observeInnerSliders();
 
@@ -120,8 +115,6 @@ onMounted(() => {
 onUnmounted(() => innerObservers.forEach(observer => observer.disconnect()));
 
 const sliderOpts = {
-  dots: false,
-  arrows: false,
   dotsClass: $style.sliderDots,
   autoplay: false,
   slidesToShow: 1,

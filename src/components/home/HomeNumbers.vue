@@ -63,7 +63,7 @@ const items = [
 @import '@/scss/helpers';
 
 .root {
-  //@extend %section;
+  @extend %section;
 }
 
 .container {

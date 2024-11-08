@@ -1,7 +1,6 @@
 <script setup>
 
-import {useGlobalVar} from '@/composables/useGlobalVar.js';
-const {spritePath} = useGlobalVar();
+import {spriteSvg} from '@/helpers.js';
 
 const contacts = [
   {
@@ -75,7 +74,7 @@ const socialLinks = [
       <ul>
         <li v-for="socialLink in socialLinks">
           <a :href="socialLink.href" target="_blank">
-            <svg width="20" height="20"><use :href="`${spritePath}#icon-${socialLink.icon}`"></use></svg>
+            <svg width="20" height="20"><use :href="`${spriteSvg}#icon-${socialLink.icon}`"></use></svg>
           </a>
         </li>
       </ul>

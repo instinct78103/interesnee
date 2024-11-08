@@ -111,9 +111,11 @@ const initialize = () => {
 };
 
 const destroy = () => {
-  Velocity(container.value, 'stop');
-  Velocity(dots.value, 'stop');
-  container.value?.remove();
+  if (container.value) {
+    Velocity(container.value, 'stop');
+    Velocity(dots.value, 'stop');
+    container.value?.remove();
+  }
 };
 
 const debounce = (func, wait) => {

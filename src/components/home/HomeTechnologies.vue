@@ -1,18 +1,66 @@
+<template>
+  <section :class="$style.root">
+
+    <RotatedHeading>
+      <h3>Технологии</h3>
+    </RotatedHeading>
+
+    <div :class="$style.wrapper">
+      <div :class="$style.left">
+
+        <h2 :class="$style.subHeading">
+          Мастерим проекты с помощью
+        </h2>
+
+        <ul :class="$style.techList">
+          <li :class="$style.techItem" v-for="tech of techList" :key="tech.iconId">
+            <router-link :class="$style.techInner" to="/join">
+              <svg width="53" height="53" :class="$style.icon">
+                <use :href="`${spriteSvg}#icon-${tech.iconId}`"></use>
+              </svg>
+              <p :class="$style.techText">{{ tech.text }}</p>
+            </router-link>
+          </li>
+        </ul>
+      </div>
+
+      <div :class="$style.right">
+        <div :class="$style.phrasesList" ref="sliderRef">
+          <div :class="$style.phraseItem" v-for="desc of descriptions" :key="desc.title">
+            <h4 :class="$style.phraseTitle">{{ desc.title }}</h4>
+            <p :class="$style.phraseText">{{ desc.text }}</p>
+          </div>
+        </div>
+        <ul :class="$style.indicatorsList">
+          <li v-for="(_, key) in [...Array(countSlidesRef)]" :key>
+            <button :class="{[$style.isActive]: key === currentIndex}" @click="scrollToSlide(key)"></button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</template>
+
 <script setup>
 import RotatedHeading from '@/components/RotatedHeading.vue';
-import { useGlobalVar } from '@/composables/useGlobalVar.js';
-const { spritePath } = useGlobalVar();
+import { spriteSvg } from '@/helpers.js';
+import { useSlider2 } from '@/composables/useSlider2.js';
+import { ref } from 'vue';
+
+const sliderRef = ref(null);
+
+const { currentIndex, countSlidesRef, scrollToSlide } = useSlider2(sliderRef);
 
 const techList = [
-  { iconId: 'react', text: 'REACT', },
-  { iconId: 'angular-js', text: 'ANGULAR', },
-  { iconId: 'python', text: 'PYTHON', },
-  { iconId: 'php', text: 'PHP', },
-  { iconId: 'dot-net', text: '.NET', },
-  { iconId: 'html-css', text: 'HTML/CSS', },
-  { iconId: 'swift', text: 'SWIFT', },
-  { iconId: 'android', text: 'ANDROID', },
-  { iconId: 'aws', text: 'AWS', },
+  { iconId: 'react', text: 'REACT' },
+  { iconId: 'angular-js', text: 'ANGULAR' },
+  { iconId: 'python', text: 'PYTHON' },
+  { iconId: 'php', text: 'PHP' },
+  { iconId: 'dot-net', text: '.NET' },
+  { iconId: 'html-css', text: 'HTML/CSS' },
+  { iconId: 'swift', text: 'SWIFT' },
+  { iconId: 'android', text: 'ANDROID' },
+  { iconId: 'aws', text: 'AWS' },
 ];
 
 const descriptions = [
@@ -32,51 +80,13 @@ const descriptions = [
 
 </script>
 
-<template>
-  <section :class="$style.root">
-
-    <RotatedHeading>
-      <h3>Технологии</h3>
-    </RotatedHeading>
-
-    <div :class="$style.wrapper">
-      <div :class="$style.left">
-
-        <h2 :class="$style.subHeading">
-          Мастерим проекты с помощью
-        </h2>
-
-        <ul :class="$style.techList">
-          <li :class="$style.techItem" v-for="tech of techList" :key="tech.iconId">
-            <router-link :class="$style.techInner" to="/join">
-              <svg width="53" height="53" :class="$style.icon">
-                <use :xlink:href="`${spritePath}#icon-${tech.iconId}`"></use>
-              </svg>
-              <p :class="$style.techText">{{ tech.text }}</p>
-            </router-link>
-          </li>
-        </ul>
-      </div>
-
-      <div :class="$style.right">
-        <div :class="$style.phrasesList">
-          <div :class="$style.phraseItem" v-for="desc of descriptions" :key="desc.title">
-            <h4 :class="$style.phraseTitle">{{desc.title}}</h4>
-            <p :class="$style.phraseText">{{ desc.text}}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-</template>
-
 <style lang="scss" module>
 
 @import '@/scss/helpers';
 
 .root {
   //@extend %container;
-  //@extend %section;
+  @extend %section;
 }
 
 .wrapper {
@@ -164,6 +174,37 @@ const descriptions = [
   fill: var(--blue);
 }
 
+.isActive {
+  background-color: var(--dots-active-color) !important;
+}
+
+.indicatorsList {
+  display: flex;
+  grid-column: 1 / span 1;
+  grid-row: 2;
+  gap: 8px;
+  justify-content: center;
+
+  button {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    outline: none;
+    font-size: 0;
+    background-color: var(--dots-color);
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  @media(width >= 768px) {
+    display: none;
+  }
+}
+
 .phrasesList {
   padding-left: 40px;
   margin: 14px 0;
@@ -179,6 +220,10 @@ const descriptions = [
     flex-wrap: nowrap;
     scroll-snap-type: x mandatory;
     overflow-x: auto;
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 

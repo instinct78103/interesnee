@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref, unref } from 'vue';
 
 export function useSlider2(sliderRef, props) {
   const isVisible = ref(false);
@@ -6,6 +6,7 @@ export function useSlider2(sliderRef, props) {
   let visibilityObserver = null;
   let observer = null;
   let intervalId = null;
+  const countSlidesRef = ref(0);
 
   const observeVisibility = () => {
     if (!sliderRef.value) return;
@@ -59,20 +60,20 @@ export function useSlider2(sliderRef, props) {
 
   const scrollToSlide = function (index) {
     scrollToSlide.scrollTimeout = null;
-    const sliderWidth = sliderRef.clientWidth;  // Width of the visible slider area
-    const slideWidth = sliderRef.children[index].offsetWidth; // Width of each slide
+    const sliderWidth = unref(sliderRef).clientWidth;  // Width of the visible slider area
+    const slideWidth = unref(sliderRef).children[index].offsetWidth; // Width of each slide
     const targetPosition = index * slideWidth;
 
     // Adjust if the slideWidth is smaller than the slider width (peek behavior on desktop)
-    const adjustPosition = Math.min(targetPosition, sliderRef.scrollWidth - sliderWidth);
+    const adjustPosition = Math.min(targetPosition, unref(sliderRef).scrollWidth - sliderWidth);
 
     clearTimeout(scrollToSlide.scrollTimeout);
     scrollToSlide.scrollTimeout = setTimeout(() => {
-      sliderRef.scrollTo({
+      unref(sliderRef).scrollTo({
         left: adjustPosition,
         behavior: 'smooth',
       });
-    }, 250);
+    }, 0);
   };
 
   const startAutoScroll = () => {
@@ -93,6 +94,11 @@ export function useSlider2(sliderRef, props) {
     }
   };
 
+  const handleResize = () => {
+    observer?.disconnect();
+    observeSlides();
+  };
+
   onMounted(() => {
     startAutoScroll();
     observeSlides();
@@ -100,6 +106,10 @@ export function useSlider2(sliderRef, props) {
 
     sliderRef.value?.addEventListener('mouseenter', stopAutoScroll);
     sliderRef.value?.addEventListener('mouseleave', resumeAutoScroll);
+
+    countSlidesRef.value = unref(sliderRef)?.children.length;
+
+    window.addEventListener('resize', handleResize);
   });
 
   onUnmounted(() => {
@@ -109,13 +119,15 @@ export function useSlider2(sliderRef, props) {
 
     sliderRef.value?.removeEventListener('mouseenter', stopAutoScroll);
     sliderRef.value?.removeEventListener('mouseleave', resumeAutoScroll);
+
+    window.removeEventListener('resize', handleResize);
   });
 
   return {
+    countSlidesRef,
     currentIndex,
     scrollToSlide,
     scrollNext,
     scrollPrev,
   };
-
 }

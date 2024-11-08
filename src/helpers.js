@@ -1,0 +1,1 @@
+export const spriteSvg = new URL('@/assets/icons/sprite.svg', import.meta.url).href;
