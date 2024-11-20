@@ -8,7 +8,7 @@ export default defineConfig({
     VueRouter({
       importMode: 'async',
       logs: true,
-      routesFolder: 'src/views',
+      routesFolder: 'src/pages',
     }),
     vue(),
   ],

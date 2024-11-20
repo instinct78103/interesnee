@@ -51,7 +51,6 @@ defineProps({
   font-weight: normal;
   line-height: 1.4;
   text-align: center;
-  margin: 0;
 }
 
 .smallHeading {
