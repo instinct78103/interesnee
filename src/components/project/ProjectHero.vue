@@ -6,37 +6,26 @@
 
     <div :class="$style.imageContainer">
       <app-image
-        v-if="project.current.mainImage"
+        v-if="project.mainImage"
         :class="$style.img"
-        :src="project.current.mainImage.x1"
-        :x1="project.current.mainImage.x1"
-        :x2="project.current.mainImage.x2"
-        :alt="project.current.name"
-        :src-placeholder="project.current.mainImage.placeholder"
-        :key="`${project.current.name}-head-image`"
+        :src="project.mainImage.x1"
+        :x1="project.mainImage.x1"
+        :x2="project.mainImage.x2"
+        :alt="project.name"
+        :src-placeholder="project.mainImage.placeholder"
+        :key="`${project.name}-head-image`"
       />
     </div>
   </div>
 </template>
 <script setup>
-// import { mapGetters } from 'vuex';
-// import { GET_PROJECT } from 'store/getters';
 import AppImage from '@/components/AppImage.vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
-import { useRoute } from 'vue-router/auto';
-import { ref } from 'vue';
-import { projects } from '@/data/projects.js';
 
-const route = useRoute();
-const projectSlug = route.params;
-const project = ref({});
+import { useProjectsStore } from '@/store/useProjects.js';
+import { storeToRefs } from 'pinia';
 
-console.log(projects, projectSlug);
-
-//temp below
-project.value.current = projects.find(project => project.slug === projectSlug.project);
-
-console.log(project.value)
+const { currentProject: project } = storeToRefs(useProjectsStore());
 
 const links = [
   {
@@ -44,39 +33,15 @@ const links = [
     path: '/projects',
   },
   {
-    name: project.value.current.name,
+    name: project.value.name,
   },
 ];
-
-// export default {
-//   name: 'Hero',
-//   components: { AppImage, Breadcrumbs },
-//   computed: {
-//     ...mapGetters({
-//       project: GET_PROJECT,
-//     }),
-//     links() {
-//       return [
-//         {
-//           name: 'Проекты',
-//           path: '/projects',
-//         },
-//         {
-//           name: this.project.current.name,
-//         },
-//       ];
-//     },
-//   },
-// };
 </script>
 
 <style lang="scss" module scoped>
-//@import '../styles/variables';
-//@import '../styles/mixins';
 @import '@/scss/helpers';
 
 .root {
-  min-height: 568px;
   background-size: cover;
   display: flex;
   justify-content: flex-start;
@@ -97,11 +62,7 @@ const links = [
 }
 
 .imageContainer {
-  position: absolute;
   width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
 }
 
 .imageContainer img {

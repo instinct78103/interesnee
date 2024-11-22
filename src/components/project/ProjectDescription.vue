@@ -10,22 +10,13 @@
           <div :class="$style.line">
             <div
               v-for="(stage, index) in stages"
-              :class="[$style.point,
-                       {[$style.red]: stage.value !== activeTab},
-                       {[$style.blue]: stage.value === activeTab}
-              ]"
+              :class="[$style.point, {[$style.red]: stage.value !== activeTab}, {[$style.blue]: stage.value === activeTab} ]"
               :key="index"
             >
               <div :class="$style.mark">
-
                 <svg :class="$style.icon">
                   <use :href="`${spriteSvg}#icon-tick`"></use>
                 </svg>
-
-                <!--                <svg-icon-->
-                <!--                  id="tick"-->
-                <!--                  :class="$style.icon"-->
-                <!--                />-->
               </div>
               <div :class="$style.btn">
                 <button
@@ -58,7 +49,20 @@
     </div>
 
     <div :class="$style.galleryWrapper">
-      <ProjectSlider :slider-content="project.current.images" />
+<!--      <ProjectSlider :slider-content="project.current.images" />-->
+
+      <BaseSlider custom-styles="scroll-snap-type: x mandatory;display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-behavior:smooth">
+        <template #slider="{sliderRef, activeClass, activeSlide}">
+            <app-image
+              v-for="(slide, key) in project.current.images" :key
+              :class="$style.picture"
+              :x1="slide.x1"
+              :x2="slide.x2"
+              :webp="slide.webp"
+              :alt="project.name"
+            />
+        </template>
+      </BaseSlider>
 
       <template v-if="project.current.videos">
         <video
@@ -81,14 +85,15 @@
 </template>
 <script setup>
 import { spriteSvg } from '@/helpers.js';
-import ProjectSlider from '@/components/project/ProjectSlider.vue';
-import {projects} from '@/data/projects.js';
-import { useRoute } from 'vue-router/auto';
-import { ref } from 'vue';
 
-// import { mapGetters } from 'vuex';
-// import { GET_PROJECT } from 'store/getters';
-// import SvgIcon from 'components/SVGIcon';
+// import ProjectSlider from '@/components/project/ProjectSlider.vue';
+import BaseSlider from '@/components/BaseSlider.vue';
+import { ref, watch } from 'vue';
+import { useSlider2 } from '@/composables/useSlider2.js';
+import AppImage from '@/components/AppImage.vue';
+
+const sliderRef = ref(null)
+const activeTab = ref('issue');
 
 const stages = [
   {
@@ -105,15 +110,16 @@ const stages = [
   },
 ];
 
-const route = useRoute();
-const projectSlug = route.params;
-const project = ref({})
+const { currentIndex } = useSlider2(sliderRef, { autoplay: true, autoplaySpeed: 3000 });
 
-console.log(projects, projectSlug)
+watch(currentIndex, newValue => sliderRef.value.children[newValue].scrollIntoView({
+  behavior: 'smooth',
+  inline: 'start',
+  block: 'nearest',
+}));
 
-//temp below
-project.value.current = projects.find(project => project.slug === projectSlug.project)
-
+// import { mapGetters } from 'vuex';
+// import { GET_PROJECT } from 'store/getters';
 // export default {
 //   name: 'ProjectDescription',
 //   components: {
@@ -188,6 +194,7 @@ project.value.current = projects.find(project => project.slug === projectSlug.pr
 
 .heading {
   @extend %heading;
+  text-align: center;
 }
 
 .imgWrapper {
@@ -300,15 +307,10 @@ project.value.current = projects.find(project => project.slug === projectSlug.pr
   color: var(--gray-dark);
   font-size: 16px;
   line-height: 25px;
-  text-indent: 40px;
-  text-align: justify;
+  text-wrap: pretty;
 
   @media(width < 768px) {
     padding: 0 20px;
-  }
-
-  &::first-letter {
-    margin-left: 20px;
   }
 }
 

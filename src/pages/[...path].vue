@@ -18,6 +18,7 @@
   text-align: center;
   text-wrap: balance;
   flex-grow: 1;
+  padding-block: clamp(40px, 10cqmin, 80px);
 
   > * {
     color: #fff;
