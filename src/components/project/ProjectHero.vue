@@ -47,18 +47,7 @@ const links = [
   justify-content: flex-start;
   align-items: flex-start;
   position: relative;
-
-  @media(width < 1024px) {
-    min-height: 400px;
-  }
-
-  @media(width < 768px) {
-    min-height: 300px;
-  }
-
-  @media(width <= 480px) {
-    min-height: 235px;
-  }
+  min-height: clamp(235px, 5vw, 400px);
 }
 
 .imageContainer {
