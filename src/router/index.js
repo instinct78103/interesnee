@@ -5,6 +5,7 @@ import { routes } from 'vue-router/auto-routes';
 
 export const PAGE_PROJECTS = 'projects';
 export const PAGE_TEAM = 'team';
+export const CAMP = 'CAMP';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

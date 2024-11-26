@@ -16,18 +16,19 @@
     --container-max-width: 1440px;
     --dots-active-color: #3fa2f7;
     --dots-color: #d8d8d8;
+    --gray-2: #d4d4d4;
     --gray-3: #979797;
     --gray-4: #ccc;
-    --gray-7: #eee;
     --gray-6: #343434;
+    --gray-7: #eee;
     --gray-dark: #2e2e2e;
     --gray-transparent: rgba(31, 45, 61, 0.5);
     --gray: #f0f0f0;
     --grid-gutter: clamp(10px, 6vw, 15px);
     --red-dark: #931314;
     --red-light: #f75050;
-    --red: #b71c1c;
     --red-transparent: rgb(from var(--red) r g b / 0.89);
+    --red: #b71c1c;
     --white-gray: #f7f7f7
 }
 
