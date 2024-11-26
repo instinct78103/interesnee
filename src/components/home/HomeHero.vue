@@ -10,7 +10,6 @@
         </div>
       </div>
     </div>
-
     <router-link :to="projectsUrl" :class="$style.heroLink">
       <div :class="$style.row">
         <div :class="$style.heroService">
@@ -28,11 +27,13 @@
 import { PAGE_PROJECTS, PAGE_TEAM } from '@/router/index.js';
 import BackgroundAnimation from '@/components/home/BackgroundAnimation.vue';
 import { ref } from 'vue';
-import { useSlider2 } from '@/composables/useSlider2.js';
+import { useSlider } from '@/composables/useSlider.js';
 
 const sliderRef = ref(null);
 
-const { currentIndex } = useSlider2(sliderRef, { autoplay: true, autoplaySpeed: 3000, });
+const { currentIndex, startAutoScroll } = useSlider(sliderRef, { autoplay: true, autoplaySpeed: 3000 });
+
+startAutoScroll();
 
 const heroSlides = [
   {

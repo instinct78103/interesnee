@@ -1,6 +1,10 @@
 <script setup>
+import { spriteSvg } from '@/helpers.js';
+import { useSlider } from '@/composables/useSlider.js';
+import { ref } from 'vue';
 
-import {spriteSvg} from '@/helpers.js';
+const sliderRef = ref(null);
+const { slideIndex, navigate } = useSlider(sliderRef, {autoplay: true, autoplaySpeed: 3000});
 
 const contacts = [
   {
@@ -60,33 +64,35 @@ const socialLinks = [
 <template>
   <footer class="site-footer">
     <div class="footer-container">
-    <div class="office-locations">
-      <p class="div-heading">Наши контакты</p>
-      <ul class="scroll-snap">
-        <li v-for="contact in contacts" :key="contact.href">
-          <p><span class="flag" :class="contact.flag"></span>{{ contact.city }}</p>
-          <a :href="contact.href" target="_blank">{{ contact.address }}</a>
-        </li>
-      </ul>
+      <div class="office-locations">
+        <p class="div-heading">Наши контакты</p>
+        <ul class="scroll-snap" ref="sliderRef">
+          <li v-for="contact in contacts" :key="contact.href">
+            <p><span class="flag" :class="contact.flag"></span>{{ contact.city }}</p>
+            <a :href="contact.href" target="_blank">{{ contact.address }}</a>
+          </li>
+        </ul>
+      </div>
+      <div class="social-links">
+        <p class="div-heading">Мы в социальных сетях</p>
+        <ul>
+          <li v-for="socialLink in socialLinks">
+            <a :href="socialLink.href" target="_blank">
+              <svg width="20" height="20">
+                <use :href="`${spriteSvg}#icon-${socialLink.icon}`"></use>
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="bottom">
+        <p class="copyright">© 2006-{{ new Date().getFullYear() }} «Очень Интересно»</p>
+        <p class="policy"><a href="/static/docs/privacy_policy.pdf">Политика обработки персональных данных</a></p>
+      </div>
     </div>
-    <div class="social-links">
-      <p class="div-heading">Мы в социальных сетях</p>
-      <ul>
-        <li v-for="socialLink in socialLinks">
-          <a :href="socialLink.href" target="_blank">
-            <svg width="20" height="20"><use :href="`${spriteSvg}#icon-${socialLink.icon}`"></use></svg>
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="bottom">
-      <p class="copyright">© 2006-{{ new Date().getFullYear() }} «Очень Интересно»</p>
-      <p class="policy"><a href="/static/docs/privacy_policy.pdf">Политика обработки персональных данных</a></p>
-    </div>
-  </div>
   </footer>
 </template>
 
-<style>
+<style lang="scss" module>
 
 </style>

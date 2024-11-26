@@ -18,20 +18,20 @@
     </div>
     <ul :class="$style.indicatorsList">
       <li v-for="(_, key) in [...Array(countSlidesRef)]" :key>
-        <button :class="{[$style.isActive]: key === currentIndex}" @click="scrollToSlide(key)"></button>
+        <button :class="{[$style.isActive]: key === slideIndex}" @click="navigate(key)"></button>
       </li>
     </ul>
   </div>
 </template>
 
 <script setup>
-import { useSlider2 } from '@/composables/useSlider2.js';
+import { useSlider } from '@/composables/useSlider.js';
 import { spriteSvg } from '@/helpers.js';
 import { ref } from 'vue';
 
 const sliderRef = ref(null)
 
-const {currentIndex, countSlidesRef, scrollToSlide} = useSlider2(sliderRef);
+const {slideIndex, navigate, countSlidesRef} = useSlider(sliderRef);
 
 
 const iconsRow1 = [
@@ -98,8 +98,6 @@ div:has(> .list) {
 
 .indicatorsList {
   display: flex;
-  grid-column: 1 / span 1;
-  grid-row: 2;
   gap: 8px;
   justify-content: center;
 

@@ -3,7 +3,6 @@
     <RotatedHeading>
       <h3>Наши работы</h3>
     </RotatedHeading>
-
     <div :class="$style.wrapper">
       <BaseSlider :options="sliderOpts" custom-styles="scroll-snap-type: x mandatory;display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-behavior:smooth">
         <template #slider="{ sliderRef, activeClass, activeSlide }">
@@ -26,7 +25,6 @@
         </template>
       </BaseSlider>
     </div>
-
   </div>
 </template>
 <script setup>
@@ -34,18 +32,12 @@ import RotatedHeading from '@/components/RotatedHeading.vue';
 import BaseSlider from '@/components/BaseSlider.vue';
 import AppImage from '@/components/AppImage.vue';
 import { projectsSlides } from '@/data/projects.js';
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
+import { useSlider } from '@/composables/useSlider.js';
 
 const sliderRef = ref(null);
-import { useSlider2 } from '@/composables/useSlider2.js';
 
-const { currentIndex } = useSlider2(sliderRef, { autoplay: true, autoplaySpeed: 3000 });
-
-watch(currentIndex, newValue => sliderRef.value.children[newValue].scrollIntoView({
-  behavior: 'smooth',
-  inline: 'start',
-  block: 'nearest',
-}));
+useSlider(sliderRef, { autoplay: true, autoplaySpeed: 3000 });
 
 const sliderOpts = {
   dots: false,

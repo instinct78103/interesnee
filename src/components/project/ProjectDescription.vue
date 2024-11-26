@@ -2,9 +2,7 @@
   <article>
     <div :class="$style.root">
       <div :class="$style.wrapper">
-        <h2 :class="$style.heading">
-          {{ project.current.name }}
-        </h2>
+        <h2 :class="$style.heading">{{ project.name }}</h2>
 
         <div :class="$style.progress">
           <div :class="$style.line">
@@ -30,43 +28,45 @@
           </div>
         </div>
 
-        <div v-if="project.current.description">
+        <div v-if="project.description">
           <p
             v-if="activeTab === 'issue'"
             :class="$style.description"
-            v-html="project.current.description.issue" />
+            v-html="project.description.issue" />
           <p
             v-if="activeTab === 'process'"
             :class="$style.description"
-            v-html="project.current.description.process" />
+            v-html="project.description.process" />
           <p
             v-if="activeTab === 'result'"
             :class="$style.description"
-            v-html="project.current.description.result"
+            v-html="project.description.result"
           />
         </div>
       </div>
     </div>
 
     <div :class="$style.galleryWrapper">
-<!--      <ProjectSlider :slider-content="project.current.images" />-->
-
-      <BaseSlider custom-styles="scroll-snap-type: x mandatory;display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-behavior:smooth">
-        <template #slider="{sliderRef, activeClass, activeSlide}">
-            <app-image
-              v-for="(slide, key) in project.current.images" :key
-              :class="$style.picture"
-              :x1="slide.x1"
-              :x2="slide.x2"
-              :webp="slide.webp"
-              :alt="project.name"
-            />
-        </template>
-      </BaseSlider>
-
-      <template v-if="project.current.videos">
+      <div :class="$style.images" ref="sliderRef">
+        <app-image
+          v-for="(slide, key) in project.images" :key
+          :class="$style.picture"
+          :x1="slide.x1"
+          :x2="slide.x2"
+          :webp="slide.webp"
+          :alt="project.name"
+          :width="1024"
+          :height="480"
+        />
+      </div>
+      <ul :class="$style.indicatorsList">
+        <li v-for="(_, key) in [...Array(countSlidesRef)]" :key>
+          <button :class="{[$style.isActive]: key === slideIndex}" @click="navigate(key)"></button>
+        </li>
+      </ul>
+      <template v-if="project.videos">
         <video
-          v-for="(video, vIndex) in project.current.videos"
+          v-for="(video, vIndex) in project.videos"
           :key="vIndex"
           :class="$style.video"
           :poster="video.poster"
@@ -85,15 +85,22 @@
 </template>
 <script setup>
 import { spriteSvg } from '@/helpers.js';
-
-// import ProjectSlider from '@/components/project/ProjectSlider.vue';
-import BaseSlider from '@/components/BaseSlider.vue';
-import { ref, watch } from 'vue';
-import { useSlider2 } from '@/composables/useSlider2.js';
+import { ref } from 'vue';
+import { useSlider } from '@/composables/useSlider.js';
 import AppImage from '@/components/AppImage.vue';
 
-const sliderRef = ref(null)
+const sliderRef = ref(null);
+
+import { useProjectsStore } from '@/store/useProjects.js';
+import { storeToRefs } from 'pinia';
+
+const { currentProject: project } = storeToRefs(useProjectsStore());
+
 const activeTab = ref('issue');
+
+function setActiveTab(value) {
+  activeTab.value = value;
+}
 
 const stages = [
   {
@@ -110,62 +117,11 @@ const stages = [
   },
 ];
 
-const { currentIndex } = useSlider2(sliderRef, { autoplay: true, autoplaySpeed: 3000 });
+const { slideIndex, countSlidesRef, navigate } = useSlider(sliderRef, { autoplay: true, autoplaySpeed: 3000 });
 
-watch(currentIndex, newValue => sliderRef.value.children[newValue].scrollIntoView({
-  behavior: 'smooth',
-  inline: 'start',
-  block: 'nearest',
-}));
-
-// import { mapGetters } from 'vuex';
-// import { GET_PROJECT } from 'store/getters';
-// export default {
-//   name: 'ProjectDescription',
-//   components: {
-//     SvgIcon,
-//     ProjectSlider,
-//   },
-//   props: {
-//     activeTab: {
-//       type: String,
-//       default: 'issue',
-//     },
-//   },
-//   data() {
-//     return {
-//       stages: [
-//         {
-//           name: 'Задача',
-//           value: 'issue',
-//         },
-//         {
-//           name: 'Процесс',
-//           value: 'process',
-//         },
-//         {
-//           name: 'Результат',
-//           value: 'result',
-//         },
-//       ],
-//     };
-//   },
-//   computed: {
-//     ...mapGetters({
-//       project: GET_PROJECT,
-//     }),
-//   },
-//   methods: {
-//     setActiveTab(tab) {
-//       this.$emit('click', tab);
-//     },
-//   },
-// };
 </script>
 
 <style lang="scss" module>
-//@import '@/scss/variables';
-//@import '../styles/mixins';
 @import '@/scss/helpers';
 
 %descriptionContainer {
@@ -192,6 +148,23 @@ watch(currentIndex, newValue => sliderRef.value.children[newValue].scrollIntoVie
   max-width: 1280px;
 }
 
+.images {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+
+  > * {
+    scroll-snap-stop: always;
+    scroll-snap-align: start;
+    min-width: 100%;
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .heading {
   @extend %heading;
   text-align: center;
@@ -215,6 +188,31 @@ watch(currentIndex, newValue => sliderRef.value.children[newValue].scrollIntoVie
   @media(width < 768px) {
     margin-bottom: 0;
     padding: 40px 54px 65px;
+  }
+}
+
+.isActive {
+  background-color: var(--dots-active-color) !important;
+}
+
+.indicatorsList {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+
+  button {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    outline: none;
+    font-size: 0;
+    background-color: var(--dots-color);
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 }
 

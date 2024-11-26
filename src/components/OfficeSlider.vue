@@ -50,7 +50,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue';
 import AppImage from '@/components/AppImage.vue';
 import BaseSlider from '@/components/BaseSlider.vue';
 import $style from './OfficeSlider.module.scss';
-import { useSlider2 } from '@/composables/useSlider2.js';
+import { useSlider } from '@/composables/useSlider.js';
 
 const imagesSliderRefs = ref([]);
 const sliders = ref([]);
@@ -105,7 +105,7 @@ const observeInnerSliders = () => {
 // Set up slider functionality for each office
 onMounted(() => {
   office.value.forEach((_, index) => {
-    const slider = useSlider2(imagesSliderRefs.value[index], {autoplay: true, autoplaySpeed: 3000 });
+    const slider = useSlider(imagesSliderRefs.value[index], {autoplay: true, autoplaySpeed: 3000 });
     sliders.value[index] = slider;
   });
 
