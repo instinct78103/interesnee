@@ -4,7 +4,7 @@ import { useSlider } from '@/composables/useSlider.js';
 import { ref } from 'vue';
 
 const sliderRef = ref(null);
-const { slideIndex, navigate } = useSlider(sliderRef, {autoplay: true, autoplaySpeed: 3000});
+useSlider(sliderRef, {autoplay: true, autoplaySpeed: 3000});
 
 const contacts = [
   {
