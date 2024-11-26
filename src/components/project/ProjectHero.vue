@@ -58,5 +58,6 @@ const links = [
   width: 100%;
   height: 100%;
   object-fit: cover;
+  min-height: 300px;
 }
 </style>

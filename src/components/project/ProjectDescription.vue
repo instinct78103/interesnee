@@ -146,6 +146,7 @@ const { slideIndex, countSlidesRef, navigate } = useSlider(sliderRef, { autoplay
 .galleryWrapper {
   @extend %content;
   max-width: 1280px;
+  margin-bottom: 30px;
 }
 
 .images {
@@ -153,6 +154,7 @@ const { slideIndex, countSlidesRef, navigate } = useSlider(sliderRef, { autoplay
   flex-wrap: nowrap;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
+  margin-bottom: -20px;
 
   > * {
     scroll-snap-stop: always;
@@ -199,6 +201,12 @@ const { slideIndex, countSlidesRef, navigate } = useSlider(sliderRef, { autoplay
   display: flex;
   gap: 8px;
   justify-content: center;
+  align-items: center;
+  height: 20px;
+
+  > li {
+    display: flex;
+  }
 
   button {
     width: 8px;
