@@ -9,8 +9,8 @@ export function useSlider(sliderRef, props) {
   let observer = null;
   let intervalId = null;
   const countSlidesRef = ref(0);
-  const slideIndex = ref(0);
   const isMouseEntered = ref(false);
+  const hasIntersected = new Set();
 
   const observeVisibility = () => {
     if (!sliderRef.value) return;
@@ -32,17 +32,25 @@ export function useSlider(sliderRef, props) {
     visibilityObserver.observe(sliderRef.value);
   };
 
+  const navigateTimeout = ref(null);
+
   const observeSlides = () => {
     if (!sliderRef.value) return;
     observer = new IntersectionObserver(
       (entries) => {
+        clearTimeout(navigateTimeout.value);
         entries.forEach((entry) => {
+
+          hasIntersected.add(entry);
+
           if (entry.isIntersecting) {
-            slideIndex.value = [...sliderRef.value.children].indexOf(entry.target);
+            navigateTimeout.value = setTimeout(() => {
+              currentIndex.value = [...sliderRef.value.children].indexOf(entry.target);
+            }, 250);
           }
         });
       },
-      { threshold: 0.6 },
+      { threshold: 0.6, root: sliderRef.value },
     );
 
     [...sliderRef.value.children].forEach((slide) => observer.observe(slide));
@@ -71,6 +79,15 @@ export function useSlider(sliderRef, props) {
       inline: 'start',
       block: 'nearest',
     });
+  }
+
+  function synchronize() {
+    for (let observation of hasIntersected) {
+      if (observation.isIntersecting) {
+        currentIndex.value = [...sliderRef.value.children].indexOf(observation.target);
+      }
+    }
+    hasIntersected.clear();
   }
 
   const scrollToSlide = function (index) {
@@ -111,6 +128,7 @@ export function useSlider(sliderRef, props) {
     startAutoScroll();
     observeSlides();
     observeVisibility();
+    synchronize();
 
     sliderRef.value?.addEventListener('scroll', stopAutoScroll);
     sliderRef.value?.addEventListener('scrollend', startAutoScroll);
@@ -124,6 +142,8 @@ export function useSlider(sliderRef, props) {
     countSlidesRef.value = unref(sliderRef)?.children.length;
 
     window.addEventListener('resize', handleResize);
+
+    sliderRef.value?.addEventListener('scrollend', synchronize);
   });
 
   onUnmounted(() => {
@@ -131,8 +151,11 @@ export function useSlider(sliderRef, props) {
     visibilityObserver?.disconnect();
     stopAutoScroll();
 
+    sliderRef.value.removeEventListener('scroll', stopAutoScroll);
     sliderRef.value?.parentElement.removeEventListener('mouseenter', stopAutoScroll);
     sliderRef.value?.parentElement.removeEventListener('mouseleave', startAutoScroll);
+    sliderRef.value?.parentElement.removeEventListener('scrollend', startAutoScroll);
+    sliderRef.value?.parentElement.removeEventListener('scrollend', synchronize);
 
     window.removeEventListener('resize', handleResize);
   });
@@ -142,7 +165,6 @@ export function useSlider(sliderRef, props) {
     currentIndex,
     navigate,
     scrollToSlide,
-    slideIndex,
     startAutoScroll,
   };
 }

@@ -38,6 +38,21 @@
     padding: 0;
 }
 
+html {
+    scrollbar-gutter: stable;
+}
+
+body {
+    font-size: 16px;
+    font-family: Open Sans, sans-serif;
+    color: #222;
+    text-rendering: optimizeSpeed;
+
+    &:has(dialog[open]) {
+        overflow: hidden;
+    }
+}
+
 a {
     color: var(--blue);
     text-decoration: none;
@@ -45,14 +60,6 @@ a {
 
 li {
     list-style: none;
-}
-
-body {
-    font-size: 16px;
-    font-family: Open Sans, sans-serif;
-    color: #222;
-    //min-width: 320px;
-    text-rendering: optimizeSpeed;
 }
 
 //section {

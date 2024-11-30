@@ -33,7 +33,7 @@
         </div>
         <ul :class="$style.indicatorsList">
           <li v-for="(_, key) in [...Array(countSlidesRef)]" :key>
-            <button :class="{[$style.isActive]: key === slideIndex}" @click="navigate(key)"></button>
+            <button :class="{[$style.isActive]: key === currentIndex}" @click="navigate(key)"></button>
           </li>
         </ul>
       </div>
@@ -49,7 +49,7 @@ import { ref } from 'vue';
 
 const sliderRef = ref(null);
 
-const { slideIndex, countSlidesRef, navigate } = useSlider(sliderRef);
+const { currentIndex, countSlidesRef, navigate } = useSlider(sliderRef);
 
 const techList = [
   { iconId: 'react', text: 'REACT' },

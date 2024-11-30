@@ -129,23 +129,14 @@ const sliderOpts = {
   text-align: center;
   padding: 0 10px;
   grid-row: 1 / 1;
-  grid-column: 8 / span 5;
+  grid-column: 7 / span 6;
   height: fit-content;
 
   @media(width >= 768px) {
-    width: 392px;
     padding: 64px 28px 58px;
     border: 1px solid #eee;
     box-shadow: 0 1px 15px 0 rgba(0, 0, 0, 0.12);
     background-color: #fff;
-  }
-
-  @media(width < 1440px) {
-    right: -3%;
-  }
-
-  @media(width < 1200px) {
-    right: 10%;
   }
 
   @media(width < 768px) {
@@ -169,6 +160,7 @@ const sliderOpts = {
   font-size: 16px;
   line-height: 1.56;
   color: var(--gray-dark);
+  text-wrap: balance;
 }
 
 .button {

@@ -1,12 +1,11 @@
 <template>
   <div :class="$style.root">
     <BaseSlider
-      :is-manual-sliding="true"
       :options="sliderOpts"
       :go-slide="currentSlider"
     >
       <template #slider>
-        <div :class="$style.office" v-for="(value, index) in office" :key="index">
+        <div :class="$style.office" v-for="(value, index) in office" :key="index" class="office">
           <div :class="$style.officePhotos" @click="openCarousel(value)" :ref="el => imagesSliderRefs[index] = el">
             <app-image
               v-for="(image, imgIndex) in value.images" :key="imgIndex"
@@ -42,18 +41,43 @@
         </div>
       </template>
     </BaseSlider>
+
+    <Dialog ref="dialog" v-if="officeSelected">
+      <div v-for="(image, key) in officeSelected.images" :key>
+        <app-image
+          :x1="image.webp"
+          :webp="image.webp"
+          alt="Office photo"
+          lazy
+          :width="480"
+          :height="320"
+        />
+      </div>
+    </Dialog>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref, defineAsyncComponent } from 'vue';
 import AppImage from '@/components/AppImage.vue';
 import BaseSlider from '@/components/BaseSlider.vue';
 import $style from './OfficeSlider.module.scss';
 import { useSlider } from '@/composables/useSlider.js';
 
+const Dialog = defineAsyncComponent(() => import('@/components/Dialog.vue'));
+const dialog = ref(null);
+const showModal = () => {
+  dialog?.value?.showModal();
+};
+
 const imagesSliderRefs = ref([]);
 const sliders = ref([]);
+const officeSelected = ref(null);
+
+const openCarousel = (value) => {
+  officeSelected.value = value;
+  showModal()
+};
 
 const scrollToImage = (idx, buttonClickedIndex) => {
   const slider = sliders.value[idx];
@@ -105,7 +129,7 @@ const observeInnerSliders = () => {
 // Set up slider functionality for each office
 onMounted(() => {
   office.value.forEach((_, index) => {
-    const slider = useSlider(imagesSliderRefs.value[index], {autoplay: true, autoplaySpeed: 3000 });
+    const slider = useSlider(imagesSliderRefs.value[index], { autoplay: true, autoplaySpeed: 3000 });
     sliders.value[index] = slider;
   });
 

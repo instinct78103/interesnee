@@ -4,16 +4,14 @@
       <RotatedHeading>
         <h3>Наши офисы</h3>
       </RotatedHeading>
-
       <div :class="$style.wrapper">
         <h2 :class="$style.subHeading">Мы находимся в нескольких городах</h2>
-
         <button
           v-for="(item, key) in offices"
           :key
           :class="[$style.placemarkBtn, item.className, {[$style.active]: currentSlide === key, }, officeClasses[item.value]]"
           :aria-label="`Перейти на город ${item.city}`"
-          @click="updateCurrentSlide(key)"
+          @click="scrollTo(key)"
         >
           <HomeMapMark :is-active="currentSlide === key" />
           <span :class="$style.placemarkCity">{{ item.city }}</span>
@@ -56,8 +54,16 @@ const updateCurrentSlide = (index) => {
   currentSlide.value = index;
 };
 
-provide('activeIndex', currentSlide)
-provide('updateActiveIndex', updateCurrentSlide)
+const scrollTo = (key) => {
+  document.querySelector('.slider:has(> .office)').children[key].scrollIntoView({
+    behavior: 'smooth',
+    inline: 'start',
+    block: 'nearest',
+  });
+};
+
+provide('activeIndex', currentSlide);
+provide('updateActiveIndex', updateCurrentSlide);
 
 </script>
 

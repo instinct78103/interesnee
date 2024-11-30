@@ -4,7 +4,7 @@
       <path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
   </button>
-  <div ref="slider" :class="[$style.slider, {[$style.fade]: options?.fade}]" :style="customStyles">
+  <div ref="sliderRef" :class="[$style.slider, {[$style.fade]: options?.fade}]" :style="customStyles" class="slider">
     <slot name="slider" :activeSlide="slideIndex" :activeClass="$style.active"/>
   </div>
   <button @click="navigate('forward')" v-if="options?.arrows" class="rightArrow" :class="[$style.arrow, $style.rightArrow]">
@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { ref, watch, inject, unref } from 'vue';
+import { ref, watch, inject } from 'vue';
 import { useSlider } from '@/composables/useSlider.js';
 
 const props = defineProps({
@@ -46,21 +46,15 @@ const props = defineProps({
   },
 });
 
-const slider = ref(null);
-const { currentIndex, slideIndex, navigate } = useSlider(slider, props);
-
-const refSlideIndex = ref(currentIndex);
+const sliderRef = ref(null);
+const { currentIndex, slideIndex, navigate } = useSlider(sliderRef, props);
 
 const activeIndex = inject('activeIndex', 0);
 const updateActiveIndex = inject('updateActiveIndex', null);
 
 if (updateActiveIndex) {
-  watch(refSlideIndex, (newValue) => updateActiveIndex(newValue));
+  watch(currentIndex, (newValue) => updateActiveIndex(newValue))
 }
-
-watch(() => props.goSlide, (newValue) => refSlideIndex.value = newValue);
-
-watch(currentIndex, newVal => navigate(newVal))
 
 </script>
 <style lang="scss" module>
