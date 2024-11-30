@@ -62,8 +62,9 @@ div:has(> .office) {
         display: none;
     }
 
-    @media (max-width: $slider-brake-point) {
-        width: 100%;
+    @media (width < 768px) {
+        width: calc(100% - 20px);
+        margin-inline: auto;
     }
 }
 

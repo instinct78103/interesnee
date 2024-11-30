@@ -151,7 +151,7 @@ export function useSlider(sliderRef, props) {
     visibilityObserver?.disconnect();
     stopAutoScroll();
 
-    sliderRef.value.removeEventListener('scroll', stopAutoScroll);
+    unref(sliderRef)?.removeEventListener('scroll', stopAutoScroll);
     sliderRef.value?.parentElement.removeEventListener('mouseenter', stopAutoScroll);
     sliderRef.value?.parentElement.removeEventListener('mouseleave', startAutoScroll);
     sliderRef.value?.parentElement.removeEventListener('scrollend', startAutoScroll);
