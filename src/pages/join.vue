@@ -4,42 +4,26 @@
 
   <section :class="$style.container">
     <h2 :class="$style.heading">Карьера</h2>
-    {{ jobs }}
     <ul :class="$style.buttonsList">
-      <li
-        v-for="(city, index) in cities"
-        :key="index"
-      >
-        <router-link
-          :to="{ path: '/join', query: { city: city.url }}"
-          :class="[$style.button, {[$style.buttonActive]: currentCity === city.url }, 'hover-scale']"
-        >
+      <li v-for="(city, index) in cities" :key="index">
+        <router-link :to="{ path: '/join', query: { city: city.url }}" :class="[$style.button, {[$style.buttonActive]: currentCity === city.url }, 'hover-scale']">
           {{ city.nameRU }}
         </router-link>
       </li>
 
     </ul>
-
-    <ul
-      v-if="renderJobs"
-      :class="$style.list"
-    >
+    <ul v-if="renderJobs" :class="$style.list">
       <li
         v-for="job in filteredJobs"
         :key="job.id"
         :class="$style.listItem"
       >
-        <div
-          :class="[
-              $style.item,
-              { [$style.closed]: isJobClosed(job.status) }
-            ]"
-        >
+        <div :class="[ $style.item, { [$style.closed]: isJobClosed(job.status) } ]">
           <router-link
             :to="{ path: '/job/', query: { city: job.url, job: job.board_code }}"
             :class="$style.link"
           >
-            <div :class="$style.title">{{ job.title | jobTitle }}</div>
+            <div :class="$style.title">{{ jobTitle(job.title) }}</div>
             <span :class="$style.linkText">
                 Подробнее
               </span>
@@ -49,16 +33,19 @@
     </ul>
   </section>
 
-  <OurHRs />
+  <!--  <OurHRs />-->
 </template>
 
 <script setup>
 import Hero from '@/components/Hero.vue';
 import OurHRs from '@/components/join/OurHRs.vue';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router/auto';
 import { useJobsStore } from '@/store/useJobs.js';
 import { storeToRefs } from 'pinia';
 
-const { jobs } = storeToRefs(useJobsStore());
+const route = useRoute();
+const { jobs, cities } = storeToRefs(useJobsStore());
 
 if (!jobs.value.length) {
   const { fetchJobs } = useJobsStore();
@@ -77,6 +64,37 @@ const jobStatuses = {
   cancelled: 'Cancelled',
   closed: 'Closed',
 };
+
+const currentCity = computed(() => route.query.city || 'ekaterinburg');
+const renderJobs = computed(() => !!currentCity.value);
+
+function jobTitle(title) {
+  return title.replace('(RU)', '');
+}
+
+function isJobClosed(status) {
+  return status === jobStatuses.closed;
+}
+
+const filteredJobs = computed(() => {
+
+  if (cities.value.length === 0) {
+    return false;
+  }
+
+  const currentCityUrl = (route.query.city || 'ekaterinburg');
+
+  const currentCity = cities.value.filter(city => city.url === currentCityUrl)[0].name;
+
+  const filteredJobs = [...jobs.value];
+  const newFilteredJobs = filteredJobs.filter(job => job.city.split(', ').includes(currentCity));
+
+  const openJobs = newFilteredJobs.filter(job => !isJobClosed(job.status));
+
+  const closedJobs = newFilteredJobs.filter(job => isJobClosed(job.status));
+
+  return openJobs.concat(closedJobs);
+});
 
 // export default {
 //   name: 'JoinToTeam',
@@ -145,6 +163,7 @@ const jobStatuses = {
 
 .heading {
   @extend %heading;
+  text-align: center;
 }
 
 .list {

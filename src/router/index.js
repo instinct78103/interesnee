@@ -9,7 +9,20 @@ export const CAMP = 'CAMP';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  scrollBehavior: () => ({ top: 0 }),
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      // If there's a saved position, restore it (e.g., when navigating back/forward)
+      return savedPosition;
+    }
+
+    if (to.path !== from.path) {
+      // If the path changes, scroll to the top
+      return { top: 0 };
+    }
+
+    // If only query params changed, retain the current position
+    return false;
+  },
   linkActiveClass: 'active',
   routes,
 });
