@@ -20,10 +20,10 @@
       >
         <div :class="[ $style.item, { [$style.closed]: isJobClosed(job.status) } ]">
           <router-link
-            :to="{ path: '/job/', query: { city: job.url, job: job.board_code }}"
+            :to="{ path: '/job', query: { city: job.url, job: job.board_code }}"
             :class="$style.link"
           >
-            <div :class="$style.title">{{ jobTitle(job.title) }}</div>
+            <div :class="$style.title">{{ job?.title?.replace('(RU)', '') }}</div>
             <span :class="$style.linkText">
                 Подробнее
               </span>
@@ -33,7 +33,7 @@
     </ul>
   </section>
 
-  <!--  <OurHRs />-->
+  <OurHRs />
 </template>
 
 <script setup>
@@ -52,8 +52,6 @@ if (!jobs.value.length) {
   fetchJobs();
 }
 
-// import { GET_CITIES, GET_JOBS } from 'store/getters';
-
 const jobStatuses = {
   open: 'Open',
   onHold: 'On Hold',
@@ -67,10 +65,6 @@ const jobStatuses = {
 
 const currentCity = computed(() => route.query.city || 'ekaterinburg');
 const renderJobs = computed(() => !!currentCity.value);
-
-function jobTitle(title) {
-  return title.replace('(RU)', '');
-}
 
 function isJobClosed(status) {
   return status === jobStatuses.closed;
@@ -95,60 +89,6 @@ const filteredJobs = computed(() => {
 
   return openJobs.concat(closedJobs);
 });
-
-// export default {
-//   name: 'JoinToTeam',
-//   components: {
-//     Hero,
-//     OurHRs,
-//   },
-//   filters: {
-//     jobTitle: title => title.replace('(RU)', ''),
-//   },
-//   computed: {
-//     currentCity() {
-//       return this.$route.query.city || 'ekaterinburg';
-//     },
-//     ...mapGetters({
-//       jobs: GET_JOBS,
-//       cities: GET_CITIES,
-//     }),
-//     renderJobs() {
-//       return !!this.currentCity;
-//     },
-//     filteredJobs() {
-//       if (this.cities.length === 0) {
-//         return false;
-//       }
-//
-//       const currentCityUrl = this.currentCity;
-//
-//       const currentCity = this.cities.filter(
-//         city => city.url === currentCityUrl,
-//       )[0].name;
-//
-//       const filteredJobs = [...this.jobs];
-//       const newFilteredJobs = filteredJobs.filter(
-//         job => job.city.split(', ').indexOf(currentCity) !== -1,
-//       );
-//
-//       const openJobs = newFilteredJobs.filter(
-//         job => !this.isJobClosed(job.status),
-//       );
-//
-//       const closedJobs = newFilteredJobs.filter(job =>
-//         this.isJobClosed(job.status),
-//       );
-//
-//       return openJobs.concat(closedJobs);
-//     },
-//   },
-//   methods: {
-//     isJobClosed(status) {
-//       return status === jobStatuses.closed;
-//     },
-//   },
-// };
 </script>
 
 <style lang="scss" module>

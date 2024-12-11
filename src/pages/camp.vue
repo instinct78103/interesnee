@@ -1,5 +1,5 @@
 <script setup>
-
+import { routes } from 'vue-router/auto-routes';
 </script>
 
 <template>

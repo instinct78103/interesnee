@@ -3,7 +3,9 @@ import { ref } from 'vue';
 
 export const useJobsStore = defineStore('jobs', () => {
   const jobs = ref([]);
-  const cities = ref([])
+  const cities = ref([]);
+
+  const allowedCities = ref(['ekaterinburg', 'krasnoyarsk', 'sochi']);
 
   const deprecatedJobs = [
     'Unreal Engine developer (RU)',
@@ -14,19 +16,8 @@ export const useJobsStore = defineStore('jobs', () => {
     'Frontend developer - HTML/CSS/JS (part time) (RU)',
   ];
 
-  function filterDeprecatedJobs(jobs) {
-    return jobs.filter(job => deprecatedJobs.indexOf(job.title) === -1);
-  }
-
   function getOpenJobs(jobs) {
-    const openJobs = [];
-    jobs.forEach(job => {
-      if (!job.internal_code.endsWith('_hidden')) {
-        openJobs.push(job);
-      }
-    });
-
-    return openJobs;
+    return jobs.filter(job => !job.internal_code.endsWith('_hidden') && job.country_id === 'Russian Federation' && !deprecatedJobs.includes(job.title));
   }
 
   function citySlug(name) {
@@ -46,45 +37,34 @@ export const useJobsStore = defineStore('jobs', () => {
     return cities[name] || null;
   }
 
-  function initializeCities(cities) {
-    return cities.map(city => ({
-      name: city,
-      nameRU: translateCity(city),
-      url: citySlug(city),
-    }));
-  }
-
-  function filterDisallowedCities(cities) {
-    const allowedCities = ['Ekaterinburg', 'Krasnoyarsk', 'Sochi'];
-
-    return cities.filter(city => allowedCities.includes(city.name));
-  }
-
   function parseCites(jobs) {
-    let cities = [];
+    const cities = [];
+
     jobs.forEach(e => {
-      const jobCities = e.city.split(', ');
-      cities = cities.concat(jobCities);
+      if (e.city) {
+        const jobCities = e.city.split(', ');
+        cities.push(...jobCities);
+      }
     });
 
-    const uniqueCities = cities.filter(
-      (item, pos) => cities.indexOf(item) === pos,
-    );
-
-    const allCities = initializeCities(uniqueCities);
-
-    return filterDisallowedCities(allCities);
+    return [...new Set(cities)]
+      .filter(city => allowedCities.value.includes(city.toLowerCase()))
+      .map(city => ({
+        name: city,
+        nameRU: translateCity(city),
+        url: citySlug(city),
+      }));
   }
-
 
   async function fetchJobs() {
     const url = 'https://api.resumatorapi.com/v1/jobs?apikey=4tWhJFtr8iWAl3VHxRc8HVIk0dSZEOBU';
     const data = await (await fetch(url)).json();
-    jobs.value = getOpenJobs(filterDeprecatedJobs(data));
-    cities.value = parseCites(jobs.value)
+    jobs.value = getOpenJobs(data);
+    cities.value = parseCites(jobs.value);
   }
 
   return {
+    allowedCities,
     cities,
     fetchJobs,
     jobs,

@@ -10,9 +10,7 @@
         >
           {{ contact.title }}
         </a>
-        <br
-          v-if="index === 0"
-          :key="`${index}-br`">
+        <br v-if="index === 0" :key="`${index}-br`">
         <span
           v-if="index !== 0 && index < contacts.length - 1"
           :key="`${index}-hr`"

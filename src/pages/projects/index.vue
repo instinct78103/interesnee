@@ -2,7 +2,7 @@
   <section>
     <Hero>
       <strong>Вдохновленные вызовом</strong>,
-      <br>создаем <em>удивительные&nbsp;</em><em>&nbsp;продукты!</em>
+      <br>создаем <em>удивительные</em> <em>продукты!</em>
     </Hero>
     <ProjectsCustomers />
     <ProjectsList />

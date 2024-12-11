@@ -23,7 +23,7 @@ defineProps({
 
 .root {
   min-height: 465px;
-  background: url('/static/back-image.png') no-repeat center;
+  background: var(--red) url('/static/back-image.png') no-repeat center;
   background-size: cover;
   display: flex;
   justify-content: center;
@@ -35,8 +35,8 @@ defineProps({
 }
 
 .small {
-  min-height: 145px;
-  padding-top: clamp(40px, 4vw, 67px);
+  min-height: 150px;
+  //padding-block: clamp(40px, 4vw, 67px);
 }
 
 .empty {

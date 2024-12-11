@@ -45,10 +45,14 @@
 </template>
 
 <script setup>
+import { useRoute } from 'vue-router/auto';
+import { computed } from 'vue';
 // import BaseSlider from 'components/BaseSlider';
 import ContactsListBlock from '@/components/ContactsListBlock.vue';
 import { CAMP } from '@/router/index.js';
 import { spriteSvg } from '@/helpers.js';
+
+const route = useRoute();
 
 const hrs = [
   {
@@ -99,6 +103,17 @@ const hrs = [
   },
 ];
 
+const items = computed(() => {
+  const data = hrs;
+
+  if (route.name !== CAMP) {
+    data.push(hrEkb);
+  } else {
+    data[1].post = 'Сочи / Екатеринбург';
+  }
+  return data;
+});
+
 const hrEkb = {
   image: {
     x1: '/images/photos/HR/HR.jpg',
@@ -109,6 +124,13 @@ const hrEkb = {
   post: '',
   social: [],
 };
+
+function getSrcSet(image) {
+  let srcset = image.x1 ? `${image.x1} 1x` : '';
+  srcset += image.x2 ? `, ${image.x2} 2x` : '';
+
+  return srcset;
+}
 
 // export default {
 //   name: 'OurHRs',
