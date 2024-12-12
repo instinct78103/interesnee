@@ -8,24 +8,17 @@
     <div :class="$style.root">
       <div :class="$style.container">
         <p :class="$style.contentTitle">Описание:</p>
-        <div :class="$style.content" v-html="filteredJob.description" />
+        <div :class="$style.content" v-clean-html="filteredJob.description" />
       </div>
     </div>
   </section>
-  <section
-    :class="[$style.root, $style.backgrounded]" :style="{ backgroundColor: bgColor}">
+  <section :class="[$style.root, $style.backgrounded]" :style="{ backgroundColor: bgColor}">
     <div :class="[$style.container, $style.formContainer]">
       <h2 :class="$style.title">{{ props.title }}</h2>
       <form id="contact_form" @submit.prevent="submitForm">
         <div :class="$style.row">
           <div :class="[$style.col, $style.colHalf]">
-            <input
-              v-model="firstname"
-              :class="[$style.input,  ]"
-              name="firstname"
-              type="text"
-              placeholder="Имя"
-            >
+            <input v-model="firstname" :class="[$style.input,  ]" name="firstname" type="text" placeholder="Имя">
             <!--              <transition name="slide-top">-->
             <!--                <span-->
             <!--                  v-show="errors.has('firstname')"-->
@@ -607,6 +600,37 @@ const firstname = ref('');
 const selectVal = ref(0);
 const thanksMessage = ref('');
 
+/**
+ * Custom directive
+ */
+
+const vCleanHtml = {
+  mounted(el, binding) {
+    el.innerHTML = binding.value;
+    sanitizeHtml(el);
+  },
+  updated(el, binding) {
+    el.innerHTML = binding.value;
+    sanitizeHtml(el);
+  },
+};
+
+function sanitizeHtml(container) {
+  container.querySelectorAll('*').forEach(el => {
+    // remove all attributes
+    [...el.attributes].forEach(attr => el.removeAttribute(attr.name))
+
+    //remove &nbsp
+    if (el.innerHTML) {
+      el.innerHTML = el.innerHTML.replace(/&nbsp;/g, '');
+    }
+  });
+}
+
+/**
+ * Custom directive -- end
+ */
+
 function filterJob(boardCode) {
   const currentJob = jobs.value.filter(job => job.board_code === boardCode)[0];
 
@@ -1014,6 +1038,14 @@ function submitForm() {
 
   * {
     text-wrap: pretty;
+
+    @media(width <= 480px) {
+      text-wrap: balance;
+    }
+
+    &:empty {
+      display: none;
+    }
   }
 }
 
