@@ -3,19 +3,9 @@
     <p :class="$style.mailText">Или пишите/звоните нам</p>
     <div :class="$style.bottomLinkWrap">
       <template v-for="(contact, index) in contacts" :key="index">
-        <a
-          :class="$style.mailLink"
-          :aria-label="contact.title"
-          :href="contact.value"
-        >
-          {{ contact.title }}
-        </a>
+        <a :class="$style.mailLink" :aria-label="contact.title" :href="contact.value">{{ contact.title }}</a>
         <br v-if="index === 0" :key="`${index}-br`">
-        <span
-          v-if="index !== 0 && index < contacts.length - 1"
-          :key="`${index}-hr`"
-          :class="$style.linkDelimiter"
-        >|</span>
+        <span v-if="index !== 0 && index < contacts.length - 1" :key="`${index}-hr`" :class="$style.linkDelimiter">|</span>
       </template>
     </div>
   </div>
@@ -47,6 +37,7 @@ import { contacts } from '@/data/commonInfo.js';
   line-height: 20px;
   color: var(--gray-dark);
   opacity: 0.8;
+  margin-block: 1em 0;
 }
 
 .linkDelimiter {
