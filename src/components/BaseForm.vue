@@ -176,7 +176,6 @@
           <textarea v-model="resumeText" :class="$style.input" :placeholder="textAreaPlaceholder" name="resumeText" rows="6" />
         </div>
 
-        {{personalData}}
         <div :class="[$style.col]">
           <Field rules="required" v-model="personalData" name="terms" type="checkbox" style="margin-right: 5px;"/>
           <small :class="$style.policyText">Я даю согласие на обработку моих персональных данных, указанных в форме обращения и всех приложенных файлах, в ООО "Очень Интересно", с целью предложения мне вакансий ООО "Очень Интересно". Я понимаю и соглашаюсь, что мои данные будут храниться и обрабатываться в ООО "Очень Интересно" в течение пяти лет, в соответствии с Федеральным законом "О персональных данных" и <a aria-label="Политикой обработки персональных данных" target="_blank" rel="noreferrer noopener" href="/static/docs/privacy_policy.pdf">Политикой обработки персональных данных</a>.</small>
@@ -460,61 +459,6 @@ function submitForm() {
 
 // export default {
 //   name: 'BaseForm',
-//   data() {
-//     return {
-//       achievements: '',
-//       campCity: '',
-//       cityVal: 0,
-//       department: '',
-//       diploma: '',
-//       email: '',
-//       expectations: '',
-//       feedback: '',
-//       fileError: false,
-//       firstname: '',
-//       hobby: '',
-//       job: [],
-//       languages: '',
-//       lastname: '',
-//       link: '',
-//       personalData: false,
-//       phone: '',
-//       pleaseTickRecaptchaMessage: '',
-//       recaptchaVerified: false,
-//       resumeFile: '',
-//       resumeFileName: '',
-//       resumeText: '',
-//       selectVal: 0,
-//       selectedCamp: '',
-//       selectedCity: '',
-//       selectedStudy: '',
-//       sitekey: '6Lco8VEUAAAAAJ4BaSfaC1jAfjyPubO3D4lFkMqk',
-//       specialty: '',
-//       study: '',
-//       thanksMessage: '',
-//       university: '',
-//       vacancy: '',
-//       whereFind: '',
-//       year: '',
-//       cities: {
-//         ekaterinburg: 'Екатеринбург',
-//         krasnoyarsk: 'Красноярск',
-//         sochi: 'Сочи',
-//         other: 'Другой',
-//       },
-//       educations: {
-//         bachelor: 'Студент бакалавриата',
-//         master: 'Студент магистратуры',
-//         specialist: 'Студент специалитета',
-//         graduateStudent: 'Аспирант',
-//         other: 'Другое',
-//       },
-//       feedbackHint: false,
-//       languagesHint: false,
-//       achievementsHint: false,
-//       hobbyHint: false,
-//     };
-//   },
 //   computed: {
 //     ...mapGetters({
 //       jobs: GET_JOBS,
