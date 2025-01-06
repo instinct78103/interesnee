@@ -15,26 +15,26 @@
   <section :class="[$style.root, $style.backgrounded]" :style="{ backgroundColor: bgColor}">
     <div :class="[$style.container, $style.formContainer]">
       <h2 :class="$style.title">{{ props.title }}</h2>
-      <Form v-slot="{ errors }" style="--column-gap: 15px;display:flex;flex-flow:row wrap; gap: 15px var(--column-gap)" autocomplete="off">
+      <Form v-slot="{ errors }" style="--column-gap: 15px;display:flex;flex-flow:row wrap; gap: 15px var(--column-gap)" autocomplete="off" @submit="handleSubmit">
 
         <div :class="[$style.col, $style.colHalf]">
           <Field v-model="firstname" :class="[$style.input, {[$style.error]: errors.firstname}]" name="firstname" type="text" placeholder="Имя" rules="required|alpha" />
-          <transition name="slide-top"><span v-if="errors.firstname" :class="[$style.detail]">{{ errors.firstname }}</span></transition>
+          <transition name="slide-top"><span v-show="errors.firstname" :class="[$style.detail]">{{ errors.firstname }}</span></transition>
         </div>
 
         <div :class="[$style.col, $style.colHalf]">
           <Field v-model="lastname" :class="[$style.input, {[$style.error]: errors.lastname}]" name="lastname" type="text" placeholder="Фамилия" rules="required|alpha" />
-          <transition name="slide-top"><span v-if="errors.lastname" :class="$style.detail">{{ errors.lastname }}</span></transition>
+          <transition name="slide-top"><span v-show="errors.lastname" :class="$style.detail">{{ errors.lastname }}</span></transition>
         </div>
 
         <div :class="[$style.col, $style.colHalf]">
           <Field v-model="phone" @change="onChangePhone" :class="[$style.input, {[$style.error]: errors.phone}]" v-mask="'+7 (###) ###-##-##'" name="phone" type="text" placeholder="Телефон" rules="required|vMask" />
-          <transition name="slide-top"><span v-if="errors.phone" :class="$style.detail">{{ errors.phone }}</span></transition>
+          <transition name="slide-top"><span v-show="errors.phone" :class="$style.detail">{{ errors.phone }}</span></transition>
         </div>
 
         <div :class="[$style.col, $style.colHalf]">
           <Field v-model="userEmail" rules="required|email" name="email" :class="[$style.input, {[$style.error]: errors.email}]" type="text" placeholder="Email"/>
-          <transition name="slide-top"><span v-if="errors.email" :class="$style.detail">{{ errors.email }}</span></transition>
+          <transition name="slide-top"><span v-show="errors.email" :class="$style.detail">{{ errors.email }}</span></transition>
         </div>
 
         <div :class="[$style.col, $style.colFull]">
@@ -44,11 +44,11 @@
               <option v-for="(value, index) in select" :key="index" :value="index">{{ value.name }}</option>
             </select>
             <Field rules="required" v-model="selectedCamp" name="camp" type="hidden" />
-            <transition name="slide-top"><span v-if="errors.camp" :class="$style.detail">{{ errors.camp }}</span></transition>
+            <transition name="slide-top"><span v-show="errors.camp" :class="$style.detail">{{ errors.camp }}</span></transition>
           </template>
           <template v-else>
             <Field rules="required" v-model="vacancy" :class="[$style.input, {[$style.error]: errors.vacancy }]" name="vacancy" type="text" placeholder="Интересующая вакансия" />
-            <transition name="slide-top"><span v-if="errors.vacancy" :class="$style.detail">{{ errors.vacancy }}</span></transition>
+            <transition name="slide-top"><span v-show="errors.vacancy" :class="$style.detail">{{ errors.vacancy }}</span></transition>
           </template>
         </div>
 
@@ -59,12 +59,12 @@
               <option v-for="(city, cityName) in cities" :key="cityName" :value="cityName">{{ city }}</option>
             </select>
             <Field rules="required" v-model="selectedCity" name="campSelectedCity" type="hidden" />
-            <transition name="slide-top"><span v-if="errors.campSelectedCity" :class="$style.detail">{{ errors.campSelectedCity }}</span></transition>
+            <transition name="slide-top"><span v-show="errors.campSelectedCity" :class="$style.detail">{{ errors.campSelectedCity }}</span></transition>
           </div>
 
           <div v-if="selectedCity === 'other'" :class="[$style.col, $style.colFull]">
             <Field rules="required" v-model="campCity" :class="[$style.input, {[$style.error]: errors.campCity }]" name="campCity" type="text" placeholder="Город" />
-            <transition name="slide-top"><span v-if="errors.campCity" :class="$style.detail">{{ errors.campCity }}</span></transition>
+            <transition name="slide-top"><span v-show="errors.campCity" :class="$style.detail">{{ errors.campCity }}</span></transition>
           </div>
 
           <div :class="[$style.col, $style.colFull]">
@@ -76,12 +76,12 @@
               <option value="" disabled hidden>Учитесь или уже окончили?</option>
               <option v-for="(education, index) in educations" :key="index" :value="index">{{ education }}</option>
             </select>
-            <transition name="slide-top"><span v-if="errors.selectedStudy" :class="$style.detail">{{ errors.selectedStudy }}</span></transition>
+            <transition name="slide-top"><span v-show="errors.selectedStudy" :class="$style.detail">{{ errors.selectedStudy }}</span></transition>
           </div>
 
           <div v-if="selectedStudy === 'other'" :class="[$style.col, $style.colFull]">
             <Field rules="required" v-model="study" :class="[$style.input, {[$style.error]: errors.study }]" name="study" type="text" placeholder="Учитесь или уже окончили?" />
-            <transition name="slide-top"><span v-if="errors.study" :class="$style.detail">{{ errors.study }}</span></transition>
+            <transition name="slide-top"><span v-show="errors.study" :class="$style.detail">{{ errors.study }}</span></transition>
           </div>
 
           <div :class="[$style.col, $style.colFull]">
@@ -181,14 +181,7 @@
             <Field rules="required" name="terms" type="checkbox" value="personalData" style="margin-right: 5px;"/>
             <small>Я даю согласие на обработку моих персональных данных, указанных в форме обращения и всех приложенных файлах, в ООО "Очень Интересно", с целью предложения мне вакансий ООО "Очень Интересно". Я понимаю и соглашаюсь, что мои данные будут храниться и обрабатываться в ООО "Очень Интересно" в течение пяти лет, в соответствии с Федеральным законом "О персональных данных" и <a aria-label="Политикой обработки персональных данных" target="_blank" rel="noreferrer noopener" href="/static/docs/privacy_policy.pdf">Политикой обработки персональных данных</a>.</small>
           </label>
-          <transition name="slide-top"><span v-if="errors.terms" :class="$style.detail">Ваше согласие обязательно.</span></transition>
-        </div>
-
-        <div :class="$style.captchaWrapper">
-          <vue-recaptcha ref="recaptcha" :sitekey :load-recaptcha-script="true" @verify="onVerify" />
-          <div :class="$style.robot">
-            <transition name="slide-top"><div v-if="pleaseTickRecaptchaMessage">{{ pleaseTickRecaptchaMessage }}</div></transition>
-          </div>
+          <transition name="slide-top"><span v-show="errors.terms" :class="$style.detail">Ваше согласие обязательно.</span></transition>
         </div>
 
         <button :class="[$style.submit, {[$style.submitCamp]: showCampCity }]" :disabled="job.id === undefined" type="submit" aria-label="Подтвердить форму">Отправить</button>
@@ -243,16 +236,15 @@ defineRule('min', min);
 import { useJobsStore } from '@/store/useJobs.js';
 import { useRoute } from 'vue-router/auto';
 const route = useRoute()
-
+const sitekey = '6Lco8VEUAAAAAJ4BaSfaC1jAfjyPubO3D4lFkMqk';
 const { jobs } = storeToRefs(useJobsStore());
 
 import Hero from '@/components/Hero.vue';
 import ContactsListBlock from '@/components/ContactsListBlock.vue';
-import { VueRecaptcha } from 'vue-recaptcha';
 // import { sendResume } from 'data';
 // import showModal from '../helpers';
 import { storeToRefs } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
 const props = defineProps(
   {
@@ -279,7 +271,7 @@ const props = defineProps(
     showCampCity: {
       type: Boolean,
       required: false,
-      default: false,
+      default: true,
     },
     textAreaPlaceholder: {
       type: String,
@@ -339,7 +331,6 @@ const resumeFileName = ref('');
 const resumeText = ref('');
 const personalData = ref(false);
 const pleaseTickRecaptchaMessage = ref('');
-const sitekey = '6Lco8VEUAAAAAJ4BaSfaC1jAfjyPubO3D4lFkMqk';
 const recaptchaVerified = ref(false);
 const selectVal = ref(0);
 const thanksMessage = ref('');
@@ -455,15 +446,42 @@ const filteredJob = computed(() => {
 
 const renderJob = computed(() => !!useRoute().query.job);
 
-function submitForm() {
-  return false;
-  if (!recaptchaVerified.value) {
-    pleaseTickRecaptchaMessage.value = 'Подтвердите что вы не робот.';
-    return false;
+
+
+
+function loadRecaptchaScript() {
+
+  if (document.querySelector('script[src^="https://www.google.com/recaptcha/api.js"]')) return;
+
+  const script = document.createElement('script');
+  script.src = `https://www.google.com/recaptcha/api.js?render=${sitekey}`;
+  script.async = true;
+  script.defer = true;
+  document.head.appendChild(script)
+}
+
+onMounted(() => loadRecaptchaScript())
+
+
+async function handleSubmit() {
+  try {
+    if (!window.grecaptcha) {
+      console.error('reCAPTCHA script is not loaded');
+      return false;
+    }
+
+    if (fileError.value) {
+      return false;
+    }
+
+    const token = await grecaptcha.execute(sitekey, { action: 'form_submission' });
+    submitForm(token);
+
+  } catch (e) {
+    console.error('Error submitting form:', e);
   }
-  if (fileError.value) {
-    return false;
-  }
+
+
 
   // this.$validator.validateAll().then(result => {
   //   if (result) {
@@ -543,6 +561,10 @@ function submitForm() {
   //   return false;
   // });
   return true;
+}
+
+function submitForm() {
+  console.log(111)
 }
 
 // export default {
