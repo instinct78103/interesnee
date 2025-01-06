@@ -15,7 +15,7 @@
   <section :class="[$style.root, $style.backgrounded]" :style="{ backgroundColor: bgColor}">
     <div :class="[$style.container, $style.formContainer]">
       <h2 :class="$style.title">{{ props.title }}</h2>
-      <Form v-slot="{ errors }" style="--column-gap: 15px;display:flex;flex-flow:row wrap; gap: 15px var(--column-gap)">
+      <Form v-slot="{ errors }" style="--column-gap: 15px;display:flex;flex-flow:row wrap; gap: 15px var(--column-gap)" autocomplete="off">
 
         <div :class="[$style.col, $style.colHalf]">
           <Field v-model="firstname" :class="[$style.input, {[$style.error]: errors.firstname}]" name="firstname" type="text" placeholder="Имя" rules="required|alpha" />
@@ -177,8 +177,10 @@
         </div>
 
         <div :class="[$style.col]">
-          <Field rules="required" v-model="personalData" name="terms" type="checkbox" style="margin-right: 5px;"/>
-          <small :class="$style.policyText">Я даю согласие на обработку моих персональных данных, указанных в форме обращения и всех приложенных файлах, в ООО "Очень Интересно", с целью предложения мне вакансий ООО "Очень Интересно". Я понимаю и соглашаюсь, что мои данные будут храниться и обрабатываться в ООО "Очень Интересно" в течение пяти лет, в соответствии с Федеральным законом "О персональных данных" и <a aria-label="Политикой обработки персональных данных" target="_blank" rel="noreferrer noopener" href="/static/docs/privacy_policy.pdf">Политикой обработки персональных данных</a>.</small>
+          <label>
+            <Field rules="required" name="terms" type="checkbox" value="personalData" style="margin-right: 5px;"/>
+            <small>Я даю согласие на обработку моих персональных данных, указанных в форме обращения и всех приложенных файлах, в ООО "Очень Интересно", с целью предложения мне вакансий ООО "Очень Интересно". Я понимаю и соглашаюсь, что мои данные будут храниться и обрабатываться в ООО "Очень Интересно" в течение пяти лет, в соответствии с Федеральным законом "О персональных данных" и <a aria-label="Политикой обработки персональных данных" target="_blank" rel="noreferrer noopener" href="/static/docs/privacy_policy.pdf">Политикой обработки персональных данных</a>.</small>
+          </label>
           <transition name="slide-top"><span v-if="errors.terms" :class="$style.detail">Ваше согласие обязательно.</span></transition>
         </div>
 
@@ -454,7 +456,93 @@ const filteredJob = computed(() => {
 const renderJob = computed(() => !!useRoute().query.job);
 
 function submitForm() {
-  console.log(1);
+  return false;
+  if (!recaptchaVerified.value) {
+    pleaseTickRecaptchaMessage.value = 'Подтвердите что вы не робот.';
+    return false;
+  }
+  if (fileError.value) {
+    return false;
+  }
+
+  // this.$validator.validateAll().then(result => {
+  //   if (result) {
+  //     if (this.selectedCamp) {
+  //       this.filterJob(this.select[this.selectedCamp].value);
+  //     }
+  //     const data = {
+  //       firstname: this.firstname,
+  //       lastname: `${this.lastname} ${this.namePrefix}`,
+  //       phone: this.phone,
+  //       vacancy: this.vacancy,
+  //       email: this.email,
+  //       resumeText: this.resumeText,
+  //       resumeFile: this.resumeFile,
+  //       resumeFileName: this.resumeFileName,
+  //       jobID: this.job.id,
+  //       city: this.$route.query.city || this.camp,
+  //       campCity: this.campCity,
+  //       hash: this.hash,
+  //     };
+  //
+  //     if (this.showCampCity) {
+  //       data.fromCampPage = true;
+  //       data.campCity = this.campCity || this.cities[this.selectedCity];
+  //       data.city = this.campCity || this.cities[this.selectedCity];
+  //       data.study = this.study || this.educations[this.selectedStudy];
+  //       data.university = this.university;
+  //       data.department = this.department;
+  //       data.specialty = this.specialty;
+  //       data.year = this.year;
+  //       data.diploma = this.diploma;
+  //       data.languages = this.languages;
+  //       data.achievements = this.achievements;
+  //       data.expectations = this.expectations;
+  //       data.whereFind = this.whereFind;
+  //       data.hobby = this.hobby;
+  //       data.feedback = this.feedback;
+  //       data.link = this.link;
+  //     }
+  //     sendResume(data)
+  //       .then(() => {
+  //         this.firstname = '';
+  //         this.lastname = '';
+  //         this.phone = '';
+  //         this.vacancy = '';
+  //         this.email = '';
+  //         this.resumeText = '';
+  //         this.resumeFile = '';
+  //         this.resumeFileName = '';
+  //         this.personalData = false;
+  //         this.campCity = '';
+  //         this.city = '';
+  //         this.selectedCity = '';
+  //         this.study = '';
+  //         this.selectedStudy = '';
+  //         this.university = '';
+  //         this.department = '';
+  //         this.specialty = '';
+  //         this.year = '';
+  //         this.diploma = '';
+  //         this.languages = '';
+  //         this.achievements = '';
+  //         this.expectations = '';
+  //         this.whereFind = '';
+  //         this.hobby = '';
+  //         this.feedback = '';
+  //         this.link = '';
+  //         this.$emit('closePopup', true);
+  //         this.$validator.reset();
+  //         this.showModal(true);
+  //       })
+  //       .catch(() => {
+  //         this.$emit('closePopup', false);
+  //         this.showModal(false);
+  //       });
+  //   }
+  //   return false;
+  // });
+  return true;
 }
 
 // export default {
@@ -654,8 +742,7 @@ function submitForm() {
 </script>
 
 <style lang="scss" module>
-//@import '@/scss/variables';
-@import '@/scss/helpers';
+@use '@/scss/helpers';
 
 .root {
   @extend %section;
@@ -774,6 +861,8 @@ function submitForm() {
   background-color: #fff;
   color: var(--gray-dark);
   resize: vertical;
+  position: relative;
+  z-index: 3;
 
   &:focus {
     border-color: var(--gray-3);
@@ -901,10 +990,6 @@ function submitForm() {
   color: var(--red-light);
   display: flex;
   align-items: center;
-}
-
-.policyText {
-  word-break: break-word;
 }
 
 .submitCamp {

@@ -10,23 +10,13 @@
           {{ city.nameRU }}
         </router-link>
       </li>
-
     </ul>
     <ul v-if="renderJobs" :class="$style.list">
-      <li
-        v-for="job in filteredJobs"
-        :key="job.id"
-        :class="$style.listItem"
-      >
+      <li v-for="job in filteredJobs" :key="job.id" :class="$style.listItem">
         <div :class="[ $style.item, { [$style.closed]: isJobClosed(job.status) } ]">
-          <router-link
-            :to="{ path: '/job', query: { city: job.url, job: job.board_code }}"
-            :class="$style.link"
-          >
+          <router-link :to="{ path: '/job', query: { city: job.url, job: job.board_code }}" :class="$style.link">
             <div :class="$style.title">{{ job?.title?.replace('(RU)', '') }}</div>
-            <span :class="$style.linkText">
-                Подробнее
-              </span>
+            <span :class="$style.linkText">Подробнее</span>
           </router-link>
         </div>
       </li>
@@ -129,12 +119,11 @@ const filteredJobs = computed(() => {
 }
 
 .item {
-  $shadow: rgba(2, 2, 2, 0.25);
   height: 172px;
   border: 1px solid var(--gray-2);
   border-radius: 4px;
   background-color: #fff;
-  box-shadow: inset 0 1px 2px 0 $shadow;
+  box-shadow: inset 0 1px 2px 0 rgba(2, 2, 2, 0.25);
   overflow: hidden;
   transition: border 0.3s, background 0.3s, box-shadow 0.3s;
   position: relative;

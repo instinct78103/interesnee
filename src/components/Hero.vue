@@ -19,7 +19,7 @@ defineProps({
 </script>
 
 <style lang="scss" module>
-@import '@/scss/helpers';
+@use '@/scss/helpers';
 
 .root {
   min-height: 465px;
