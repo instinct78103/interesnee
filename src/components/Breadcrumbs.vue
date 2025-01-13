@@ -32,7 +32,7 @@ export default {
 <style lang="scss" module>
 //@import '../styles/variables';
 //@import '../styles/mixins';
-@import '@/scss/helpers';
+@use '@/scss/helpers';
 
 .root {
   position: absolute;

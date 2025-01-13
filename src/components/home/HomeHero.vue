@@ -74,7 +74,7 @@ const projectsUrl = PAGE_PROJECTS;
 </script>
 
 <style lang="scss" module>
-@import '@/scss/helpers';
+@use '@/scss/helpers';
 
 .root {
   display: flex;

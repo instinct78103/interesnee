@@ -122,7 +122,7 @@ const { currentIndex, countSlidesRef, navigate } = useSlider(sliderRef, { autopl
 </script>
 
 <style lang="scss" module>
-@import '@/scss/helpers';
+@use '@/scss/helpers';
 
 %descriptionContainer {
   max-width: 800px;

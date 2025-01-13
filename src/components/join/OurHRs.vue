@@ -195,7 +195,7 @@ function getSrcSet(image) {
 </script>
 
 <style lang="scss" module>
-@import '@/scss/helpers';
+@use '@/scss/helpers';
 
 .section {
   @extend %section;

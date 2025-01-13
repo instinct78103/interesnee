@@ -37,7 +37,7 @@ const toggleInfo = projectId => activeIndex.value = activeIndex.value === projec
 </script>
 
 <style lang="scss" module>
-@import '@/scss/helpers';
+@use '@/scss/helpers';
 
 .root {
   @extend %container;

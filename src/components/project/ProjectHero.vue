@@ -39,7 +39,7 @@ const links = [
 </script>
 
 <style lang="scss" module scoped>
-@import '@/scss/helpers';
+@use '@/scss/helpers';
 
 .root {
   background-size: cover;
