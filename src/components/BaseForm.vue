@@ -1,8 +1,4 @@
 <template>
-  <!--    <section>-->
-  <!--      <v-dialog />-->
-  <!--    </section>-->
-
   <section v-if="filteredJob && renderJob">
     <Hero kind="small">{{ filteredJob?.title.replace('(RU)', '') }}</Hero>
     <div :class="$style.root">
@@ -184,6 +180,13 @@
           <transition name="slide-top"><span v-show="errors.terms" :class="$style.detail">Ваше согласие обязательно.</span></transition>
         </div>
 
+        <div :class="$style.captchaWrapper">
+          <div class="g-recaptcha" :data-sitekey="recaptchaToken" :data-callback="onReCAPTCHA"></div>
+          <div :class="$style.robot">
+            <transition name="slide-top"><span v-show="recaptchaError">{{ recaptchaError }}</span></transition>
+          </div>
+        </div>
+
         <button :class="[$style.submit, {[$style.submitCamp]: showCampCity }]" :disabled="job.id === undefined" type="submit" aria-label="Подтвердить форму">Отправить</button>
 
         <div v-if="thanksMessage" :class="$style.thanksMessage">{{ thanksMessage }}</div>
@@ -195,6 +198,16 @@
 </template>
 
 <script setup>
+import { ref, computed, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useJobsStore } from '@/store/useJobs.js';
+import { useRoute } from 'vue-router/auto';
+import Hero from '@/components/Hero.vue';
+import ContactsListBlock from '@/components/ContactsListBlock.vue';
+
+/**
+ * Form validation -- start
+ */
 import { configure, defineRule, Form, Field } from 'vee-validate';
 import { localize } from '@vee-validate/i18n';
 import ru from '@vee-validate/i18n/dist/locale/ru.json';
@@ -202,7 +215,7 @@ import { alpha, required, email, min } from '@vee-validate/rules';
 import { mask } from 'vue-the-mask';
 
 configure({
-  generateMessage: localize( {
+  generateMessage: localize({
     ru: {
       ...ru,
       names: {
@@ -215,8 +228,8 @@ configure({
         email: 'E-mail',
         campCity: 'Город',
         study: 'Образование',
-      }
-    }
+      },
+    },
   }),
 });
 localize('ru');
@@ -228,24 +241,31 @@ defineRule('vMask', value => {
   }
   return true;
 });
-
 defineRule('alpha', alpha);
 defineRule('required', required);
 defineRule('email', email);
 defineRule('min', min);
-import { useJobsStore } from '@/store/useJobs.js';
-import { useRoute } from 'vue-router/auto';
-const route = useRoute()
-const sitekey = '6Lco8VEUAAAAAJ4BaSfaC1jAfjyPubO3D4lFkMqk';
+/**
+ * Form validation -- end
+ */
+
+const cities = {
+  ekaterinburg: 'Екатеринбург',
+  krasnoyarsk: 'Красноярск',
+  sochi: 'Сочи',
+  other: 'Другой',
+};
+const educations = {
+  bachelor: 'Студент бакалавриата',
+  master: 'Студент магистратуры',
+  specialist: 'Студент специалитета',
+  graduateStudent: 'Аспирант',
+  other: 'Другое',
+};
+const recaptchaToken = '6Lco8VEUAAAAAJ4BaSfaC1jAfjyPubO3D4lFkMqk';
+
 const { jobs } = storeToRefs(useJobsStore());
-
-import Hero from '@/components/Hero.vue';
-import ContactsListBlock from '@/components/ContactsListBlock.vue';
-// import { sendResume } from 'data';
-// import showModal from '../helpers';
-import { storeToRefs } from 'pinia';
-import { ref, computed, onMounted } from 'vue';
-
+const route = useRoute();
 const props = defineProps(
   {
     title: {
@@ -271,14 +291,14 @@ const props = defineProps(
     showCampCity: {
       type: Boolean,
       required: false,
-      default: true,
+      default: false,
     },
     textAreaPlaceholder: {
       type: String,
       required: false,
       default: 'Или напишите резюме здесь',
     },
-    namePrefix: {
+    namePostfix: {
       type: String,
       required: false,
       default: '',
@@ -286,59 +306,46 @@ const props = defineProps(
   },
 );
 
-const job = ref([]);
-const vacancy = ref('');
-const firstname = ref('');
-const lastname = ref('');
-const phone = ref('');
-const userEmail = ref('');
-const selectedCamp = ref('');
-const selectedCity = ref('');
-const cities = {
-  ekaterinburg: 'Екатеринбург',
-  krasnoyarsk: 'Красноярск',
-  sochi: 'Сочи',
-  other: 'Другой',
-};
-const campCity = ref('');
-const link = ref('');
-const educations = {
-  bachelor: 'Студент бакалавриата',
-  master: 'Студент магистратуры',
-  specialist: 'Студент специалитета',
-  graduateStudent: 'Аспирант',
-  other: 'Другое',
-};
-const selectedStudy = ref('');
-const study = ref('');
-const university = ref('');
-const department = ref('');
-const specialty = ref('');
-const year = ref('');
-const diploma = ref('');
-const languages = ref('');
-const languagesHint = ref(false);
 const achievements = ref('');
 const achievementsHint = ref(false);
+const campCity = ref('');
+const department = ref('');
+const diploma = ref('');
 const expectations = ref('');
-const whereFind = ref('');
-const hobby = ref('');
-const hobbyHint = ref(false);
 const feedback = ref('');
 const feedbackHint = ref(false);
 const fileError = ref(false);
+const firstname = ref('');
+const hobby = ref('');
+const hobbyHint = ref(false);
+const job = ref([]);
+const languages = ref('');
+const languagesHint = ref(false);
+const lastname = ref('');
+const link = ref('');
+const personalData = ref(false);
+const phone = ref('');
+const recaptchaError = ref(null);
+const recaptchaVerifyToken = ref(null);
+const resumeFile = ref('');
 const resumeFileName = ref('');
 const resumeText = ref('');
-const personalData = ref(false);
-const pleaseTickRecaptchaMessage = ref('');
-const recaptchaVerified = ref(false);
 const selectVal = ref(0);
+const selectedCamp = ref('');
+const selectedCity = ref('');
+const selectedStudy = ref('');
+const specialty = ref('');
+const study = ref('');
 const thanksMessage = ref('');
+const university = ref('');
+const userEmail = ref('');
+const vacancy = ref('');
+const whereFind = ref('');
+const year = ref('');
 
 /**
  * Custom directive -- start
  */
-
 const vCleanHtml = {
   mounted(el, binding) {
     el.innerHTML = binding.value;
@@ -373,9 +380,7 @@ function onChangePhone(event) {
   emits('onChangePhone', phone.value);
 }
 
-const isJobPage = computed(() => {
-  return route.name === '/job';
-});
+const isJobPage = computed(() => route.name === '/job');
 
 function onFileChange(e) {
   const files = e.target.files || e.dataTransfer.files;
@@ -409,18 +414,12 @@ function onFileChange(e) {
   createFile(files[0]);
 }
 
-function onVerify() {
-  pleaseTickRecaptchaMessage.value = '';
-  recaptchaVerified.value = true;
-}
-
 function createFile(file) {
   const reader = new FileReader();
-  const vm = this;
 
   reader.onload = e => {
-    vm.resumeFile = e.target.result;
-    vm.resumeFileName = file.name;
+    resumeFile.value = e.target.result;
+    resumeFileName.value = file.name;
   };
   reader.readAsDataURL(file);
 }
@@ -446,27 +445,78 @@ const filteredJob = computed(() => {
 
 const renderJob = computed(() => !!useRoute().query.job);
 
-
-
-
 function loadRecaptchaScript() {
-
   if (document.querySelector('script[src^="https://www.google.com/recaptcha/api.js"]')) return;
 
   const script = document.createElement('script');
-  script.src = `https://www.google.com/recaptcha/api.js?render=${sitekey}`;
+  script.src = `https://www.google.com/recaptcha/api.js`;
   script.async = true;
   script.defer = true;
-  document.head.appendChild(script)
+  document.head.appendChild(script);
 }
 
-onMounted(() => loadRecaptchaScript())
+onMounted(() => loadRecaptchaScript());
 
+async function submitForm() {
+
+  if (selectedCamp.value) {
+    filterJob(props.select[selectedCamp.value]);
+  }
+
+  const { hash, sessionId } = await (await fetch('/sign-form.php')).json();
+
+  const data = {
+    firstname: firstname.value,
+    lastname: `${lastname.value}${props.namePostfix ? ' ' + props.namePostfix : ''}`,
+    phone: phone.value,
+    vacancy: vacancy.value,
+    email: userEmail.value,
+    resumeText: resumeText.value,
+    resumeFile: resumeFile.value,
+    resumeFileName: resumeFileName.value,
+    jobID: job.value.id,
+    city: route.query.city || selectedCity.value,
+    campCity: selectedCity.value,
+    hash,
+    sessionId,
+  };
+
+  if (props.showCampCity) {
+    data.fromCampPage = true;
+    data.campCity = selectedCity.value || cities[selectedCity.value];
+    data.city = campCity.value || cities[selectedCity.value];
+    data.study = study.value || educations[selectedStudy.value];
+    data.university = university.value;
+    data.department = department.value;
+    data.specialty = specialty.value;
+    data.year = year.value;
+    data.diploma = diploma.value;
+    data.languages = languages.value;
+    data.achievements = achievements.value;
+    data.expectations = expectations.value;
+    data.whereFind = whereFind.value;
+    data.hobby = hobby.value;
+    data.feedback = feedback.value;
+    data.link = link.value;
+  }
+
+  const resp = await fetch('/save-form.php', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+}
+
+const onReCAPTCHA = (token) => {
+  recaptchaVerifyToken.value = token;
+  recaptchaError.value = null;
+};
 
 async function handleSubmit() {
   try {
-    if (!window.grecaptcha) {
-      console.error('reCAPTCHA script is not loaded');
+    if (!recaptchaVerifyToken.value) {
+      recaptchaError.value = 'Подтвердите, что вы не робот.';
       return false;
     }
 
@@ -474,97 +524,11 @@ async function handleSubmit() {
       return false;
     }
 
-    const token = await grecaptcha.execute(sitekey, { action: 'form_submission' });
-    submitForm(token);
+    await submitForm();
 
   } catch (e) {
     console.error('Error submitting form:', e);
   }
-
-
-
-  // this.$validator.validateAll().then(result => {
-  //   if (result) {
-  //     if (this.selectedCamp) {
-  //       this.filterJob(this.select[this.selectedCamp].value);
-  //     }
-  //     const data = {
-  //       firstname: this.firstname,
-  //       lastname: `${this.lastname} ${this.namePrefix}`,
-  //       phone: this.phone,
-  //       vacancy: this.vacancy,
-  //       email: this.email,
-  //       resumeText: this.resumeText,
-  //       resumeFile: this.resumeFile,
-  //       resumeFileName: this.resumeFileName,
-  //       jobID: this.job.id,
-  //       city: this.$route.query.city || this.camp,
-  //       campCity: this.campCity,
-  //       hash: this.hash,
-  //     };
-  //
-  //     if (this.showCampCity) {
-  //       data.fromCampPage = true;
-  //       data.campCity = this.campCity || this.cities[this.selectedCity];
-  //       data.city = this.campCity || this.cities[this.selectedCity];
-  //       data.study = this.study || this.educations[this.selectedStudy];
-  //       data.university = this.university;
-  //       data.department = this.department;
-  //       data.specialty = this.specialty;
-  //       data.year = this.year;
-  //       data.diploma = this.diploma;
-  //       data.languages = this.languages;
-  //       data.achievements = this.achievements;
-  //       data.expectations = this.expectations;
-  //       data.whereFind = this.whereFind;
-  //       data.hobby = this.hobby;
-  //       data.feedback = this.feedback;
-  //       data.link = this.link;
-  //     }
-  //     sendResume(data)
-  //       .then(() => {
-  //         this.firstname = '';
-  //         this.lastname = '';
-  //         this.phone = '';
-  //         this.vacancy = '';
-  //         this.email = '';
-  //         this.resumeText = '';
-  //         this.resumeFile = '';
-  //         this.resumeFileName = '';
-  //         this.personalData = false;
-  //         this.campCity = '';
-  //         this.city = '';
-  //         this.selectedCity = '';
-  //         this.study = '';
-  //         this.selectedStudy = '';
-  //         this.university = '';
-  //         this.department = '';
-  //         this.specialty = '';
-  //         this.year = '';
-  //         this.diploma = '';
-  //         this.languages = '';
-  //         this.achievements = '';
-  //         this.expectations = '';
-  //         this.whereFind = '';
-  //         this.hobby = '';
-  //         this.feedback = '';
-  //         this.link = '';
-  //         this.$emit('closePopup', true);
-  //         this.$validator.reset();
-  //         this.showModal(true);
-  //       })
-  //       .catch(() => {
-  //         this.$emit('closePopup', false);
-  //         this.showModal(false);
-  //       });
-  //   }
-  //   return false;
-  // });
-  return true;
-}
-
-function submitForm() {
-  console.log(111)
 }
 
 // export default {
@@ -917,7 +881,7 @@ function submitForm() {
 }
 
 .captchaWrapper {
-  margin-bottom: 55px;
+  padding-bottom: 25px;
 }
 
 .submit {
