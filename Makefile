@@ -15,7 +15,8 @@ npm_cmd:
 		-u $(USER):$(USER) \
 		-w $(HOME) \
 		--env HOME=$(HOME) \
-		--network host \
+		--env API_URL=http://php_simple \
+		--network=interesnee_network \
 		node:$(TAG) npm $(CMD)
 
 .PHONY: npm

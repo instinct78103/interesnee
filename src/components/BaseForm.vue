@@ -1,4 +1,18 @@
 <template>
+
+  <Dialog v-if="isFormSubmitted" ref="dialog">
+    <div>
+      <h3>{{isSuccess ? 'Спасибо!' : 'Что-то пошло не так!'}}</h3>
+      <p>
+        {{isSuccess
+        ? 'Мы получили ваше сообщение, и свяжемся с вами в ближайшее время.'
+        : 'Не получилось обработать Ваш запрос. Вы можете связаться с нами, отправив письмо на почту <a href="mailto:hr@interesnee.ru">hr@interesnee.ru</a>, или попробовать позже.'
+        }}
+      </p>
+      <button>Закрыть</button>
+    </div>
+  </Dialog>
+
   <section v-if="filteredJob && renderJob">
     <Hero kind="small">{{ filteredJob?.title.replace('(RU)', '') }}</Hero>
     <div :class="$style.root">
@@ -8,101 +22,102 @@
       </div>
     </div>
   </section>
+
   <section :class="[$style.root, $style.backgrounded]" :style="{ backgroundColor: bgColor}">
     <div :class="[$style.container, $style.formContainer]">
       <h2 :class="$style.title">{{ props.title }}</h2>
-      <Form v-slot="{ errors }" style="--column-gap: 15px;display:flex;flex-flow:row wrap; gap: 15px var(--column-gap)" autocomplete="off" @submit="handleSubmit">
+      <form @submit.prevent="handleSubmit" style="--gap: 15px;display:flex;flex-flow:row wrap; gap: var(--gap)" autocomplete="off">
 
-        <div :class="[$style.col, $style.colHalf]">
-          <Field v-model="firstname" :class="[$style.input, {[$style.error]: errors.firstname}]" name="firstname" type="text" placeholder="Имя" rules="required|alpha" />
-          <transition name="slide-top"><span v-show="errors.firstname" :class="[$style.detail]">{{ errors.firstname }}</span></transition>
+        <div :class="[$style.col, $style.col_6]">
+          <input v-model="form.firstname.value" @blur="validateField('firstname')" :class="[$style.input, {[$style.error]: errors.firstname && !isFirstnameValid}]" name="firstname" type="text" placeholder="Имя" />
+          <transition name="slide-top"><span v-show="errors.firstname && !isFirstnameValid" :class="[$style.detail]">{{ errors.firstname }}</span></transition>
         </div>
 
-        <div :class="[$style.col, $style.colHalf]">
-          <Field v-model="lastname" :class="[$style.input, {[$style.error]: errors.lastname}]" name="lastname" type="text" placeholder="Фамилия" rules="required|alpha" />
-          <transition name="slide-top"><span v-show="errors.lastname" :class="$style.detail">{{ errors.lastname }}</span></transition>
+        <div :class="[$style.col, $style.col_6]">
+          <input v-model="form.lastname.value" @blur="validateField('lastname')" :class="[$style.input, {[$style.error]: errors.lastname && !isLastnameValid}]" name="lastname" type="text" placeholder="Фамилия" />
+          <transition name="slide-top"><span v-show="errors.lastname && !isLastnameValid" :class="$style.detail">{{ errors.lastname }}</span></transition>
         </div>
 
-        <div :class="[$style.col, $style.colHalf]">
-          <Field v-model="phone" @change="onChangePhone" :class="[$style.input, {[$style.error]: errors.phone}]" v-mask="'+7 (###) ###-##-##'" name="phone" type="text" placeholder="Телефон" rules="required|vMask" />
-          <transition name="slide-top"><span v-show="errors.phone" :class="$style.detail">{{ errors.phone }}</span></transition>
+        <div :class="[$style.col, $style.col_6]">
+          <input v-model="form.phone.value" @blur="validateField('phone')" @change="onChangePhone" :class="[$style.input, {[$style.error]: errors.phone && !isPhoneValid}]" v-mask="'+7 (###) ###-##-##'" name="phone" type="text" placeholder="Телефон" />
+          <transition name="slide-top"><span v-show="errors.phone && !isPhoneValid" :class="$style.detail">{{ errors.phone }}</span></transition>
         </div>
 
-        <div :class="[$style.col, $style.colHalf]">
-          <Field v-model="userEmail" rules="required|email" name="email" :class="[$style.input, {[$style.error]: errors.email}]" type="text" placeholder="Email"/>
-          <transition name="slide-top"><span v-show="errors.email" :class="$style.detail">{{ errors.email }}</span></transition>
+        <div :class="[$style.col, $style.col_6]">
+          <input v-model="form.userEmail.value" @blur="validateField('userEmail')" name="email" :class="[$style.input, {[$style.error]: errors.userEmail && !isEmailValid}]" type="text" placeholder="Email"/>
+          <transition name="slide-top"><span v-show="errors.userEmail && !isEmailValid" :class="$style.detail">{{ errors.userEmail }}</span></transition>
         </div>
 
-        <div :class="[$style.col, $style.colFull]">
+        <div :class="[$style.col, $style.col_12]">
           <template v-if="select">
-            <select :class="[$style.input, {[$style.error]: errors.camp }, $style.select]" v-model="selectedCamp" name="campSelect">
+            <select :class="[$style.input, {[$style.error]: errors.camp }, $style.select]" v-model="form.selectedCamp.value" @blur="validateField('selectedCamp')" name="campSelect">
               <option value="" disabled hidden>Направление практики</option>
               <option v-for="(value, index) in select" :key="index" :value="index">{{ value.name }}</option>
             </select>
-            <Field rules="required" v-model="selectedCamp" name="camp" type="hidden" />
-            <transition name="slide-top"><span v-show="errors.camp" :class="$style.detail">{{ errors.camp }}</span></transition>
+            <input v-model="selectedCamp" name="camp" type="hidden" />
+            <transition name="slide-top"><span v-show="errors.selectedCamp && !isSelectCampValid" :class="$style.detail">{{ errors.selectedCamp }}</span></transition>
           </template>
           <template v-else>
-            <Field rules="required" v-model="vacancy" :class="[$style.input, {[$style.error]: errors.vacancy }]" name="vacancy" type="text" placeholder="Интересующая вакансия" />
-            <transition name="slide-top"><span v-show="errors.vacancy" :class="$style.detail">{{ errors.vacancy }}</span></transition>
+            <input v-model="form.vacancy.value" @blur="validateField('vacancy')" :class="[$style.input, {[$style.error]: errors.vacancy && !isVacancyValid }]" name="vacancy" type="text" placeholder="Интересующая вакансия" />
+            <transition name="slide-top"><span v-show="errors.vacancy && !isVacancyValid" :class="$style.detail">{{ errors.vacancy }}</span></transition>
           </template>
         </div>
 
         <template v-if="showCampCity">
-          <div :class="[$style.col, $style.colFull]">
-            <select v-if="cities" :class="[$style.input, {[$style.error]: errors.campSelectedCity }, $style.select]" v-model="selectedCity" name="campCitySelect">
+          <div :class="[$style.col, $style.col_12]">
+            <select :class="[$style.input, {[$style.error]: errors.campSelectedCity }, $style.select]" v-model="form.selectedCity.value" @blur="validateField('selectedCity')" name="campCitySelect">
               <option value="" disabled hidden>Город</option>
               <option v-for="(city, cityName) in cities" :key="cityName" :value="cityName">{{ city }}</option>
             </select>
-            <Field rules="required" v-model="selectedCity" name="campSelectedCity" type="hidden" />
-            <transition name="slide-top"><span v-show="errors.campSelectedCity" :class="$style.detail">{{ errors.campSelectedCity }}</span></transition>
+            <input v-model="form.selectedCity.value" name="campSelectedCity" type="hidden" />
+            <transition name="slide-top"><span v-show="errors.selectedCity && !isSelectedCityValid" :class="$style.detail">{{ errors.selectedCity }}</span></transition>
           </div>
 
-          <div v-if="selectedCity === 'other'" :class="[$style.col, $style.colFull]">
-            <Field rules="required" v-model="campCity" :class="[$style.input, {[$style.error]: errors.campCity }]" name="campCity" type="text" placeholder="Город" />
+          <div v-if="form.selectedCity.value === 'other'" :class="[$style.col, $style.col_12]">
+            <input v-model="form.campCity.value" @blur="validateField('campCity')" :class="[$style.input, {[$style.error]: errors.campCity }]" name="campCity" type="text" placeholder="Город" />
             <transition name="slide-top"><span v-show="errors.campCity" :class="$style.detail">{{ errors.campCity }}</span></transition>
           </div>
 
-          <div :class="[$style.col, $style.colFull]">
-            <input v-model="link" :class="[$style.input]" name="link" type="text" placeholder="Ссылка на ваш профиль в социальных сетях">
+          <div :class="[$style.col, $style.col_12]">
+            <input v-model="form.link.value" :class="[$style.input]" name="link" type="text" placeholder="Ссылка на ваш профиль в социальных сетях">
           </div>
 
-          <div :class="[$style.col, $style.colFull]">
-            <select v-if="educations" :class="[$style.input, {[$style.error]: errors.selectedStudy }, $style.select]" v-model="selectedStudy" name="camp">
+          <div :class="[$style.col, $style.col_12]">
+            <select :class="[$style.input, {[$style.error]: errors.selectedStudy }, $style.select]" v-model="form.selectedStudy.value" name="camp">
               <option value="" disabled hidden>Учитесь или уже окончили?</option>
               <option v-for="(education, index) in educations" :key="index" :value="index">{{ education }}</option>
             </select>
             <transition name="slide-top"><span v-show="errors.selectedStudy" :class="$style.detail">{{ errors.selectedStudy }}</span></transition>
           </div>
 
-          <div v-if="selectedStudy === 'other'" :class="[$style.col, $style.colFull]">
-            <Field rules="required" v-model="study" :class="[$style.input, {[$style.error]: errors.study }]" name="study" type="text" placeholder="Учитесь или уже окончили?" />
-            <transition name="slide-top"><span v-show="errors.study" :class="$style.detail">{{ errors.study }}</span></transition>
+          <div v-if="form.selectedStudy.value === 'other'" :class="[$style.col, $style.col_12]">
+            <input v-model="form.study.value" @blur="validateField('study')" :class="[$style.input, {[$style.error]: errors.study && !isStudyValid }]" name="study" type="text" placeholder="Учитесь или уже окончили?" />
+            <transition name="slide-top"><span v-show="errors.study && !isStudyValid" :class="$style.detail">{{ errors.study }}</span></transition>
           </div>
 
-          <div :class="[$style.col, $style.colFull]">
-            <input v-model="university" :class="[$style.input]" name="university" type="text" placeholder="Название вуза">
+          <div :class="[$style.col, $style.col_12]">
+            <input v-model="form.university.value" :class="[$style.input]" name="university" type="text" placeholder="Название вуза">
           </div>
 
-          <div :class="[$style.col, $style.colFull]">
-            <input v-model="department" :class="[$style.input]" name="department" type="text" placeholder="Факультет / Институт">
+          <div :class="[$style.col, $style.col_12]">
+            <input v-model="form.department.value" :class="[$style.input]" name="department" type="text" placeholder="Факультет / Институт">
           </div>
 
-          <div :class="[$style.col, $style.colFull]">
-            <input v-model="specialty" :class="[$style.input]" name="specialty" type="text" placeholder="Специальность">
+          <div :class="[$style.col, $style.col_12]">
+            <input v-model="form.specialty.value" :class="[$style.input]" name="specialty" type="text" placeholder="Специальность">
           </div>
 
-          <div :class="[$style.col, $style.colFull]">
-            <input v-mask="'####'" v-model.trim="year" :class="[$style.input]" name="year" type="text" placeholder="Год окончания">
+          <div :class="[$style.col, $style.col_12]">
+            <input v-mask="'####'" v-model.trim="form.year.value" :class="[$style.input]" name="year" type="text" placeholder="Год окончания">
           </div>
 
-          <div :class="[$style.col, $style.colFull]">
-            <input v-model="diploma" :class="[$style.input]" name="diploma" type="text" placeholder="Тема диплома">
+          <div :class="[$style.col, $style.col_12]">
+            <input v-model="form.diploma.value" :class="[$style.input]" name="diploma" type="text" placeholder="Тема диплома">
           </div>
 
-          <div :class="[$style.col, $style.colFull]">
+          <div :class="[$style.col, $style.col_12]">
             <textarea
-              v-model="languages"
+              v-model="form.languages.value"
               :class="[$style.input]"
               name="languages"
               placeholder="Перечислите языки программирования и технологии, которые вы используете (в порядке предпочтения). Оцените уровень владения ими."
@@ -112,9 +127,9 @@
             <p v-if="languagesHint" :class="$style.inputLabel">Перечислите языки программирования и технологии, которые вы используете (в порядке предпочтения). Оцените уровень владения ими.</p>
           </div>
 
-          <div :class="[$style.col, $style.colFull]">
+          <div :class="[$style.col, $style.col_12]">
             <textarea
-              v-model="achievements"
+              v-model="form.achievements.value"
               :class="[$style.input, $style.achievements]"
               name="achievements"
               placeholder="Расскажите о своих достижениях - почему мы должны взять на практику именно вас? Если добились успеха в учебе - укажите средний балл зачетки. Вы участвовали в олимпиадах/конференциях/конкурсах - напишите об этом. Какие делали курсовые/дипломные работы. Если уже есть опыт работы (удаленная работа или что-то еще), то обязательно напишите об этом."
@@ -124,17 +139,17 @@
             <p v-if="achievementsHint" :class="$style.inputLabel">Расскажите о своих достижениях - почему мы должны взять на практику именно вас? Если добились успеха в учебе - укажите средний балл зачетки. Вы участвовали в олимпиадах/конференциях/конкурсах - напишите об этом. Какие делали курсовые/дипломные работы. Если уже есть опыт работы (удаленная работа или что-то еще), то обязательно напишите об этом.</p>
           </div>
 
-          <div :class="[$style.col, $style.colFull]">
-            <textarea v-model="expectations" :class="[$style.input]" name="expectations" placeholder="Ожидания от практики" />
+          <div :class="[$style.col, $style.col_12]">
+            <textarea v-model="form.expectations.value" :class="[$style.input]" name="expectations" placeholder="Ожидания от практики" />
           </div>
 
-          <div :class="[$style.col, $style.colFull]">
-            <textarea v-model="whereFind" :class="[$style.input]" name="whereFind" placeholder="Откуда вы узнали о практике?" />
+          <div :class="[$style.col, $style.col_12]">
+            <textarea v-model="form.whereFind.value" :class="[$style.input]" name="whereFind" placeholder="Откуда вы узнали о практике?" />
           </div>
 
-          <div :class="[$style.col, $style.colFull]">
+          <div :class="[$style.col, $style.col_12]">
             <textarea
-              v-model="hobby"
+              v-model="form.hobby.value"
               :class="[$style.input]"
               name="hobby"
               placeholder="Укажите дополнительную информацию о себе – увлечения, хобби, игра на музыкальных инструментах и т.п."
@@ -144,9 +159,9 @@
             <p v-if="hobbyHint" :class="$style.inputLabel">Укажите дополнительную информацию о себе – увлечения, хобби, игра на музыкальных инструментах и т.п.</p>
           </div>
 
-          <div :class="[$style.col, $style.colFull]">
+          <div :class="[$style.col, $style.col_12]">
             <textarea
-              v-model="feedback"
+              v-model="form.feedback.value"
               :class="[$style.input]"
               name="feedback"
               placeholder="Обратная связь - возможно, вы хотели бы получить еще какую-то информацию о нашей компании? Если вам есть что спросить - пишите, не стесняйтесь."
@@ -157,97 +172,58 @@
           </div>
         </template>
 
-        <div :class="[$style.col, $style.colFull]">
+        <div :class="[$style.col, $style.col_12]">
           <p :class="$style.chooseText">{{ fileTitle }}</p>
           <div :class="$style.choose">
             <input id="choose-file" type="file" accept="application/pdf, text/rtf, .txt, .doc, .docx" @change="onFileChange">
             <label for="choose-file">Выбрать файл</label>
-            <small v-if="resumeFileName">{{ resumeFileName }}</small>
+            <small v-if="form.resumeFileName.value">{{ form.resumeFileName.value }}</small>
             <small v-else>Выбранный файл не должен превышать 500 KB</small>
             <transition name="slide-top"><span v-if="fileError" :class="$style.detail">{{ fileError }}</span></transition>
           </div>
         </div>
 
-        <div v-if="!showCampCity" :class="[$style.col, $style.colFull]">
-          <textarea v-model="resumeText" :class="$style.input" :placeholder="textAreaPlaceholder" name="resumeText" rows="6" />
+        <div v-if="!showCampCity" :class="[$style.col, $style.col_12]">
+          <textarea v-model="form.resumeText.value" :class="$style.input" :placeholder="textAreaPlaceholder" name="resumeText" rows="6" />
         </div>
 
         <div :class="[$style.col]">
           <label>
-            <Field rules="required" name="terms" type="checkbox" value="personalData" style="margin-right: 5px;"/>
+            <input name="terms" type="checkbox" v-model="form.personalData.value" style="margin-right: 5px;" @change="validateField('personalData')"/>
             <small>Я даю согласие на обработку моих персональных данных, указанных в форме обращения и всех приложенных файлах, в ООО "Очень Интересно", с целью предложения мне вакансий ООО "Очень Интересно". Я понимаю и соглашаюсь, что мои данные будут храниться и обрабатываться в ООО "Очень Интересно" в течение пяти лет, в соответствии с Федеральным законом "О персональных данных" и <a aria-label="Политикой обработки персональных данных" target="_blank" rel="noreferrer noopener" href="/static/docs/privacy_policy.pdf">Политикой обработки персональных данных</a>.</small>
           </label>
-          <transition name="slide-top"><span v-show="errors.terms" :class="$style.detail">Ваше согласие обязательно.</span></transition>
+          <transition name="slide-top"><span v-show="errors.personalData && !isPersonalDataValid" :class="$style.detail">{{ errors.personalData }}</span></transition>
         </div>
 
-        <div :class="$style.captchaWrapper">
-          <div class="g-recaptcha" :data-sitekey="recaptchaToken" :data-callback="onReCAPTCHA"></div>
-          <div :class="$style.robot">
-            <transition name="slide-top"><span v-show="recaptchaError">{{ recaptchaError }}</span></transition>
-          </div>
-        </div>
+<!--        <div :class="$style.captchaWrapper">-->
+<!--          <div class="g-recaptcha" :data-sitekey="recaptchaToken" :data-callback="onReCAPTCHA"></div>-->
+<!--          <div :class="$style.robot">-->
+<!--            <transition name="slide-top"><span v-show="errors.recaptcha && !isRecaptchaValid">{{ errors.recaptcha }}</span></transition>-->
+<!--          </div>-->
+<!--        </div>-->
 
         <button :class="[$style.submit, {[$style.submitCamp]: showCampCity }]" :disabled="job.id === undefined" type="submit" aria-label="Подтвердить форму">Отправить</button>
 
-        <div v-if="thanksMessage" :class="$style.thanksMessage">{{ thanksMessage }}</div>
-
-      </Form>
+      </form>
     </div>
+
     <ContactsListBlock v-if="!showCampCity" />
   </section>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, defineAsyncComponent } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useJobsStore } from '@/store/useJobs.js';
 import { useRoute } from 'vue-router/auto';
+import { mask } from 'vue-the-mask';
+const vMask = mask;
+const Dialog = defineAsyncComponent(() => import('@/components/Dialog.vue'));
 import Hero from '@/components/Hero.vue';
 import ContactsListBlock from '@/components/ContactsListBlock.vue';
 
-/**
- * Form validation -- start
- */
-import { configure, defineRule, Form, Field } from 'vee-validate';
-import { localize } from '@vee-validate/i18n';
-import ru from '@vee-validate/i18n/dist/locale/ru.json';
-import { alpha, required, email, min } from '@vee-validate/rules';
-import { mask } from 'vue-the-mask';
-
-configure({
-  generateMessage: localize({
-    ru: {
-      ...ru,
-      names: {
-        firstname: 'Имя',
-        lastname: 'Фамилия',
-        phone: 'Телефон',
-        camp: 'Напрвление практики',
-        campSelectedCity: 'Город',
-        vacancy: 'Интересующая вакансия',
-        email: 'E-mail',
-        campCity: 'Город',
-        study: 'Образование',
-      },
-    },
-  }),
-});
-localize('ru');
-
-const vMask = mask;
-defineRule('vMask', value => {
-  if (value.replaceAll(/[^0-9]/g, '').length !== 11) {
-    return 'Поле Телефон должно быть действительным номером';
-  }
-  return true;
-});
-defineRule('alpha', alpha);
-defineRule('required', required);
-defineRule('email', email);
-defineRule('min', min);
-/**
- * Form validation -- end
- */
+const dialog = ref(null);
+const showModal = () => dialog?.value?.showModal();
 
 const cities = {
   ekaterinburg: 'Екатеринбург',
@@ -306,42 +282,218 @@ const props = defineProps(
   },
 );
 
-const achievements = ref('');
 const achievementsHint = ref(false);
-const campCity = ref('');
-const department = ref('');
-const diploma = ref('');
-const expectations = ref('');
-const feedback = ref('');
 const feedbackHint = ref(false);
 const fileError = ref(false);
-const firstname = ref('');
-const hobby = ref('');
 const hobbyHint = ref(false);
+const isFormSubmitted = ref(false)
+const isSuccess = ref(false);
 const job = ref([]);
-const languages = ref('');
 const languagesHint = ref(false);
-const lastname = ref('');
-const link = ref('');
-const personalData = ref(false);
-const phone = ref('');
 const recaptchaError = ref(null);
 const recaptchaVerifyToken = ref(null);
-const resumeFile = ref('');
-const resumeFileName = ref('');
-const resumeText = ref('');
 const selectVal = ref(0);
-const selectedCamp = ref('');
-const selectedCity = ref('');
-const selectedStudy = ref('');
-const specialty = ref('');
-const study = ref('');
-const thanksMessage = ref('');
-const university = ref('');
-const userEmail = ref('');
-const vacancy = ref('');
-const whereFind = ref('');
-const year = ref('');
+
+const form = {
+  firstname: ref(''),
+  lastname: ref(''),
+  phone: ref(''),
+  userEmail: ref(''),
+  selectedCamp: ref(''),
+  vacancy: ref(''),
+  selectedCity: ref(''),
+  campCity: ref(''),
+  link: ref(''),
+  selectedStudy: ref(''),
+  study: ref(''),
+  university: ref(''),
+  department: ref(''),
+  specialty: ref(''),
+  year: ref(''),
+  diploma: ref(''),
+  languages: ref(''),
+  achievements: ref(''),
+  expectations: ref(''),
+  whereFind: ref(''),
+  hobby: ref(''),
+  feedback: ref(''),
+  resumeFileName: ref(''),
+  resumeText: ref(''),
+  personalData: ref(false),
+  recaptcha: ref(false)
+}
+const errors = ref({})
+
+const isFirstnameValid = computed(() => form.firstname.value.trim() !== '');
+const isLastnameValid = computed(() => form.lastname.value.trim() !== '');
+const isPhoneValid = computed(() => form.phone.value.replaceAll(/[^0-9]/g, '').length === 11);
+const isEmailValid = computed(() => form.userEmail.value.match(/^((?!\.)[\w-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/gim));
+const isSelectCampValid = computed(() => form.selectedCamp.value !== '' || !props.select);
+const isVacancyValid = computed(() => form.vacancy.value !== '');
+const isSelectedCityValid = computed(() => form.selectedCity.value !== '' || !props.showCampCity);
+const isCampCityValid = computed(() => form.campCity.value !== '' || form.selectedCity.value !== 'other');
+const isStudyValid = computed(() => form.study.value !== '' || form.selectedStudy.value !== 'other');
+const isPersonalDataValid = computed(() => form.personalData.value === true)
+const isRecaptchaValid = computed(() => form.recaptcha.value === true)
+
+const validateField = (field) => {
+  if (Object.hasOwn(errors.value, field)) {
+    delete errors.value[field]
+  }
+  if (field === 'firstname' && !isFirstnameValid.value) {
+    errors.value.firstname = 'Поле Имя обязательно для заполнения';
+  }
+  if (field === 'lastname' && !isLastnameValid.value) {
+    errors.value.lastname = 'Поле Фамилия обязательно для заполнения';
+  }
+  if (field === 'phone' && !isPhoneValid.value) {
+    errors.value.phone = 'Поле Телефон обязательно для заполнения';
+  }
+  if (field === 'userEmail' && !isEmailValid.value) {
+    errors.value.userEmail = 'Поле E-mail обязательно для заполнения';
+  }
+  if (field === 'selectedCamp' && !isSelectCampValid.value) {
+    errors.value.selectedCamp = 'Invalid Selected Camp.';
+  }
+  if (field === 'vacancy' && !isVacancyValid.value) {
+    errors.value.vacancy = 'Поле Направление практики обязательно для заполнения';
+  }
+  if (field === 'selectedCity' && !isSelectedCityValid.value) {
+    errors.value.selectedCity = 'Поле Город обязательно для заполнения';
+  }
+  if (field === 'campCity' && !isCampCityValid.value) {
+    errors.value.campCity = 'Поле Город обязательно для заполнения';
+  }
+  if (field === 'study' && !isStudyValid.value) {
+    errors.value.study = 'Поле Образование обязательно для заполнения';
+  }
+  if (field === 'personalData' && !isPersonalDataValid.value) {
+    errors.value.personalData = 'Ваше согласие обязательно';
+  }
+  if (field === 'recaptchaError' && !isRecaptchaValid.value) {
+    errors.value.recaptcha = 'Подтвердите, что вы не робот';
+  }
+};
+
+const handleSubmit = async () => {
+  errors.value = {}; // Clear previous errors
+
+  const fieldsToValidate = [
+    'firstname',
+    'lastname',
+    'phone',
+    'userEmail',
+    'selectedCamp',
+    'vacancy',
+    'selectedCity',
+    'campCity',
+    'study',
+    'personalData',
+    'recaptchaError',
+  ];
+
+  fieldsToValidate.forEach(field => validateField(field))
+
+  try {
+    if (!recaptchaVerifyToken.value) {
+      // return false;
+    }
+
+    if (fileError.value) {
+      return false;
+    }
+
+    if (Object.values(errors.value).every(e => e !== '')) {
+      return false;
+    }
+
+    await submitForm();
+
+  } catch (e) {
+    console.warn(e)
+  }
+};
+
+async function submitForm() {
+
+  if (form.selectedCamp.value) {
+    filterJob(props.select[form.selectedCamp.value]);
+  }
+
+  const { hash, sessionId } = await (await fetch('/sign-form.php')).json();
+
+  const data = {
+    firstname: form.firstname.value,
+    lastname: `${form.lastname.value}${props.namePostfix ? ' ' + props.namePostfix : ''}`,
+    phone: form.phone.value,
+    vacancy: form.vacancy.value,
+    email: form.userEmail.value,
+    resumeText: form.resumeText.value,
+    resumeFile: form.resumeFile.value,
+    resumeFileName: form.resumeFileName.value,
+    jobID: job.value.id,
+    city: route.query.city || form.selectedCity.value,
+    campCity: form.selectedCity.value,
+    hash,
+    sessionId,
+  };
+
+  if (props.showCampCity) {
+    data.fromCampPage = true;
+    data.campCity = form.selectedCity.value || cities[form.selectedCity.value];
+    data.city = form.campCity.value || cities[form.selectedCity.value];
+    data.study = form.study.value || educations[form.selectedStudy.value];
+    data.university = form.university.value;
+    data.department = form.department.value;
+    data.specialty = form.specialty.value;
+    data.year = form.year.value;
+    data.diploma = form.diploma.value;
+    data.languages = form.languages.value;
+    data.achievements = form.achievements.value;
+    data.expectations = form.expectations.value;
+    data.whereFind = form.whereFind.value;
+    data.hobby = form.hobby.value;
+    data.feedback = form.feedback.value;
+    data.link = form.link.value;
+  }
+
+  const resp = await (await fetch('/save-form.php', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { 'Content-Type': 'application/json' },
+  })).json();
+
+  isFormSubmitted.value = true; // Download component
+  isSuccess.value = resp?.success || false;
+
+  if (isSuccess.value) {
+    form.achievements.value = '';
+    form.campCity.value = '';
+    form.campCity.value = '';
+    form.department.value = '';
+    form.diploma.value = '';
+    form.expectations.value = '';
+    form.feedback.value = '';
+    form.firstname.value = '';
+    form.hobby.value = '';
+    form.languages.value = '';
+    form.lastname.value = '';
+    form.link.value = '';
+    form.phone.value = '';
+    form.resumeFile.value = '';
+    form.resumeFileName.value = '';
+    form.resumeText.value = '';
+    form.specialty.value = '';
+    form.study.value = '';
+    form.university.value = '';
+    form.userEmail.value = '';
+    form.vacancy.value = '';
+    form.whereFind.value = '';
+    form.year.value = '';
+  }
+
+  showModal();
+}
 
 /**
  * Custom directive -- start
@@ -368,7 +520,6 @@ function sanitizeHtml(container) {
     }
   });
 }
-
 /**
  * Custom directive -- end
  */
@@ -376,8 +527,8 @@ function sanitizeHtml(container) {
 const emits = defineEmits(['onChangePhone']);
 
 function onChangePhone(event) {
-  phone.value = event.target.value;
-  emits('onChangePhone', phone.value);
+  form.phone.value = event.target.value;
+  emits('onChangePhone', form.phone.value);
 }
 
 const isJobPage = computed(() => route.name === '/job');
@@ -418,8 +569,8 @@ function createFile(file) {
   const reader = new FileReader();
 
   reader.onload = e => {
-    resumeFile.value = e.target.result;
-    resumeFileName.value = file.name;
+    form.resumeFile.value = e.target.result;
+    form.resumeFileName.value = file.name;
   };
   reader.readAsDataURL(file);
 }
@@ -428,7 +579,8 @@ function filterJob(boardCode) {
   const currentJob = jobs.value.filter(job => job.board_code === boardCode)[0];
 
   job.value = currentJob;
-  vacancy.value = currentJob?.title;
+  form.vacancy.value = currentJob?.title;
+  form.vacancy.value = currentJob?.title;
 
   return currentJob;
 }
@@ -457,274 +609,10 @@ function loadRecaptchaScript() {
 
 onMounted(() => loadRecaptchaScript());
 
-async function submitForm() {
-
-  if (selectedCamp.value) {
-    filterJob(props.select[selectedCamp.value]);
-  }
-
-  const { hash, sessionId } = await (await fetch('/sign-form.php')).json();
-
-  const data = {
-    firstname: firstname.value,
-    lastname: `${lastname.value}${props.namePostfix ? ' ' + props.namePostfix : ''}`,
-    phone: phone.value,
-    vacancy: vacancy.value,
-    email: userEmail.value,
-    resumeText: resumeText.value,
-    resumeFile: resumeFile.value,
-    resumeFileName: resumeFileName.value,
-    jobID: job.value.id,
-    city: route.query.city || selectedCity.value,
-    campCity: selectedCity.value,
-    hash,
-    sessionId,
-  };
-
-  if (props.showCampCity) {
-    data.fromCampPage = true;
-    data.campCity = selectedCity.value || cities[selectedCity.value];
-    data.city = campCity.value || cities[selectedCity.value];
-    data.study = study.value || educations[selectedStudy.value];
-    data.university = university.value;
-    data.department = department.value;
-    data.specialty = specialty.value;
-    data.year = year.value;
-    data.diploma = diploma.value;
-    data.languages = languages.value;
-    data.achievements = achievements.value;
-    data.expectations = expectations.value;
-    data.whereFind = whereFind.value;
-    data.hobby = hobby.value;
-    data.feedback = feedback.value;
-    data.link = link.value;
-  }
-
-  const resp = await fetch('/save-form.php', {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: { 'Content-Type': 'application/json' },
-  });
-
-}
-
 const onReCAPTCHA = (token) => {
   recaptchaVerifyToken.value = token;
   recaptchaError.value = null;
 };
-
-async function handleSubmit() {
-  try {
-    if (!recaptchaVerifyToken.value) {
-      recaptchaError.value = 'Подтвердите, что вы не робот.';
-      return false;
-    }
-
-    if (fileError.value) {
-      return false;
-    }
-
-    await submitForm();
-
-  } catch (e) {
-    console.error('Error submitting form:', e);
-  }
-}
-
-// export default {
-//   name: 'BaseForm',
-//   computed: {
-//     ...mapGetters({
-//       jobs: GET_JOBS,
-//     }),
-//     isJobPage() {
-//       return this.$route.name === JOB;
-//     },
-//     renderJob() {
-//       return !!this.$route.query.job;
-//     },
-//     filteredJob() {
-//       if (this.jobs.length === 0) {
-//         return false;
-//       }
-//
-//       const currentJobBoardCode =
-//         this.$route.query.job || this.select[this.selectVal].value;
-//
-//       return this.filterJob(currentJobBoardCode);
-//     },
-//   },
-//   created() {
-//     // Loading recaptch script.
-//     const script = document.createElement('script');
-//     script.src =
-//       'https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit';
-//     script.async = true;
-//     script.defer = true;
-//     document.body.appendChild(script);
-//
-//   },
-//
-//   methods: {
-//     ...mapActions([FETCH_JOBS]),
-//     submitForm() {
-//       if (!this.recaptchaVerified) {
-//         this.pleaseTickRecaptchaMessage = 'Подтвердите что вы не робот.';
-//         this.$validator.validateAll();
-//         return false;
-//       }
-//       if (this.fileError) {
-//         return false;
-//       }
-//
-//       this.$validator.validateAll().then(result => {
-//         if (result) {
-//           if (this.selectedCamp) {
-//             this.filterJob(this.select[this.selectedCamp].value);
-//           }
-//           const data = {
-//             firstname: this.firstname,
-//             lastname: `${this.lastname} ${this.namePrefix}`,
-//             phone: this.phone,
-//             vacancy: this.vacancy,
-//             email: this.email,
-//             resumeText: this.resumeText,
-//             resumeFile: this.resumeFile,
-//             resumeFileName: this.resumeFileName,
-//             jobID: this.job.id,
-//             city: this.$route.query.city || this.camp,
-//             campCity: this.campCity,
-//             hash: this.hash,
-//           };
-//
-//           if (this.showCampCity) {
-//             data.fromCampPage = true;
-//             data.campCity = this.campCity || this.cities[this.selectedCity];
-//             data.city = this.campCity || this.cities[this.selectedCity];
-//             data.study = this.study || this.educations[this.selectedStudy];
-//             data.university = this.university;
-//             data.department = this.department;
-//             data.specialty = this.specialty;
-//             data.year = this.year;
-//             data.diploma = this.diploma;
-//             data.languages = this.languages;
-//             data.achievements = this.achievements;
-//             data.expectations = this.expectations;
-//             data.whereFind = this.whereFind;
-//             data.hobby = this.hobby;
-//             data.feedback = this.feedback;
-//             data.link = this.link;
-//           }
-//           sendResume(data)
-//             .then(() => {
-//               this.firstname = '';
-//               this.lastname = '';
-//               this.phone = '';
-//               this.vacancy = '';
-//               this.email = '';
-//               this.resumeText = '';
-//               this.resumeFile = '';
-//               this.resumeFileName = '';
-//               this.personalData = false;
-//               this.campCity = '';
-//               this.city = '';
-//               this.selectedCity = '';
-//               this.study = '';
-//               this.selectedStudy = '';
-//               this.university = '';
-//               this.department = '';
-//               this.specialty = '';
-//               this.year = '';
-//               this.diploma = '';
-//               this.languages = '';
-//               this.achievements = '';
-//               this.expectations = '';
-//               this.whereFind = '';
-//               this.hobby = '';
-//               this.feedback = '';
-//               this.link = '';
-//               this.$emit('closePopup', true);
-//               this.$validator.reset();
-//               this.showModal(true);
-//             })
-//             .catch(() => {
-//               this.$emit('closePopup', false);
-//               this.showModal(false);
-//             });
-//         }
-//         return false;
-//       });
-//       return true;
-//     },
-//     onChangePhone(event) {
-//       this.phone = event.target.value;
-//       this.$emit('input', this.phone);
-//     },
-//     onFileChange(e) {
-//       const files = e.target.files || e.dataTransfer.files;
-//       if (!files.length) {
-//         this.fileError = false;
-//         return;
-//       }
-//
-//       const ext = /\.(pdf|doc|docx|txt|rtf)$/i.test(e.target.files[0].name);
-//       if (!ext) {
-//         let msg = 'Файл должен быть в формате';
-//         if (this.isJobPage) {
-//           msg = 'Пожалуйста прикрепите резюме в формате';
-//         }
-//         this.fileError = `${msg} pdf, doc, docx, txt, rtf`;
-//         return;
-//       }
-//
-//       const attachSize = 0.5 * 1024 * 1024;
-//       const attachFile = e.target.files[0];
-//       if (attachFile.size > attachSize) {
-//         let msg = 'Размер файла привышает';
-//         if (this.isJobPage) {
-//           msg = 'Размер резюме больше';
-//         }
-//         this.fileError = `${msg} 500 KB`;
-//         return;
-//       }
-//
-//       this.fileError = false;
-//       this.createFile(files[0]);
-//     },
-//     createFile(file) {
-//       const reader = new FileReader();
-//       const vm = this;
-//
-//       reader.onload = e => {
-//         vm.resumeFile = e.target.result;
-//         vm.resumeFileName = file.name;
-//       };
-//       reader.readAsDataURL(file);
-//     },
-//     removeFile() {
-//       this.resumeFile = '';
-//     },
-//     onVerify() {
-//       this.pleaseTickRecaptchaMessage = '';
-//       this.recaptchaVerified = true;
-//     },
-//     onExpired() {},
-//     resetRecaptcha() {
-//       this.$refs.recaptcha.reset();
-//     },
-//     filterJob(boardCode) {
-//       const currentJob = this.jobs.filter(
-//         job => job.board_code === boardCode,
-//       )[0];
-//
-//       this.job = currentJob;
-//       this.vacancy = currentJob.title;
-//
-//       return currentJob;
-//     },
-//     showModal,
-//   },
-// };
 </script>
 
 <style lang="scss" module>
@@ -761,15 +649,15 @@ async function handleSubmit() {
   padding: 0 0 25px;
 }
 
-.colHalf {
-  width: calc(50% - var(--column-gap, 20px) / 2);
+.col_6 {
+  width: calc(50% - var(--gap, 20px) / 2);
 
   @media(width <= 576px) {
     width: 100%;
   }
 }
 
-.colFull {
+.col_12 {
   width: 100%;
 }
 
