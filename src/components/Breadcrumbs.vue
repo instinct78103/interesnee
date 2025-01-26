@@ -30,8 +30,6 @@ export default {
 };
 </script>
 <style lang="scss" module>
-//@import '../styles/variables';
-//@import '../styles/mixins';
 @use '@/scss/helpers';
 
 .root {

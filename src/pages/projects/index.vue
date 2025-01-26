@@ -1,8 +1,7 @@
 <template>
   <section>
     <Hero>
-      <strong>Вдохновленные вызовом</strong>,
-      <br>создаем <em>удивительные</em> <em>продукты!</em>
+      <strong>Вдохновленные вызовом,</strong> создаем <em>удивительные продукты!</em>
     </Hero>
     <ProjectsCustomers />
     <ProjectsList />

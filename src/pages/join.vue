@@ -1,6 +1,6 @@
 <template>
 
-  <Hero>Найди лучшую работу<em>в твоей жизни</em></Hero>
+  <Hero>Найди лучшую работу <em>в твоей жизни</em></Hero>
 
   <section :class="$style.container">
     <h2 :class="$style.heading">Карьера</h2>

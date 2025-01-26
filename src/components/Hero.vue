@@ -34,9 +34,12 @@ defineProps({
   }
 }
 
+h1 {
+  text-wrap: balance;
+}
+
 .small {
   min-height: 150px;
-  //padding-block: clamp(40px, 4vw, 67px);
 }
 
 .empty {
@@ -49,8 +52,8 @@ defineProps({
   color: #fff;
   font-size: clamp(26px, 4vw, 40px);
   font-weight: normal;
-  line-height: 1.4;
   text-align: center;
+  width: clamp(20ch, 60vw, 30ch);
 }
 
 .smallHeading {
@@ -58,23 +61,9 @@ defineProps({
 }
 
 em {
-  display: inline-block;
   background-color: var(--blue-deep);
-  vertical-align: middle;
-  line-height: 1.2;
-  padding: 0 0 6px 12px;
-  margin-left: 5px;
   font-weight: 100;
   font-style: normal;
-
-  &:last-child {
-    margin-right: 5px;
-    padding-right: 12px;
-  }
-}
-
-em + em {
-  margin-left: 0;
-  padding-left: 0;
+  padding-inline: 5px;
 }
 </style>

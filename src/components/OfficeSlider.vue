@@ -42,8 +42,8 @@
       </template>
     </BaseSlider>
 
-    <Dialog ref="dialog" v-if="officeSelected">
-      <div v-for="(image, key) in officeSelected.images" :key>
+    <Dialog ref="dialog">
+      <div v-for="(image, key) in officeSelected?.images" :key>
         <app-image
           :x1="image.webp"
           :webp="image.webp"
@@ -58,17 +58,15 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref, defineAsyncComponent } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import AppImage from '@/components/AppImage.vue';
 import BaseSlider from '@/components/BaseSlider.vue';
+import Dialog from '@/components/Dialog.vue';
 import $style from './OfficeSlider.module.scss';
 import { useSlider } from '@/composables/useSlider.js';
 
-const Dialog = defineAsyncComponent(() => import('@/components/Dialog.vue'));
 const dialog = ref(null);
-const showModal = () => {
-  dialog?.value?.showModal();
-};
+const showModal = () => dialog?.value?.showModal();
 
 const imagesSliderRefs = ref([]);
 const sliders = ref([]);
