@@ -11,8 +11,7 @@
 
 %section {
     position: relative;
-    padding-top: clamp(40px, 6vw, 90px);
-    padding-bottom: clamp(80px, 6vw, 90px);
+    padding-block: clamp(40px, 6vw, 90px);
 }
 
 %section::after {

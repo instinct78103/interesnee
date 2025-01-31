@@ -1,6 +1,6 @@
 <script setup>
 
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 
 const dialog = ref();
 
@@ -10,13 +10,6 @@ defineExpose({
   showModal,
 });
 
-const props = defineProps({
-  initialIndex: {
-    type: Number,
-    default: 0,
-  }
-})
-
 function backdropClick (e) {
   if (e.target.closest('dialog') && !e.target.closest('form[method="dialog"]')) {
     document.querySelectorAll('dialog[open]').forEach(dialog => dialog.close());
@@ -25,13 +18,6 @@ function backdropClick (e) {
 
 onMounted(() => document.addEventListener('click', backdropClick));
 onUnmounted(() => document.removeEventListener('click', backdropClick))
-
-watch(() => props.initialIndex, (newVal) => {
-  document.querySelectorAll('.dialog--wrap > *')[newVal]?.scrollIntoView({
-    inline: 'start',
-    block: 'nearest',
-  })
-})
 
 </script>
 
@@ -61,6 +47,7 @@ dialog {
   transition: transform 0.3s ease-in-out;
   padding: 0;
   background-color: transparent;
+  overflow-y: hidden;
 
 
   &::backdrop {
@@ -107,5 +94,4 @@ dialog {
     width: inherit;
   }
 }
-
 </style>

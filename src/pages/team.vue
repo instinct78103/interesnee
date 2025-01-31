@@ -5,7 +5,7 @@
     </Hero>
     <TeamOffer />
     <TeamCulture />
-<!--    <TeamVideos />-->
+    <TeamVideos />
 
 <!--    <TeamTeam />-->
   </div>
@@ -15,6 +15,6 @@
 import Hero from '@/components/Hero.vue';
 import TeamOffer from '@/components/team/TeamOffer.vue';
 import TeamCulture from '@/components/team/TeamCulture.vue';
-// import TeamVideos from '@/components/team/TeamVideos.vue';
+import TeamVideos from '@/components/team/TeamVideos.vue';
 // import TeamTeam from '@/components/team/TeamTeam.vue';
 </script>

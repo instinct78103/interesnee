@@ -2,35 +2,10 @@
   <section :class="$style.section">
     <div :class="$style.container">
       <div :class="$style.gallery">
-        <!-- Photos galley -->
-        <stack
-          :column-min-width="columnMinWidth"
-          :gutter-width="15"
-          :gutter-height="15"
-          :monitor-images-loaded="true"
-        >
-          <!-- Gallery item -->
-          <stack-item
-            v-for="(image, index) in images"
-            :class="$style.photo"
-            :key="index"
-            style="transition: transform 300ms"
-          >
-            <img
-              :src="image"
-              :class="$style.galleryImage"
-              alt="Culture photo"
-              decoding="async"
-              @click="openPopup(index)"
-            >
-
-            <button
-              :class="$style.playButton"
-              type="button"
-              @click="openPopup(index)"
-            />
-          </stack-item>
-        </stack>
+        <div v-for="(image, index) in images" :key="image" :class="$style.photo" @click="openPopup(index)">
+          <img :src="image" :class="$style.galleryImage" alt="Culture photo">
+          <button :class="$style.playButton" type="button" />
+        </div>
       </div>
 
       <!-- Section actions -->
@@ -40,7 +15,7 @@
           :class="$style.button"
           aria-label="Показать все видео"
           type="button"
-          @click="toggleExpanded"
+          @click="expanded = !expanded"
         >
           Показать все
         </button>
@@ -79,23 +54,31 @@
     <!--      </el-carousel>-->
     <!--    </el-dialog>-->
   </section>
+  <Dialog ref="dialog" :onscrollend="stopVideos" :onclose="stopVideos">
+    <div v-for="(video, index) in videos" :key="video" class="sliderItem" :ref="(el) => videoSlidesRef[index] = el">
+      <video :class="$style.sliderPhoto" width="800" controls>
+        <source :src="video" type="video/mp4">
+      </video>
+    </div>
+  </Dialog>
 </template>
 
 <script setup>
-// import { Stack, StackItem } from 'vue-stack-grid';
 import { videoFiles, previews } from '@/data/culture-videos';
-import { computed, ref } from 'vue';
-// import BaseLoader from './BaseLoader';
+import { computed, ref, watch } from 'vue';
+import Dialog from '@/components/Dialog.vue';
 
+const dialog = ref(null);
+const videoSlidesRef = ref([])
+const showModal = () => dialog?.value?.showModal();
+
+const previewPhotos = ref(previews);
+const videos = ref(videoFiles);
 const initialPhotos = computed(() => previewPhotos.value.slice(0, 8));
-
-
 const expanded = ref(false);
 const popupOpened = ref(false);
 const images = ref(initialPhotos.value);
 const initialIndex = ref(0);
-const previewPhotos = ref(previews);
-const videos = ref(videoFiles);
 
 
 const columnMinWidth = computed(() => {
@@ -113,129 +96,102 @@ const columnMinWidth = computed(() => {
   return width;
 });
 
+function openPopup(index) {
+  showModal();
+  initialIndex.value = index;
+
+}
+
+watch(expanded, newVal => images.value = newVal ? previewPhotos.value : initialPhotos.value);
+watch(initialIndex, newVal => videoSlidesRef.value[newVal].scrollIntoView({
+  behavior: 'instant',
+  inline: 'start',
+  block: 'nearest',
+}))
+
+function stopVideos() {
+  const videos = document.getElementsByTagName('video');
+  Object.keys(videos).forEach(index => {
+    const video = videos[index];
+    video.pause();
+    video.currentTime = 0;
+  });
+}
+
 /**
  * Team culture component.
  */
-export default {
-  watch: {
-    expanded() {
-      if (this.expanded) {
-        this.images = this.previewPhotos;
-      } else {
-        this.images = this.initialPhotos;
-      }
-    },
-    popupOpened() {
-      // Hack to remove hidden body overflow on close modal.
-      if (!this.popupOpened) {
-        $('body').css('overflow', '');
-      }
-    },
-  },
-  methods: {
-    /**
-     * Toggle expanded gallery state.
-     */
-    toggleExpanded() {
-      this.expanded = !this.expanded;
-    },
-    /**
-     * Open photo details popup.
-     *
-     * @param {number} index - Image index.
-     */
-    openPopup(index) {
-      this.popupOpened = true;
-      this.initialIndex = index;
-      this.setActiveSlide(index);
-    },
-    /**
-     * Close photo details popup.
-     */
-    closePopup() {
-      this.popupOpened = false;
-    },
-    /**
-     * Set active slide of popup slider.
-     *
-     * @param {number} index - Image index.
-     */
-    setActiveSlide(index) {
-      if (this.$refs.carousel) {
-        this.$refs.carousel.setActiveItem(index);
-      }
-    },
-    stopVideos() {
-      const videos = document.getElementsByTagName('video');
-      Object.keys(videos).forEach(index => {
-        const video = videos[index];
-        video.pause();
-        video.currentTime = 0;
-      });
-    },
-  },
-};
+// export default {
+//   methods: {
+//     /**
+//      * Open photo details popup.
+//      *
+//      * @param {number} index - Image index.
+//      */
+//     openPopup(index) {
+//       this.popupOpened = true;
+//       this.initialIndex = index;
+//       this.setActiveSlide(index);
+//     },
+//     /**
+//      * Close photo details popup.
+//      */
+//     closePopup() {
+//       this.popupOpened = false;
+//     },
+//     /**
+//      * Set active slide of popup slider.
+//      *
+//      * @param {number} index - Image index.
+//      */
+//     setActiveSlide(index) {
+//       if (this.$refs.carousel) {
+//         this.$refs.carousel.setActiveItem(index);
+//       }
+//     },
+//     stopVideos() {
+//       const videos = document.getElementsByTagName('video');
+//       Object.keys(videos).forEach(index => {
+//         const video = videos[index];
+//         video.pause();
+//         video.currentTime = 0;
+//       });
+//     },
+//   },
+// };
 </script>
 
 <style lang="scss" module>
-@import '../styles/variables';
-@import '../styles/helpers';
+@use '@/scss/helpers';
 
 .section {
   @extend %section;
-
-  @include media('<=desktop') {
-    padding-bottom: 150px;
-  }
-
-  @include media('<=phone') {
-    padding-bottom: 100px;
-  }
 }
 
 .container {
   @extend %container;
   max-width: 1140px;
-
-  @include media('<desktop-xlg') {
-    max-width: 992px;
-  }
 }
 
 .title {
   @extend %sectionTitle;
-  margin: 0 0 relative-mb(80, 46);
+  margin: 0 0 clamp(30px, 5vw, 80px);
   text-align: center;
-
-  @include media('<=phone') {
-    margin-bottom: 30px;
-  }
 }
 
 .gallery {
+  --gap: 15px;
+  gap: var(--gap);
   min-height: 300px;
+  columns: 260px;
 }
 
 .galleryImage {
   @extend %hoverBlock;
 }
 
-.playButton {
-  border-style: solid;
-  border-width: 37px 0 37px 60px;
-  border-color: $transparent $transparent $transparent $gray;
-  display: block;
-  background-color: $transparent;
-  z-index: 999;
-  position: absolute;
-  margin: auto;
-  opacity: 0.7;
-  transition: all 0.3s;
-  cursor: pointer;
-}
-
 .photo {
-  display: flex;
+  display: grid;
   align-items: center;
   justify-content: center;
   flex-direction: column;
@@ -243,7 +199,10 @@ export default {
   margin: 0;
   object-fit: fill;
   cursor: pointer;
-  position: relative;
+
+  + .photo {
+    margin-top: var(--gap);
+  }
 
   &:hover .playButton {
     opacity: 1;
@@ -251,12 +210,33 @@ export default {
   }
 
   img {
+    grid-column: 1 / 1;
+    grid-row: 1 / 1;
     display: block;
     width: 100%;
     height: auto;
     border-radius: 4px;
     transition: all 0.4s ease-in-out;
   }
+
+  .playButton {
+    grid-column: 1 / 1;
+    grid-row: 1 / 1;
+    border-style: solid;
+    border-width: 37px 0 37px 60px;
+    border-color: transparent transparent transparent var(--gray);
+    display: block;
+    background-color: transparent;
+    z-index: 1;
+    opacity: 0.7;
+    transition: all 0.3s;
+    cursor: pointer;
+    justify-self: center;
+  }
+}
+
+.sliderPhoto {
+  min-width: 100%;
 }
 
 .loader {
@@ -265,7 +245,6 @@ export default {
   height: 100%;
 }
 
-/*========== Actions styles ===========*/
 .actions {
   display: flex;
   width: 100%;
@@ -277,93 +256,34 @@ export default {
 .button {
   @extend %button;
   width: 160px;
-  padding-top: 20px;
+  padding-block: clamp(15px, 5vw, 20px);
   padding-bottom: 20px;
 
-  @include media('<=phone') {
+  @media(width <= 480px) {
     display: block;
     margin: 0 auto;
     width: auto;
-    padding-top: 15px;
-    padding-bottom: 15px;
   }
 }
-
-/*======== End of Actions styles =======*/
-
-/*========== Dialog ===========*/
-.dialog {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 0;
-
-  .sliderPhoto {
-    width: 100%;
-    background-color: $black;
-  }
-
-  [class*='el-carousel__item'] {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-}
-
-.dialog [class='el-dialog'] {
-  background-color: $transparent;
-  box-shadow: none;
-}
-
-.dialog [class='el-dialog__body'] {
-  padding: 0;
-}
-
-@media (max-width: 1366px) {
-  .dialog [role='dialog'] {
-    margin: auto 20px;
-    width: 100%;
-  }
-
-  [class='el-dialog'] {
-    width: 100%;
-  }
-}
-
-@media (min-width: 769px) {
-  .dialog {
-    [class='el-carousel__container'] {
-      height: 85vh;
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  [class='el-dialog'] {
-    width: 60%;
-  }
-
-  .sliderPhoto {
-    max-height: 85vh;
-    height: 100%;
-  }
-
-  .dialog {
-    [role='dialog'] {
-      margin: auto 5px;
-    }
-
-    [class='el-carousel__container'] {
-      height: 85vh;
-    }
-  }
-}
-
-@media (max-width: 415px) {
-  .dialog [role='dialog'] {
-    margin: auto 2px;
-  }
-}
-
-/*========== End of Dialog ===========*/
 </style>
+<!--<style lang="scss">-->
+<!--dialog {-->
+<!--  .dialog&#45;&#45;wrap {-->
+<!--    display: flex;-->
+<!--    scroll-snap-type: x mandatory;-->
+<!--    scroll-behavior: smooth;-->
+<!--    overflow-x: auto;-->
+<!--    scrollbar-width: none;-->
+
+<!--    > * {-->
+<!--      outline: none;-->
+<!--      display: flex;-->
+<!--      align-items: center;-->
+<!--      justify-content: center;-->
+<!--      scroll-snap-align: start;-->
+<!--      scroll-snap-stop: always;-->
+<!--      width: 90cqmin;-->
+<!--    }-->
+<!--  }-->
+<!--}-->
+<!--</style>-->

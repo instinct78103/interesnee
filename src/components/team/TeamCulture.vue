@@ -12,8 +12,8 @@
       </div>
     </div>
   </section>
-  <Dialog ref="dialog" :initialIndex>
-    <div v-for="photo in fullsizePhotos" :key="photo" class="sliderItem">
+  <Dialog ref="dialog">
+    <div v-for="(photo, index) in fullsizePhotos" :key="photo" class="sliderItem" :ref="(el) => photoSlidesRef[index] = el">
       <img :src="photo" alt="Culture photo">
     </div>
   </Dialog>
@@ -25,6 +25,7 @@ import { full, previews } from '@/data/culture-photos';
 import Dialog from '@/components/Dialog.vue';
 
 const dialog = ref(null);
+const photoSlidesRef = ref([]);
 const showModal = () => dialog?.value?.showModal();
 
 const expanded = ref(false);
@@ -40,6 +41,10 @@ function openPopup(index) {
 }
 
 watch(expanded, newVal => images.value = newVal ? previewPhotos.value : initialPhotos.value);
+watch(initialIndex, newVal => photoSlidesRef.value[newVal].scrollIntoView({
+  inline: 'start',
+  block: 'nearest',
+}))
 
 </script>
 
@@ -48,7 +53,6 @@ watch(expanded, newVal => images.value = newVal ? previewPhotos.value : initialP
 
 .section {
   @extend %section;
-  padding-bottom: clamp(100px, 6vw, 150px);
 }
 
 .container {
