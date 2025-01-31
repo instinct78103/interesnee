@@ -21,38 +21,6 @@
         </button>
       </div>
     </div>
-
-    <!-- Slider dialog -->
-    <!--    <el-dialog-->
-    <!--      :visible.sync="popupOpened"-->
-    <!--      :class="['dialogWithCarousel', $style.dialog]"-->
-    <!--      top="5vh"-->
-    <!--      @closed="stopVideos"-->
-    <!--    >-->
-    <!--      <el-carousel-->
-    <!--        ref="carousel"-->
-    <!--        :interval="4000"-->
-    <!--        :autoplay="false"-->
-    <!--        :initial-index="initialIndex"-->
-    <!--        indicator-position="none"-->
-    <!--        arrow="always"-->
-    <!--        @change="stopVideos"-->
-    <!--      >-->
-    <!--        <el-carousel-item-->
-    <!--          v-for="(video, index) in videos"-->
-    <!--          :key="index"-->
-    <!--          :class="$style.sliderItem">-->
-    <!--          <video-->
-    <!--            :class="$style.sliderPhoto"-->
-    <!--            width="800"-->
-    <!--            controls>-->
-    <!--            <source-->
-    <!--              :src="video"-->
-    <!--              type="video/mp4">-->
-    <!--          </video>-->
-    <!--        </el-carousel-item>-->
-    <!--      </el-carousel>-->
-    <!--    </el-dialog>-->
   </section>
   <Dialog ref="dialog" :onscrollend="stopVideos" :onclose="stopVideos">
     <div v-for="(video, index) in videos" :key="video" class="sliderItem" :ref="(el) => videoSlidesRef[index] = el">
@@ -76,38 +44,18 @@ const previewPhotos = ref(previews);
 const videos = ref(videoFiles);
 const initialPhotos = computed(() => previewPhotos.value.slice(0, 8));
 const expanded = ref(false);
-const popupOpened = ref(false);
 const images = ref(initialPhotos.value);
-const initialIndex = ref(0);
-
-
-const columnMinWidth = computed(() => {
-  const videosCount = images.value.length;
-  let width = 263;
-
-  if (videosCount === 1) {
-    width = 700;
-  } else if (videosCount === 2) {
-    width = 500;
-  } else if (videosCount >= 3 && videosCount <= 6) {
-    width = 300;
-  }
-
-  return width;
-});
 
 function openPopup(index) {
   showModal();
-  initialIndex.value = index;
-
+  videoSlidesRef.value[index].scrollIntoView({
+    behavior: 'instant',
+    inline: 'start',
+    block: 'nearest',
+  })
 }
 
 watch(expanded, newVal => images.value = newVal ? previewPhotos.value : initialPhotos.value);
-watch(initialIndex, newVal => videoSlidesRef.value[newVal].scrollIntoView({
-  behavior: 'instant',
-  inline: 'start',
-  block: 'nearest',
-}))
 
 function stopVideos() {
   const videos = document.getElementsByTagName('video');
@@ -117,48 +65,6 @@ function stopVideos() {
     video.currentTime = 0;
   });
 }
-
-/**
- * Team culture component.
- */
-// export default {
-//   methods: {
-//     /**
-//      * Open photo details popup.
-//      *
-//      * @param {number} index - Image index.
-//      */
-//     openPopup(index) {
-//       this.popupOpened = true;
-//       this.initialIndex = index;
-//       this.setActiveSlide(index);
-//     },
-//     /**
-//      * Close photo details popup.
-//      */
-//     closePopup() {
-//       this.popupOpened = false;
-//     },
-//     /**
-//      * Set active slide of popup slider.
-//      *
-//      * @param {number} index - Image index.
-//      */
-//     setActiveSlide(index) {
-//       if (this.$refs.carousel) {
-//         this.$refs.carousel.setActiveItem(index);
-//       }
-//     },
-//     stopVideos() {
-//       const videos = document.getElementsByTagName('video');
-//       Object.keys(videos).forEach(index => {
-//         const video = videos[index];
-//         video.pause();
-//         video.currentTime = 0;
-//       });
-//     },
-//   },
-// };
 </script>
 
 <style lang="scss" module>
@@ -188,6 +94,12 @@ function stopVideos() {
 
 .galleryImage {
   @extend %hoverBlock;
+}
+
+.sliderItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .photo {
@@ -237,6 +149,7 @@ function stopVideos() {
 
 .sliderPhoto {
   min-width: 100%;
+  max-height: 80cqmin;
 }
 
 .loader {
@@ -266,24 +179,3 @@ function stopVideos() {
   }
 }
 </style>
-<!--<style lang="scss">-->
-<!--dialog {-->
-<!--  .dialog&#45;&#45;wrap {-->
-<!--    display: flex;-->
-<!--    scroll-snap-type: x mandatory;-->
-<!--    scroll-behavior: smooth;-->
-<!--    overflow-x: auto;-->
-<!--    scrollbar-width: none;-->
-
-<!--    > * {-->
-<!--      outline: none;-->
-<!--      display: flex;-->
-<!--      align-items: center;-->
-<!--      justify-content: center;-->
-<!--      scroll-snap-align: start;-->
-<!--      scroll-snap-stop: always;-->
-<!--      width: 90cqmin;-->
-<!--    }-->
-<!--  }-->
-<!--}-->
-<!--</style>-->

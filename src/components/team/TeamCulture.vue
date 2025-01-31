@@ -29,7 +29,6 @@ const photoSlidesRef = ref([]);
 const showModal = () => dialog?.value?.showModal();
 
 const expanded = ref(false);
-const initialIndex = ref(0);
 const previewPhotos = ref(previews);
 const fullsizePhotos = ref(full);
 const initialPhotos = computed(() => previewPhotos.value.slice(0, 8));
@@ -37,15 +36,13 @@ const images = ref(initialPhotos.value);
 
 function openPopup(index) {
   showModal();
-  initialIndex.value = index;
+  photoSlidesRef.value[index].scrollIntoView({
+    inline: 'start',
+    block: 'nearest',
+  })
 }
 
 watch(expanded, newVal => images.value = newVal ? previewPhotos.value : initialPhotos.value);
-watch(initialIndex, newVal => photoSlidesRef.value[newVal].scrollIntoView({
-  inline: 'start',
-  block: 'nearest',
-}))
-
 </script>
 
 <style lang="scss" module>
@@ -114,27 +111,5 @@ watch(initialIndex, newVal => photoSlidesRef.value[newVal].scrollIntoView({
 .button {
   @extend %button;
   padding-block: clamp(15px, 5vw, 20px);
-}
-</style>
-
-<style lang="scss">
-dialog {
-  .dialog--wrap {
-    display: flex;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    overflow-x: auto;
-    scrollbar-width: none;
-
-    > * {
-      outline: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-      width: 90cqmin;
-    }
-  }
 }
 </style>

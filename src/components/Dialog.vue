@@ -11,7 +11,7 @@ defineExpose({
 });
 
 function backdropClick (e) {
-  if (e.target.closest('dialog') && !e.target.closest('form[method="dialog"]')) {
+  if (e.target.closest('dialog') && !e.target.closest('.dialog--wrap > *')) {
     document.querySelectorAll('dialog[open]').forEach(dialog => dialog.close());
   }
 }
@@ -92,6 +92,28 @@ dialog {
     object-fit: contain;
     display: block;
     width: inherit;
+  }
+}
+
+dialog {
+  .dialog--wrap {
+    display: flex;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    overflow-x: auto;
+    scrollbar-width: none;
+    align-items: center;
+    gap: 20px;
+
+    > * {
+      outline: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      width: 90cqmin;
+    }
   }
 }
 </style>
