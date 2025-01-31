@@ -8,15 +8,8 @@
         </div>
       </div>
 
-      <!-- Section actions -->
       <div :class="$style.actions">
-        <button
-          v-show="!expanded && videos.length > 8"
-          :class="$style.button"
-          aria-label="Показать все видео"
-          type="button"
-          @click="expanded = !expanded"
-        >
+        <button v-show="!expanded && videos.length > 8" :class="$style.button" aria-label="Показать все видео" type="button" @click="expanded = !expanded">
           Показать все
         </button>
       </div>

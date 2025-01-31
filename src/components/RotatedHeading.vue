@@ -29,6 +29,7 @@
   top: 0;
   left: -80px;
   text-transform: uppercase;
+  padding-block: 0 20px;
 
   @media(width <= 1440px) {
     left: -50px;

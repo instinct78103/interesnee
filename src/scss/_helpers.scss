@@ -21,7 +21,7 @@
     transform: translateX(-50%);
     bottom: 0;
     display: block;
-    width: 93.4%;
+    width: calc(100% - 30px);
     max-width: 1280px;
     height: 1px;
     background-color: var(--gray-4);

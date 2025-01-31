@@ -1,14 +1,9 @@
 <template>
-  <div>
-    <Hero>
-      <strong>Работайте с лучшими,</strong> <em>в лучших условиях</em>
-    </Hero>
+    <Hero><strong>Работайте с лучшими,</strong> <em>в лучших условиях</em></Hero>
     <TeamOffer />
     <TeamCulture />
     <TeamVideos />
-
-<!--    <TeamTeam />-->
-  </div>
+    <TeamCards />
 </template>
 
 <script setup>
@@ -16,5 +11,5 @@ import Hero from '@/components/Hero.vue';
 import TeamOffer from '@/components/team/TeamOffer.vue';
 import TeamCulture from '@/components/team/TeamCulture.vue';
 import TeamVideos from '@/components/team/TeamVideos.vue';
-// import TeamTeam from '@/components/team/TeamTeam.vue';
+import TeamCards from '@/components/team/TeamCards.vue';
 </script>
