@@ -6,7 +6,7 @@
     >
       <template #slider>
         <div :class="$style.office" v-for="(value, index) in office" :key="index" class="office">
-          <div :class="$style.officePhotos" @click="openCarousel(value)" :ref="el => imagesSliderRefs[index] = el">
+          <div :class="$style.officePhotos" :ref="el => imagesSliderRefs[index] = el">
             <app-image
               v-for="(image, imgIndex) in value.images" :key="imgIndex"
               :class="[$style.carouselImg, {[$style.isActive]: imgIndex === sliders[index]?.currentIndex}]"
@@ -16,6 +16,7 @@
               lazy
               :width="200"
               :height="180"
+              @click="openPopup(value, imgIndex)"
             />
           </div>
 
@@ -43,7 +44,7 @@
     </BaseSlider>
 
     <Dialog ref="dialog">
-      <div v-for="(image, key) in officeSelected?.images" :key>
+      <div v-for="(image, index) in officeSelected?.images" :key="image" :ref="el => dialogImagesRef[index] = el">
         <app-image
           :x1="image.webp"
           :webp="image.webp"
@@ -58,7 +59,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import AppImage from '@/components/AppImage.vue';
 import BaseSlider from '@/components/BaseSlider.vue';
 import Dialog from '@/components/Dialog.vue';
@@ -67,14 +68,20 @@ import { useSlider } from '@/composables/useSlider.js';
 
 const dialog = ref(null);
 const showModal = () => dialog?.value?.showModal();
+const dialogImagesRef = ref([])
 
 const imagesSliderRefs = ref([]);
 const sliders = ref([]);
 const officeSelected = ref(null);
 
-const openCarousel = (value) => {
+const openPopup = (value, imgIndex) => {
   officeSelected.value = value;
   showModal()
+  nextTick(() => dialogImagesRef.value[imgIndex].scrollIntoView({
+    behavior: 'smooth',
+    inline: 'start',
+    block: 'nearest',
+  }))
 };
 
 const scrollToImage = (idx, buttonClickedIndex) => {
