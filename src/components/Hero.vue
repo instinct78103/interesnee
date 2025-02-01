@@ -22,7 +22,7 @@ defineProps({
 @use '@/scss/helpers';
 
 .root {
-  min-height: 465px;
+  min-height: clamp(320px, 25vw, 400px);
   background: var(--red) url('/static/back-image.png') no-repeat center;
   background-size: cover;
   display: flex;

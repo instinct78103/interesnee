@@ -4,23 +4,27 @@
 
   <section :class="$style.container">
     <h2 :class="$style.heading">Карьера</h2>
-    <ul :class="$style.buttonsList">
+    <ul :class="$style.buttonsList" v-if="cities.length">
       <li v-for="(city, index) in cities" :key="index">
         <router-link :to="{ path: '/join', query: { city: city.url }}" :class="[$style.button, {[$style.buttonActive]: currentCity === city.url }, 'hover-scale']">
           {{ city.nameRU }}
         </router-link>
       </li>
     </ul>
-    <ul v-if="renderJobs" :class="$style.list">
+    <ul v-if="renderJobs && jobs.length" :class="$style.list">
       <li v-for="job in filteredJobs" :key="job.id" :class="$style.listItem">
         <div :class="[ $style.item, { [$style.closed]: isJobClosed(job.status) } ]">
           <router-link :to="{ path: '/job', query: { city: job.url, job: job.board_code }}" :class="$style.link">
             <div :class="$style.title">{{ job?.title?.replace('(RU)', '') }}</div>
-            <span :class="$style.linkText">Подробнее</span>
           </router-link>
         </div>
       </li>
     </ul>
+    <svg v-else style="margin:160px auto 0;display:block;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="50" height="50" aria-label="Loading...">
+      <circle cx="25" cy="25" r="20" fill="none" stroke="var(--red)" stroke-width="4" stroke-dasharray="31.4 31.4" stroke-linecap="round" transform="rotate(-90, 25, 25)">
+        <animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s" repeatCount="indefinite" />
+      </circle>
+    </svg>
   </section>
 
   <OurHRs />
@@ -97,24 +101,25 @@ const filteredJobs = computed(() => {
 }
 
 .list {
+  --gap: clamp(5px, 4vw, 15px);
   display: flex;
   flex-flow: row wrap;
   list-style-type: none;
   padding: 0;
-  margin: 0 -1%;
   animation: fadeEff 0.3s;
+  gap: var(--gap);
 }
 
 .listItem {
-  flex-basis: 33.33%;
-  padding: clamp(5px, 4vw, 15px);
-
-  @media(width < 1024px) {
-    flex-basis: 50%;
-  }
+  --column-count: 3;
+  width: calc((100% - (var(--column-count) - 1) * var(--gap)) / var(--column-count));
 
   @media(width < 768px) {
-    flex-basis: 100%;
+    --column-count: 2;
+  }
+
+  @media(width < 480px) {
+    --column-count: 1;
   }
 }
 
@@ -166,46 +171,13 @@ const filteredJobs = computed(() => {
   justify-content: center;
   padding: 20px;
   text-align: center;
-
-  @media(width < 768px) {
-    padding: 10px 40px;
-
-    .linkText {
-      opacity: 0;
-    }
-  }
-}
-
-.linkText {
-  opacity: 0;
-  font-size: 12px;
-  line-height: 17px;
-  font-weight: 600;
-  margin-top: 15px;
-  letter-spacing: 0.75px;
-  text-transform: uppercase;
-  color: var(--red-light);
-  text-decoration: none;
-
-  @media(width < 768px) {
-    position: absolute;
-    opacity: 0;
-    margin-top: 0;
-  }
 }
 
 .title {
-  font-size: 24px;
-  line-height: 30px;
+  font-size: clamp(20px, 4vw, 24px);
+  line-height: 1.3;
   color: var(--gray-dark);
-  margin-top: 32px;
   transition: opacity 0.3s;
-
-  @media(width < 768px) {
-    margin-top: 0;
-    font-size: 20px;
-    line-height: 26px;
-  }
 }
 
 .buttonsList {
@@ -215,6 +187,7 @@ const filteredJobs = computed(() => {
   list-style-type: none;
   padding: 0;
   flex-wrap: wrap;
+  gap: 15px;
 
   @media(width < 1024px) {
     justify-content: center;
@@ -223,29 +196,25 @@ const filteredJobs = computed(() => {
 
 .button {
   text-decoration: none;
-  margin: 0 15px;
   padding: 15px 25px;
   border: 2px solid transparent;
   border-radius: 50px;
   outline: none;
   background-color: transparent;
   font-size: 14px;
-  line-height: 19px;
+  line-height: 1;
   font-weight: 600;
   color: var(--gray-3);
   text-transform: uppercase;
   cursor: pointer;
   transition: color 0.3s, border 0.3s;
   display: block;
-  margin-bottom: 10px;
 
   @media(width < 768px) {
     padding: 10px 12px;
-    margin: 0 5px;
   }
 
   &:hover {
-    //color: darken(var(--gray-3), 10%);
     color: oklch(from var(--gray-3) 10% c h);
   }
 }

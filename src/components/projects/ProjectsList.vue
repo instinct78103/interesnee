@@ -50,6 +50,7 @@ const toggleInfo = projectId => activeIndex.value = activeIndex.value === projec
   @extend %section;
   @extend %content;
 
+  padding-block-start: 0;
   max-width: 1110px;
   width: 100%;
 

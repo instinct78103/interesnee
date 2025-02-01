@@ -3,7 +3,7 @@
     <TeamOffer />
     <TeamCulture />
     <TeamVideos />
-    <TeamCards />
+    <TeamGrid />
 </template>
 
 <script setup>
@@ -11,5 +11,5 @@ import Hero from '@/components/Hero.vue';
 import TeamOffer from '@/components/team/TeamOffer.vue';
 import TeamCulture from '@/components/team/TeamCulture.vue';
 import TeamVideos from '@/components/team/TeamVideos.vue';
-import TeamCards from '@/components/team/TeamCards.vue';
+import TeamGrid from '@/components/team/TeamGrid.vue';
 </script>

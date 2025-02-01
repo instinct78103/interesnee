@@ -104,6 +104,7 @@ dialog {
     scrollbar-width: none;
     align-items: center;
     gap: 20px;
+    max-width: 767px;
 
     > * {
       outline: none;
@@ -112,7 +113,11 @@ dialog {
       justify-content: center;
       scroll-snap-align: start;
       scroll-snap-stop: always;
-      width: 90cqmin;
+      min-width: 100%;
+
+      > * {
+        width: 100%;
+    }
     }
   }
 }

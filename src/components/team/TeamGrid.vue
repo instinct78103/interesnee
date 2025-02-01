@@ -15,7 +15,7 @@
         <div
           v-for="(item, index) in items"
           :key="index"
-          :class="[$style.col, {[$style.colOffer]: item.heading}]">
+          :class="{[$style.colOffer]: item.heading}">
           <div :class="[$style.item, {[$style.itemOffer]: item.heading}]">
             <template v-if="!item.heading">
               <img
@@ -24,7 +24,9 @@
                 :src="item.src"
                 width="35"
                 height="35"
-                decoding="async">
+                decoding="async"
+                :alt="item.post"
+              >
 
               <svg v-else :class="$style.icon">
                 <use :href="`${spriteSvg}#icon-rounded-${item.icon}`"></use>
@@ -141,30 +143,9 @@ const headingItem = computed(() => items.find(obj => obj.heading))
   max-width: 1140px;
 }
 
-.col {
-  //width: 25%;
-  //padding: var(--grid-gutter);
-  //
-  //@include media('<desktop') {
-  //  width: 33.33%;
-  //}
-  //
-  //@include media('<tablet') {
-  //  width: 50%;
-  //  padding: $grid-gutter-mobile/2;
-  //}
-}
-
 .colOffer {
   grid-column: span 2;
 
-  //width: 50%;
-  //
-  //@include media('<desktop') {
-  //  width: 66.66%;
-  //  order: -1;
-  //}
-  //
   @media(width < 768px) {
     display: none;
   }
