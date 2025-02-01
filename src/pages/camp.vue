@@ -1,11 +1,29 @@
-<script setup>
-import { routes } from 'vue-router/auto-routes';
-</script>
-
 <template>
-
+  <div :class="$style.root">
+    <CampHero />
+    <CampInfo />
+<!--    <DumpStickers />-->
+<!--    <CampSlider />-->
+<!--    <CampForm />-->
+<!--    <OurHRs />-->
+  </div>
 </template>
 
-<style scoped>
+<script setup>
+// import { routes } from 'vue-router/auto-routes';
 
+import CampHero from '@/components/camp/CampHero.vue';
+import CampInfo from '@/components/camp/CampInfo.vue';
+// import DumpStickers from '@/components/camp/DumpStickers.vue';
+// import CampSlider from '@/components/camp/CampSlider.vue';
+// import CampForm from '@/components/camp/CampForm.vue';
+// import OurHRs from '@/components/camp/OurHRs.vue';
+
+</script>
+
+<style lang="scss" module>
+
+.root .sideButton {
+  background: var(--red);
+}
 </style>
