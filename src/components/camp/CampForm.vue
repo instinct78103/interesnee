@@ -1,85 +1,52 @@
 <template>
-  <div>
-    <el-dialog
-      :class="$style.dialog"
-      :visible.sync="dialogVisible"
-      :top="$mq !== 'lg' ? '0' : '5vh'"
-    >
-      <section :class="$style.root">
-        <BaseForm
-          :select="[
+  <section :class="[$style.root]">
+    <div :class="[$style.container, $style.formContainer]">
+      <div :class="$style.row">
+        <div :class="[$style.col, $style.sendFeedback]">
+          <button :class="$style.submit" aria-label="Отправить заявку" @click="openPopup()">Отправить заявку</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <Dialog ref="dialog">
+    <BaseForm
+      v-if="isContactFormLoaded"
+      :select="[
             {
               name: 'DevOps',
               value: '1KGkguBAGo',
             },
           ]"
-          :show-camp-city="true"
-          :hash="hash"
-          bg-color="#fff"
-          title="Отправить заявку"
-          file-title="Прикрепить резюме"
-          name-prefix=" - Практикант"
-          text-area-placeholder="Или напишите текст здесь"
-          @closePopup="closePopup"
-        />
-      </section>
-    </el-dialog>
-    <section>
-      <v-dialog/>
-    </section>
-    <section
-      :class="[$style.root]"
-    >
-      <div :class="[$style.container, $style.formContainer]">
-        <div :class="$style.row">
-          <div :class="[$style.col, $style.sendFeedback]">
-            <button
-              :class="$style.submit"
-              aria-label="Отправить заявку"
-              @click="dialogVisible = true;"
-            >
-              Отправить заявку
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
+      :show-camp-city="true"
+      :hash="hash"
+      bg-color="#fff"
+      title="Отправить заявку"
+      file-title="Прикрепить резюме"
+      name-prefix=" - Практикант"
+      text-area-placeholder="Или напишите текст здесь"
+    />
+  </Dialog>
 </template>
 
-<script>
-import RotatedHeading from 'components/RotatedHeading';
-import BaseForm from 'components/BaseForm';
-import ContactsListBlock from 'components/ContactsListBlock';
-import showModal from '../helpers';
+<script setup>
+import { defineAsyncComponent, nextTick, ref } from 'vue';
+import Dialog from '@/components/Dialog.vue';
 
-export default {
-  name: 'CampForm',
-  components: {
-    RotatedHeading,
-    BaseForm,
-    ContactsListBlock,
-  },
-  data() {
-    return {
-      dialogVisible: false,
-      hash: '',
-    };
-  },
-  methods: {
-    closePopup(success) {
-      this.dialogVisible = false;
-      this.showModal(success);
-    },
-    showModal,
-  },
+const dialog = ref(null);
+const BaseForm = defineAsyncComponent(() => import('@/components/BaseForm.vue'))
+const hash = ref('');
+const isContactFormLoaded = ref(false);
+
+const showModal = () => dialog?.value?.showModal();
+
+const openPopup = () => {
+  isContactFormLoaded.value = true;
+  showModal()
 };
 </script>
 
 <style lang="scss" module>
-/* stylelint-disable max-nesting-depth */
-@import '../styles/variables';
-@import '../styles/helpers';
+@use '@/scss/helpers';
 
 .root {
   text-align: center;
@@ -87,7 +54,7 @@ export default {
 }
 
 .root.backgrounded {
-  background: $white-gray;
+  background: var(--white-gray);
 }
 
 .container {
@@ -107,7 +74,7 @@ export default {
   padding-bottom: 20px;
   font-size: 20px;
 
-  @include media('<=phone') {
+  @media(width <= 480px) {
     display: block;
     margin: 0 auto;
     width: auto;
@@ -116,21 +83,14 @@ export default {
   }
 
   &:disabled {
-    background-color: $red-light;
+    background-color: var(--red-light);
   }
 }
 
 .row {
   display: flex;
-  flex-wrap: nowrap;
-  margin-left: -$grid-gutter;
-  margin-right: -$grid-gutter;
-
-  @include media('<=phone') {
-    flex-wrap: wrap;
-    margin-right: -$grid-gutter-mobile;
-    margin-left: -$grid-gutter-mobile;
-  }
+  flex-wrap: wrap;
+  margin-inline: calc(-1 * var(--grid-gutter));
 }
 
 .col {
@@ -142,16 +102,4 @@ export default {
   margin: 0 auto;
 }
 
-.dialog {
-  @include media('<desktop') {
-    [role='dialog'] {
-      width: 100%;
-    }
-
-    [class='el-dialog__body'] {
-      padding: 0;
-      margin-top: 10px;
-    }
-  }
-}
 </style>

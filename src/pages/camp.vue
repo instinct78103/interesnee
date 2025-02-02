@@ -4,7 +4,7 @@
     <CampInfo />
     <DumpStickers />
     <CampSlider />
-<!--    <CampForm />-->
+    <CampForm />
     <OurHRs />
   </div>
 </template>
@@ -16,7 +16,7 @@ import CampHero from '@/components/camp/CampHero.vue';
 import CampInfo from '@/components/camp/CampInfo.vue';
 import DumpStickers from '@/components/camp/DumpStickers.vue';
 import CampSlider from '@/components/camp/CampSlider.vue';
-// import CampForm from '@/components/camp/CampForm.vue';
+import CampForm from '@/components/camp/CampForm.vue';
 import OurHRs from '@/components/OurHRs.vue';
 
 </script>

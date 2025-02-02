@@ -60,7 +60,7 @@ const sliderContent = campFeedbacks;
 .root {
   @extend %container;
   --gap: 40px;
-  --left-col-width: clamp(320px, 20vw, 450px);
+  --left-col-width: clamp(400px, 20vw, 450px);
   display: flex;
   flex-flow: row wrap;
   padding: 40px clamp(20px, 5vw, 40px);
