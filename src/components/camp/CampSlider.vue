@@ -198,7 +198,6 @@ const sliderContent = campFeedbacks;
   }
 
   br {
-    content: '';
     margin: 5px;
     display: block;
   }
