@@ -47,7 +47,6 @@
 <script setup>
 import { useRoute } from 'vue-router/auto';
 import { computed } from 'vue';
-// import BaseSlider from 'components/BaseSlider';
 import ContactsListBlock from '@/components/ContactsListBlock.vue';
 import { CAMP } from '@/router/index.js';
 import { spriteSvg } from '@/helpers.js';
@@ -131,67 +130,6 @@ function getSrcSet(image) {
 
   return srcset;
 }
-
-// export default {
-//   name: 'OurHRs',
-//   components: {
-//     BaseSlider,
-//     ContactsListBlock,
-//     SvgIcon,
-//   },
-//   data() {
-//     return {
-//       slickOpts: {
-//         dots: false,
-//         arrow: false,
-//         slidesToShow: 4,
-//         slidesToScroll: 4,
-//         responsive: [
-//           {
-//             breakpoint: 767,
-//             settings: {
-//               arrows: false,
-//               dots: true,
-//               slidesToShow: 1,
-//               slidesToScroll: 1,
-//               dotsClass: this.$style.sliderDots,
-//             },
-//           },
-//           {
-//             breakpoint: 991,
-//             settings: {
-//               arrows: false,
-//               dots: true,
-//               slidesToShow: 2,
-//               slidesToScroll: 2,
-//               dotsClass: this.$style.sliderDots,
-//             },
-//           },
-//         ],
-//       },
-//     };
-//   },
-//   computed: {
-//     items() {
-//       const data = hrs;
-//
-//       if (this.$route.name !== CAMP) {
-//         data.push(hrEkb);
-//       } else {
-//         data[1].post = 'Сочи / Екатеринбург';
-//       }
-//       return data;
-//     },
-//   },
-//   methods: {
-//     getSrcSet(image) {
-//       let srcset = image.x1 ? `${image.x1} 1x` : '';
-//       srcset += image.x2 ? `, ${image.x2} 2x` : '';
-//
-//       return srcset;
-//     },
-//   },
-// };
 </script>
 
 <style lang="scss" module>

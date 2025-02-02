@@ -95,6 +95,7 @@ $team-offer-background: #fff2f2;
   @extend %sectionTitle;
   margin-block: clamp(20px, 6vw, 45px);
   text-align: center;
+  text-wrap: balance;
 }
 
 /*========== content ===========*/

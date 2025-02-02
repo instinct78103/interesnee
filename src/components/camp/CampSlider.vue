@@ -1,40 +1,27 @@
 <template>
-  <section
-    id="lottery"
-    :class="$style.root"
-  >
-    <div :class="$style.descriptionCol">
-      <h2 :class="$style.title">
-        Отзывы
-      </h2>
+  <section id="lottery" :class="$style.root">
 
+    <h2 :class="$style.title">Отзывы</h2>
+
+    <div :class="$style.descriptionCol">
       <div :class="$style.descriptionContainer">
-        <img
-          :class="$style.icQuotes"
-          decoding="async"
-          src="/static/ic_quotes.svg"
-          alt="quotes">
-        <base-slider
-          :class="[$style.contentSlider, 'feedback-quote-carousel']"
-          :options="quoteSliderOpts"
-        >
+        <img :class="$style.icQuotes" decoding="async" src="/static/ic_quotes.svg" alt="quotes">
+        <div :class="$style.gridStack">
           <blockquote
             v-for="(data, index) in sliderContent"
-            :class="$style.commentWrap"
+            :class="[$style.commentWrap, {[$style.active]: index === currentIndex}]"
             :key="index">
-            <p v-html="data.feedback.content"/>
+            <p v-html="data.feedback.content" />
             <p :class="$style.commentAuthor">
               {{ data.feedback.author }}
             </p>
           </blockquote>
-        </base-slider>
+        </div>
       </div>
     </div>
+
     <div :class="$style.contentCol">
-      <base-slider
-        :class="$style.contentSlider"
-        :options="sliderOpts"
-      >
+      <div :class="$style.scrollSnap" ref="sliderRef">
         <app-image
           v-for="(data, index) in sliderContent"
           :key="index"
@@ -43,73 +30,97 @@
           :x1="data.img.x1"
           :webp="data.img.webp"
         />
-      </base-slider>
+      </div>
+      <ul :class="$style.indicatorsList">
+        <li v-for="(_, key) in [...Array(countSlidesRef)]" :key>
+          <button :class="{[$style.isActive]: key === currentIndex}" @click="navigate(key)"></button>
+        </li>
+      </ul>
     </div>
+
   </section>
 </template>
 
-<script>
-import BaseSlider from 'components/BaseSlider';
-import summerCampFeedbacks from 'data/summerCampFeedbacks';
+<script setup>
+import AppImage from '@/components/AppImage.vue';
+import campFeedbacks from '@/data/campFeedbacks';
+import { useSlider } from '@/composables/useSlider.js';
+import { ref } from 'vue';
 
-export default {
-  name: 'CampSlider',
-  components: {
-    BaseSlider,
-  },
-  data() {
-    return {
-      sliderOpts: {
-        dots: true,
-        arrows: true,
-        dotsClass: this.$style.sliderDots,
-        autoplay: true,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        autoplaySpeed: 10000,
-        pauseOnHover: false,
-        asNavFor: '.feedback-quote-carousel',
-        prevArrow: `<button type="button" class="${this.$style.sliderArrow}
-          ${
-            this.$style.sliderArrowLeft
-          }" tabindex="0"><i class="el-icon-arrow-left"></i></button>`,
-        nextArrow: `<button type="button" class="${this.$style.sliderArrow}
-          ${
-            this.$style.sliderArrowRight
-          }" tabindex="0"><i class="el-icon-arrow-right"></i></button>`,
-      },
-      quoteSliderOpts: {
-        dots: false,
-        arrows: false,
-        autoplay: false,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        cssEase: false,
-      },
-      currentSlider: 0,
-      sliderContent: summerCampFeedbacks,
-    };
-  },
-};
+const sliderRef = ref(null);
+const { currentIndex, countSlidesRef, navigate } = useSlider(sliderRef, { autoplay: true, autoplaySpeed: 5000 });
+
+const sliderContent = campFeedbacks;
+
 </script>
 
 <style lang="scss" module>
-@import '../styles/variables';
-@import '../styles/helpers';
+@use '@/scss/helpers';
 
 .root {
   @extend %container;
-
+  --gap: 40px;
+  --left-col-width: clamp(320px, 20vw, 450px);
   display: flex;
-  flex-flow: row nowrap;
-  padding: 20px 45px;
-  gap: 45px;
-  align-items: center;
-  background: $white-gray;
+  flex-flow: row wrap;
+  padding: 40px clamp(20px, 5vw, 40px);
+  gap: var(--gap);
+  align-items: stretch;
+  background: var(--white-gray);
+}
 
-  @include media('<desktop') {
-    flex-wrap: wrap;
+.gridStack {
+  display: grid;
+
+  > * {
+    grid-area: 1 / 1;
+    opacity: 0;
+
+    &.active {
+      pointer-events: all;
+      opacity: 0.8;
+    }
+  }
+}
+
+.indicatorsList {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+
+  button {
+    width: 8px;
+    height: 8px;
     padding: 0;
+    border: 0;
+    border-radius: 50%;
+    outline: none;
+    font-size: 0;
+    background-color: var(--dots-color);
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.isActive {
+  background-color: var(--dots-active-color) !important;
+}
+
+.scrollSnap {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  height: -webkit-fill-available;
+
+  > * {
+    min-width: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
   }
 }
 
@@ -123,8 +134,8 @@ export default {
   cursor: pointer;
   transition: 0.3s;
   border-radius: 50%;
-  background-color: $gray-transparent;
-  color: $white;
+  background-color: var(--gray-transparent);
+  color: #fff;
   position: absolute;
   top: 50%;
   z-index: 10;
@@ -146,18 +157,16 @@ export default {
   flex-flow: column nowrap;
   justify-content: flex-start;
   align-items: center;
-  width: 450px;
-  padding: 40px 0;
-  background: $white-gray;
+  width: var(--left-col-width);
+  background: var(--white-gray);
   text-align: center;
 
-  @include media('<=desktop') {
-    padding: 0 $grid-gutter;
+  @media(width <= 1024px) {
+    padding: 0 var(--grid-gutter);
   }
 
-  @include media('<desktop') {
+  @media(width < 1024px) {
     width: 100%;
-    padding: $grid-gutter*2 $grid-gutter;
   }
 }
 
@@ -167,43 +176,25 @@ export default {
   flex-direction: column;
   width: 100%;
 
-  @include media('<desktop') {
-    height: 460px;
-  }
-
-  @media (max-width: 1023px) {
+  @media(width < 1024px) {
     height: auto;
   }
 }
 
 .icQuotes {
   display: block;
-  width: 34px;
-  margin: 30px auto 20px;
+  width: 35px;
+  margin: 0 auto 30px;
 }
 
 .commentWrap {
-  opacity: 0.8;
-  color: $gray-dark;
-  font-family: $default-font-stack;
+  color: var(--gray-dark);
   font-size: 16px;
   line-height: 1.5;
-  padding: 0 5px;
   margin: 0;
-  text-align: justify;
-
-  & + & {
-    margin-top: 10px;
-  }
 
   p {
-    &:first-child {
-      text-indent: 40px;
-    }
-
-    &:last-child {
-      font-weight: bold;
-    }
+    text-wrap: balance;
   }
 
   br {
@@ -218,24 +209,28 @@ export default {
   font-style: italic;
   text-align: center;
   margin-top: 20px;
+  font-weight: 600;
 }
 
 .contentCol {
   position: relative;
-  width: calc(100% - 450px - 45px);
-  background-color: $white-gray;
+  width: calc(100% - var(--left-col-width) - var(--gap));
+  background-color: var(--white-gray);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 
-  @include media('<desktop') {
+  @media(width < 1024px) {
     width: 100%;
   }
 }
 
 .title {
   @extend %sectionTitle;
-  margin: 0;
-  margin-bottom: relative-mb(17, 46);
   font-size: 46px;
   line-height: 1.2;
+  width: 100%;
+  text-align: center;
 }
 
 .list {
@@ -250,46 +245,46 @@ export default {
   display: inline-block;
   vertical-align: top;
   position: relative;
-  padding: 0;
-  padding-left: 20px;
+  padding: 0 0 0 20px;
   margin: 0;
   font-size: 0;
 }
 
 .listItem::before {
-  @include set-fz-lh(16, 25);
-  content: counter(counter)'.';
+  font-size: 16px;
+  line-height: 1.5;
+  content: counter(counter) '.';
   counter-increment: counter;
   position: absolute;
   left: 0;
   top: 0;
-  font-family: $default-font-stack;
-  color: $gray-dark;
+  color: var(--gray-dark);
   opacity: 0.8;
 }
 
 .condition {
-  @include set-fz-lh(24, 30);
-  margin: 0;
-  margin-bottom: relative-mb(23, 24);
-  color: $red;
+  font-size: 16px;
+  line-height: 1.3;
+  margin-bottom: 20px;
+  color: var(--red);
 
-  @include media('<=desktop') {
+  @media(width <= 1024px) {
     font-size: 20px;
   }
 }
 
 .text {
-  @include set-fz-lh(16, 25);
+  font-size: 16px;
+  line-height: 1.3;
   margin: 0;
-  color: $gray-dark;
+  color: var(--gray-dark);
   opacity: 0.8;
 }
 
 .textMb {
   margin-bottom: 30px;
 
-  @include media('<=desktop') {
+  @media(width <= 1024px) {
     margin-bottom: 25px;
   }
 }
@@ -298,7 +293,7 @@ export default {
   display: flex;
   justify-content: center;
 
-  @include media('<tablet') {
+  @media(width < 768px) {
     flex-wrap: wrap;
   }
 }
@@ -315,7 +310,7 @@ export default {
 .icon {
   width: 30px;
   height: 30px;
-  fill: $white;
+  fill: #fff;
   margin-right: 5px;
 }
 
@@ -327,16 +322,15 @@ export default {
 }
 
 .sliderDots {
-  @extend %slickDots;
   bottom: 30px;
 
-  @include media('<=phone') {
+  @media(width <= 480px) {
     bottom: 15px;
   }
 }
 
 .contentImage img {
   width: 100%;
-  padding: 2px;
+  height: -webkit-fill-available;
 }
 </style>

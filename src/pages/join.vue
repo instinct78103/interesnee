@@ -32,7 +32,7 @@
 
 <script setup>
 import Hero from '@/components/Hero.vue';
-import OurHRs from '@/components/join/OurHRs.vue';
+import OurHRs from '@/components/OurHRs.vue';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router/auto';
 import { useJobsStore } from '@/store/useJobs.js';

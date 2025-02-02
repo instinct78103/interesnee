@@ -12,7 +12,7 @@
         display: flex;
         flex-flow: column wrap;
 
-        @media (min-width: 1024px) {
+        @media (width >= 1024px) {
             flex-flow: row wrap;
             justify-content: space-between;
         }
@@ -29,11 +29,11 @@
                 margin-bottom: 20px;
             }
 
-            @media(max-width: 1023px) {
+            @media(width < 1024px) {
                 margin-bottom: 40px;
             }
 
-            @media (min-width: 1024px) {
+            @media (width >= 1024px) {
                 width: calc(100% * 2 / 3 - 1%);
             }
 
@@ -41,7 +41,7 @@
                 display: grid;
                 padding-left: 0;
 
-                @media (max-width: 767px) {
+                @media (width < 768px) {
                     display: flex;
                     flex-flow: row nowrap;
                     scroll-snap-type: x mandatory;
@@ -54,13 +54,13 @@
                     }
                 }
 
-                @media (min-width: 768px) {
+                @media (width >= 768px) {
                     grid-template-columns: repeat(2, fit-content(33%));
                     justify-content: space-evenly;
                     grid-gap: 40px;
                 }
 
-                @media (min-width: 1024px) {
+                @media (width >= 1024px) {
                     grid-template-columns: repeat(3, 200px);
                     grid-template-rows: repeat(2, fit-content(100%));
                     justify-content: space-between;
@@ -72,13 +72,13 @@
                     line-height: 1.2;
                     text-wrap: balance;
 
-                    @media (max-width: 767px) {
+                    @media (width < 768px) {
                         min-width: 100%;
                         scroll-snap-stop: always;
                         scroll-snap-align: center;
                     }
 
-                    @media(max-width: 1023px) {
+                    @media(width < 1024px) {
                         text-align: center;
                     }
 
@@ -88,7 +88,7 @@
                         margin-bottom: 10px;
                         font-size: 14px;
 
-                        @media(max-width: 1023px) {
+                        @media(width < 1024px) {
                             justify-content: center;
                         }
                     }
@@ -125,12 +125,12 @@
         }
 
         .social-links {
-            @media (min-width: 1024px) {
+            @media (width >= 1024px) {
                 width: calc(100% / 3 - 1%);
             }
 
             .div-heading {
-                @media(max-width: 1023px) {
+                @media(width < 1024px) {
                     display: none;
                 }
             }
@@ -166,12 +166,12 @@
                 color: #fff;
             }
 
-            @media (min-width: 1024px) {
+            @media (width >= 1024px) {
                 margin-top: 25px;
                 justify-content: space-between;
             }
 
-            @media(max-width: 1023px) {
+            @media(width < 1024px) {
                 justify-content: center;
 
                 .copyright {

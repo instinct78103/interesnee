@@ -3,7 +3,7 @@
 $slider-brake-point: 768px;
 
 .root {
-    max-width: 600px;
+    max-width: calc(100% - 20px);
     margin: auto;
 }
 
