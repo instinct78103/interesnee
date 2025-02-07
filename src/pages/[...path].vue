@@ -5,6 +5,16 @@
   </div>
 </template>
 
+<script setup>
+
+definePage({
+  meta: {
+    title: '404 - Страница не найдена',
+  },
+})
+
+</script>
+
 <style lang="scss" module scoped>
 .root {
   background: var(--red) url('/static/back-image.png') no-repeat center;

@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { routes } from 'vue-router/auto-routes';
 import { useJobsStore } from '@/store/useJobs.js';
+import {SITE_NAME} from '@/helpers.js';
 
 export const PAGE_PROJECTS = 'projects';
 export const PAGE_TEAM = 'team';
@@ -31,7 +32,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
 
-  // console.log('To route name:', to.name);
+  // console.log('To route name:', to);
   // console.log('All routes:', router.options.routes);
 
   const { projects, currentProject } = storeToRefs(useProjectsStore());
@@ -63,6 +64,8 @@ router.beforeEach(async (to, from, next) => {
       return next('/not-found');
     }
   }
+
+  document.title = to.meta.title || SITE_NAME;
 
   next();
 });

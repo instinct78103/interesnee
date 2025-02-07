@@ -12,6 +12,14 @@
 <script setup>
 // import { routes } from 'vue-router/auto-routes';
 
+import { SITE_NAME } from '@/helpers.js'
+
+definePage({
+  meta: {
+    title: `${SITE_NAME} - Summer Camp`,
+  },
+})
+
 import CampHero from '@/components/camp/CampHero.vue';
 import CampInfo from '@/components/camp/CampInfo.vue';
 import DumpStickers from '@/components/camp/DumpStickers.vue';

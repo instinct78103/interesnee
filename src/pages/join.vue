@@ -31,6 +31,15 @@
 </template>
 
 <script setup>
+
+import { SITE_NAME } from '@/helpers.js'
+
+definePage({
+  meta: {
+    title: `${SITE_NAME} - Присоединяйся`,
+  },
+})
+
 import Hero from '@/components/Hero.vue';
 import OurHRs from '@/components/OurHRs.vue';
 import { computed } from 'vue';

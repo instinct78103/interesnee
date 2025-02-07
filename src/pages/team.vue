@@ -7,6 +7,17 @@
 </template>
 
 <script setup>
+
+import { SITE_NAME } from '@/helpers.js'
+
+definePage({
+  meta: {
+    title: `${SITE_NAME} - Наша команда`,
+  },
+})
+
+
+
 import Hero from '@/components/Hero.vue';
 import TeamOffer from '@/components/team/TeamOffer.vue';
 import TeamCulture from '@/components/team/TeamCulture.vue';
