@@ -74,11 +74,16 @@ export function useSlider(sliderRef, props) {
       currentIndex.value = arg;
     }
 
-    sliderRef.value?.children[currentIndex.value]?.scrollIntoView({
-      behavior: 'smooth',
-      inline: 'start',
-      block: 'nearest',
-    });
+    sliderRef.value?.scrollTo({
+      left: sliderRef.value.children[currentIndex.value].offsetLeft,
+      behavior: 'smooth'
+    })
+
+    // sliderRef.value?.children[currentIndex.value]?.scrollIntoView({
+    //   behavior: 'smooth',
+    //   inline: 'start',
+    //   block: 'nearest',
+    // });
   }
 
   function synchronize() {

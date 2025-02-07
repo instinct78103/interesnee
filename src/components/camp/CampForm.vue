@@ -18,11 +18,10 @@
             },
           ]"
       :show-camp-city="true"
-      :hash="hash"
       bg-color="#fff"
       title="Отправить заявку"
       file-title="Прикрепить резюме"
-      name-prefix=" - Практикант"
+      namePostfix=" - Практикант"
       text-area-placeholder="Или напишите текст здесь"
     />
   </Dialog>
@@ -34,7 +33,6 @@ import Dialog from '@/components/Dialog.vue';
 
 const dialog = ref(null);
 const BaseForm = defineAsyncComponent(() => import('@/components/BaseForm.vue'))
-const hash = ref('');
 const isContactFormLoaded = ref(false);
 
 const showModal = () => dialog?.value?.showModal();

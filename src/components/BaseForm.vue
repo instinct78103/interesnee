@@ -24,9 +24,9 @@
   </section>
 
   <section :class="[$style.root, $style.backgrounded]" :style="{ backgroundColor: bgColor}">
-    <div :class="[$style.container, $style.formContainer]">
+    <div :class="[$style.container, $style.formContainer]" style="background: #fff">
       <h2 :class="$style.title">{{ props.title }}</h2>
-      <form @submit.prevent="handleSubmit" style="--gap: 15px;display:flex;flex-flow:row wrap; gap: var(--gap)" autocomplete="off">
+      <form @submit.prevent="handleSubmit" style="--gap: 15px;display:flex;flex-flow:row wrap; gap: var(--gap);" autocomplete="off">
 
         <div :class="[$style.col, $style.col_6]">
           <input v-model="form.firstname.value" @blur="validateField('firstname')" :class="[$style.input, {[$style.error]: errors.firstname && !isFirstnameValid}]" name="firstname" type="text" placeholder="Имя" />
@@ -52,9 +52,9 @@
           <template v-if="select">
             <select :class="[$style.input, {[$style.error]: errors.camp }, $style.select]" v-model="form.selectedCamp.value" @blur="validateField('selectedCamp')" name="campSelect">
               <option value="" disabled hidden>Направление практики</option>
-              <option v-for="(value, index) in select" :key="index" :value="index">{{ value.name }}</option>
+              <option v-for="(value, index) in props.select" :key="index" :value="index">{{ value.name }}</option>
             </select>
-            <input v-model="selectedCamp" name="camp" type="hidden" />
+            <input v-model="form.selectedCamp" name="camp" type="hidden" />
             <transition name="slide-top"><span v-show="errors.selectedCamp && !isSelectCampValid" :class="$style.detail">{{ errors.selectedCamp }}</span></transition>
           </template>
           <template v-else>
@@ -202,7 +202,7 @@
 <!--          </div>-->
 <!--        </div>-->
 
-        <button :class="[$style.submit, {[$style.submitCamp]: showCampCity }]" :disabled="job.id === undefined" type="submit" aria-label="Подтвердить форму">Отправить</button>
+        <button :class="[$style.submit, {[$style.submitCamp]: showCampCity }]" :disabled="job?.id === undefined" type="submit" aria-label="Подтвердить форму">Отправить</button>
 
       </form>
     </div>
@@ -352,9 +352,9 @@ const validateField = (field) => {
   if (field === 'userEmail' && !isEmailValid.value) {
     errors.value.userEmail = 'Поле E-mail обязательно для заполнения';
   }
-  if (field === 'selectedCamp' && !isSelectCampValid.value) {
-    errors.value.selectedCamp = 'Invalid Selected Camp.';
-  }
+  // if (field === 'selectedCamp' && !isSelectCampValid.value) {
+  //   errors.value.selectedCamp = 'Invalid Selected Camp.';
+  // }
   if (field === 'vacancy' && !isVacancyValid.value) {
     errors.value.vacancy = 'Поле Направление практики обязательно для заполнения';
   }
@@ -590,7 +590,7 @@ const filteredJob = computed(() => {
     return false;
   }
 
-  const currentJobBoardCode = useRoute().query.job || props.select.value[selectVal.value].value;
+  const currentJobBoardCode = useRoute().query.job || props.select[selectVal.value];
 
   return filterJob(currentJobBoardCode);
 });
