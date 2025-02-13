@@ -3,7 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { routes } from 'vue-router/auto-routes';
 import { useJobsStore } from '@/store/useJobs.js';
-import {SITE_NAME} from '@/helpers.js';
+import { SITE_NAME } from '@/helpers.js';
+import { companyInfo } from '@/data/companyInfo.js';
 
 export const PAGE_PROJECTS = 'projects';
 export const PAGE_TEAM = 'team';
@@ -48,6 +49,11 @@ router.beforeEach(async (to, from, next) => {
     await updateCurrentProject(to.params.project);
 
     if (!currentProject.value) {
+      return next('/not-found');
+    }
+  } else if (to.params.slug) {
+
+    if (!companyInfo[to.params.slug]) {
       return next('/not-found');
     }
   } else if (to.query.job || to.name === '/job') {
