@@ -48,7 +48,6 @@
 import ContactsListBlock from '@/components/ContactsListBlock.vue';
 import { spriteSvg } from '@/helpers.js';
 
-
 const hrs = [
   {
     image: {
