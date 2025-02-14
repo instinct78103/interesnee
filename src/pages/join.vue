@@ -234,8 +234,6 @@ const filteredJobs = computed(() => {
   color: var(--red-light);
 
   &:hover {
-    //$red-light-darken: darken(#f75050, 10%);
-
     color: oklch(from #f75050 10% c h);
     border-color: oklch(from #f75050 10% c h);
   }
