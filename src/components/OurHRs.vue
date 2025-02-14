@@ -5,7 +5,7 @@
 
       <div :class="$style.wrapper">
         <div
-          v-for="(item, index) in items"
+          v-for="(item, index) in hrs"
           :key="index"
           :class="$style.item"
         >
@@ -45,13 +45,9 @@
 </template>
 
 <script setup>
-import { useRoute } from 'vue-router/auto';
-import { computed } from 'vue';
 import ContactsListBlock from '@/components/ContactsListBlock.vue';
-import { CAMP } from '@/router/index.js';
 import { spriteSvg } from '@/helpers.js';
 
-const route = useRoute();
 
 const hrs = [
   {
@@ -101,28 +97,6 @@ const hrs = [
     ],
   },
 ];
-
-const items = computed(() => {
-  const data = hrs;
-
-  if (route.name !== CAMP) {
-    data.push(hrEkb);
-  } else {
-    data[1].post = 'Сочи / Екатеринбург';
-  }
-  return data;
-});
-
-const hrEkb = {
-  image: {
-    x1: '/images/photos/HR/HR.jpg',
-    x2: '/images/photos/HR/HR-1.jpg',
-    placeholder: '/images/photos/HR/HR.jpg',
-  },
-  name: '',
-  post: '',
-  social: [],
-};
 
 function getSrcSet(image) {
   let srcset = image.x1 ? `${image.x1} 1x` : '';
