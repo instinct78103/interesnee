@@ -282,13 +282,14 @@ const { currentIndex, countSlidesRef, navigate } = useSlider(sliderRef, { autopl
 
 .button {
   @extend %button;
-  min-width: 140px;
+  min-width: fit-content;
+  line-height: 1;
 
   @media(width < 768px) {
     padding: 5px;
-    min-width: 82px;
   }
 }
+
 
 .point.red .button {
   @extend %buttonWhite;

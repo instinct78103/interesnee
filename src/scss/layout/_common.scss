@@ -62,29 +62,6 @@ li {
     list-style: none;
 }
 
-//section {
-//    position: relative;
-//    padding-top: clamp(40px, 6vw, 90px);
-//    padding-bottom: clamp(80px, 6vw, 90px);
-//
-//    &:after {
-//        content: '';
-//        position: absolute;
-//        left: 50%;
-//        transform: translateX(-50%);
-//        bottom: 0;
-//        display: block;
-//        width: 90%;
-//        max-width: 1280px;
-//        height: 1px;
-//        background-color: var(--gray-4);
-//
-//        @media(width <= 480px) {
-//            display: none;
-//        }
-//    }
-//}
-
 .v-lazy-image,
 .v-lazy-image img {
     transition: opacity 0.2s ease-in-out;

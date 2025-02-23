@@ -2,7 +2,7 @@
   <div :class="$style.root">
     <BaseSlider
       :options="sliderOpts"
-      :go-slide="currentSlider"
+      :goSlide="currentSlider"
     >
       <template #slider>
         <div :class="$style.office" v-for="(value, index) in office" :key="index" class="office">
@@ -44,18 +44,24 @@
     </BaseSlider>
 
     <Dialog ref="dialog">
-<!--      <button class="leftArrow _arrow_13bbr_5 _leftArrow_13bbr_20"><svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>-->
-      <div v-for="(image, index) in officeSelected?.images" :key="image" :ref="el => dialogImagesRef[index] = el">
-        <app-image
-          :x1="image.webp"
-          :webp="image.webp"
-          alt="Office photo"
-          lazy
-          :width="480"
-          :height="320"
-        />
-      </div>
-<!--      <button class="rightArrow _arrow_13bbr_5 _rightArrow_13bbr_24"><svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>-->
+      <template #arrowLeft>
+        <button class="leftArrow _arrow_13bbr_5 _leftArrow_13bbr_20"><svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+      </template>
+      <template #body>
+        <div v-for="(image, index) in officeSelected?.images" :key="image" :ref="el => dialogImagesRef[index] = el">
+          <app-image
+            :x1="image.webp"
+            :webp="image.webp"
+            alt="Office photo"
+            lazy
+            :width="480"
+            :height="320"
+          />
+        </div>
+      </template>
+      <template #arrowRight>
+        <button @click="goNext()" class="rightArrow _arrow_13bbr_5 _rightArrow_13bbr_24"><svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+      </template>
     </Dialog>
   </div>
 </template>
@@ -148,18 +154,6 @@ onUnmounted(() => innerObservers.forEach(observer => observer.disconnect()));
 const sliderOpts = {
   dotsClass: $style.sliderDots,
   autoplay: false,
-  slidesToShow: 1,
-  slidesToScroll: 1,
-  draggable: false,
-  responsive: [
-    {
-      breakpoint: 768,
-      settings: {
-        dots: true,
-        draggable: true,
-      },
-    },
-  ],
 };
 </script>
 

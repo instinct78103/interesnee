@@ -4,7 +4,7 @@
       <h3>Наши работы</h3>
     </RotatedHeading>
     <div :class="$style.wrapper">
-      <BaseSlider :options="sliderOpts" custom-styles="scroll-snap-type: x mandatory;display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-behavior:smooth">
+      <BaseSlider :options="sliderOptions" custom-styles="scroll-snap-type: x mandatory;display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-behavior:smooth">
         <template #slider="{ sliderRef, activeClass, activeSlide }">
           <div v-for="(project, key) in projectsSlides" :key :class="[$style.projectSlideWrapper, {[activeClass]: key === activeSlide}]">
             <div :class="$style.projectSlide">
@@ -37,26 +37,13 @@ import { useSlider } from '@/composables/useSlider.js';
 
 const sliderRef = ref(null);
 
-useSlider(sliderRef, { autoplay: true, autoplaySpeed: 3000 });
-
-const sliderOpts = {
-  dots: false,
+const sliderOptions = {
   arrows: true,
   autoplay: true,
   autoplaySpeed: 3000,
-  slidesToShow: 1,
-  slidesToScroll: 1,
-  draggable: true,
-  responsive: [
-    {
-      breakpoint: 768,
-      settings: {
-        dots: true,
-        draggable: true,
-      },
-    },
-  ],
 };
+
+useSlider(sliderRef, sliderOptions);
 </script>
 
 <style lang="scss" module>
@@ -168,57 +155,8 @@ const sliderOpts = {
 }
 
 .sliderDots {
-  //@extend %slickDots;
   position: static;
   margin: 10px auto 0;
   transform: none;
-}
-
-.sliderArrow {
-  border: 0;
-  outline: 0;
-  padding: 0;
-  margin: 0;
-  height: 36px;
-  width: 36px;
-  cursor: pointer;
-  transition: 0.3s;
-  border-radius: 50%;
-  background-color: var(--gray-transparent);
-  color: #fff;
-  position: absolute;
-  top: 50%;
-  z-index: 10;
-  transform: translateY(-50%);
-  text-align: center;
-  font-size: 12px;
-}
-
-.sliderArrowLeft {
-  left: 0;
-
-  @media(width <= 480px) {
-    left: 20px;
-  }
-}
-
-.sliderArrowRight {
-  right: 15%;
-
-  @media(width < 1440px) {
-    right: 12%;
-  }
-
-  @media(width < 1200px) {
-    right: 13%;
-  }
-
-  @media(width < 768px) {
-    right: 0;
-  }
-
-  @media(width <= 480px) {
-    right: 20px;
-  }
 }
 </style>

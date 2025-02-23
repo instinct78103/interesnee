@@ -12,7 +12,6 @@
       <path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
   </button>
-
 </template>
 
 <script setup>
@@ -23,18 +22,6 @@ const props = defineProps({
   options: {
     type: Object,
     default: () => ({}),
-  },
-  isManualInit: {
-    type: Boolean,
-    default: false,
-  },
-  isDestroyed: {
-    type: Boolean,
-    default: false,
-  },
-  isManualSliding: {
-    type: Boolean,
-    default: false,
   },
   goSlide: {
     type: Number,

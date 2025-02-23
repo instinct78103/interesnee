@@ -14,9 +14,11 @@ defineExpose({
 
 <template>
   <dialog ref="dialog" class="modal">
+    <slot name="arrowLeft"></slot>
     <div class="dialog--wrap modal-box">
-      <slot />
+      <slot name="body"/>
     </div>
+    <slot name="arrowRight"></slot>
     <form method="dialog" class="modal-backdrop">
       <button>Close</button>
     </form>

@@ -124,34 +124,6 @@ const sliderContent = campFeedbacks;
   }
 }
 
-.sliderArrow {
-  border: 0;
-  outline: 0;
-  padding: 0;
-  margin: 0;
-  height: 36px;
-  width: 36px;
-  cursor: pointer;
-  transition: 0.3s;
-  border-radius: 50%;
-  background-color: var(--gray-transparent);
-  color: #fff;
-  position: absolute;
-  top: 50%;
-  z-index: 10;
-  transform: translateY(-50%);
-  text-align: center;
-  font-size: 12px;
-}
-
-.sliderArrowLeft {
-  left: 35px;
-}
-
-.sliderArrowRight {
-  right: 35px;
-}
-
 .descriptionCol {
   display: flex;
   flex-flow: column nowrap;
