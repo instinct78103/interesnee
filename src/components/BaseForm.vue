@@ -195,12 +195,12 @@
           <transition name="slide-top"><span v-show="errors.personalData && !isPersonalDataValid" :class="$style.detail">{{ errors.personalData }}</span></transition>
         </div>
 
-<!--        <div :class="$style.captchaWrapper">-->
-<!--          <div class="g-recaptcha" :data-sitekey="recaptchaToken" :data-callback="onReCAPTCHA"></div>-->
-<!--          <div :class="$style.robot">-->
-<!--            <transition name="slide-top"><span v-show="errors.recaptcha && !isRecaptchaValid">{{ errors.recaptcha }}</span></transition>-->
-<!--          </div>-->
-<!--        </div>-->
+        <div :class="$style.captchaWrapper">
+          <div class="g-recaptcha" :data-sitekey="recaptchaToken" :data-callback="onReCAPTCHA"></div>
+          <div :class="$style.robot">
+            <transition name="slide-top"><span v-show="errors.recaptcha && !isRecaptchaValid">{{ errors.recaptcha }}</span></transition>
+          </div>
+        </div>
 
         <button :class="[$style.submit, {[$style.submitCamp]: showCampCity }]" :disabled="job?.id === undefined" type="submit" aria-label="Подтвердить форму">Отправить</button>
 
@@ -396,7 +396,7 @@ const handleSubmit = async () => {
 
   try {
     if (!recaptchaVerifyToken.value) {
-      // return false;
+      return false;
     }
 
     if (fileError.value) {

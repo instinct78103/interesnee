@@ -13,9 +13,31 @@
     </div>
   </section>
   <Dialog ref="dialog">
+    <template #arrowLeft>
+      <button
+        @click="photoSlidesRef[imgIndexClicked].parentElement.scrollLeft -= photoSlidesRef[imgIndexClicked].offsetWidth"
+        :class="[$style.leftArrow, $style.arrow]"
+      >
+        <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </button>
+    </template>
+    <template #body>
     <div v-for="(photo, index) in fullsizePhotos" :key="photo" class="sliderItem" :ref="(el) => photoSlidesRef[index] = el">
       <img :src="photo" alt="Culture photo">
     </div>
+    </template>
+    <template #arrowRight>
+      <button
+        @click="photoSlidesRef[imgIndexClicked].parentElement.scrollLeft += photoSlidesRef[imgIndexClicked].offsetWidth"
+        :class="[$style.rightArrow, $style.arrow]"
+      >
+        <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </button>
+    </template>
   </Dialog>
 </template>
 
@@ -33,8 +55,10 @@ const previewPhotos = ref(previews);
 const fullsizePhotos = ref(full);
 const initialPhotos = computed(() => previewPhotos.value.slice(0, 8));
 const images = ref(initialPhotos.value);
+const imgIndexClicked = ref(0);
 
 function openPopup(index) {
+  imgIndexClicked.value = index;
   showModal();
   photoSlidesRef.value[index].scrollIntoView({
     inline: 'start',
@@ -47,6 +71,7 @@ watch(expanded, newVal => images.value = newVal ? previewPhotos.value : initialP
 
 <style lang="scss" module>
 @use '@/scss/helpers';
+@use '@/scss/BaseSlider.module.scss';
 
 .section {
   @extend %section;

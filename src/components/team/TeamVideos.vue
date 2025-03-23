@@ -16,11 +16,33 @@
     </div>
   </section>
   <Dialog ref="dialog" :onscrollend="stopVideos" :onclose="stopVideos">
-    <div v-for="(video, index) in videos" :key="video" class="sliderItem" :ref="(el) => videoSlidesRef[index] = el">
-      <video :class="$style.sliderPhoto" width="800" controls>
-        <source :src="video" type="video/mp4">
-      </video>
-    </div>
+    <template #arrowLeft>
+      <button
+        @click="videoSlidesRef[videoIndexClicked].parentElement.scrollLeft -= videoSlidesRef[videoIndexClicked].offsetWidth; stopVideos()"
+        :class="[$style.leftArrow, $style.arrow]"
+      >
+        <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </button>
+    </template>
+    <template #body>
+      <div v-for="(video, index) in videos" :key="video" class="sliderItem" :ref="(el) => videoSlidesRef[index] = el">
+        <video :class="$style.sliderPhoto" width="800" controls>
+          <source :src="video" type="video/mp4">
+        </video>
+      </div>
+    </template>
+    <template #arrowRight>
+      <button
+        @click="videoSlidesRef[videoIndexClicked].parentElement.scrollLeft += videoSlidesRef[videoIndexClicked].offsetWidth; stopVideos()"
+        :class="[$style.rightArrow, $style.arrow]"
+      >
+        <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </button>
+    </template>
   </Dialog>
 </template>
 
@@ -30,7 +52,7 @@ import { computed, ref, watch } from 'vue';
 import Dialog from '@/components/Dialog.vue';
 
 const dialog = ref(null);
-const videoSlidesRef = ref([])
+const videoSlidesRef = ref([]);
 const showModal = () => dialog?.value?.showModal();
 
 const previewPhotos = ref(previews);
@@ -38,14 +60,16 @@ const videos = ref(videoFiles);
 const initialPhotos = computed(() => previewPhotos.value.slice(0, 8));
 const expanded = ref(false);
 const images = ref(initialPhotos.value);
+const videoIndexClicked = ref(0);
 
 function openPopup(index) {
+  videoIndexClicked.value = index;
   showModal();
   videoSlidesRef.value[index].scrollIntoView({
     behavior: 'instant',
     inline: 'start',
     block: 'nearest',
-  })
+  });
 }
 
 watch(expanded, newVal => images.value = newVal ? previewPhotos.value : initialPhotos.value);
@@ -61,7 +85,8 @@ function stopVideos() {
 </script>
 
 <style lang="scss" module>
-@use '@/scss/helpers';
+@use '@/scss/helpers.scss';
+@use '@/scss/BaseSlider.module.scss';
 
 .section {
   @extend %section;

@@ -16,7 +16,7 @@
               lazy
               :width="200"
               :height="180"
-              @click="openPopup(value, imgIndex)"
+              @click="openPopup(value, imgIndex, index)"
             />
           </div>
 
@@ -45,7 +45,15 @@
 
     <Dialog ref="dialog">
       <template #arrowLeft>
-        <button class="leftArrow _arrow_13bbr_5 _leftArrow_13bbr_20"><svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+        <button
+          @click="dialogImagesRef[imgIndexClicked].parentElement.scrollLeft -= dialogImagesRef[imgIndexClicked].offsetWidth"
+          :class="[$style.leftArrow, $style.arrow]"
+          v-if="officeSelected?.images.length > 1"
+        >
+          <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </button>
       </template>
       <template #body>
         <div v-for="(image, index) in officeSelected?.images" :key="image" :ref="el => dialogImagesRef[index] = el">
@@ -60,7 +68,15 @@
         </div>
       </template>
       <template #arrowRight>
-        <button @click="goNext()" class="rightArrow _arrow_13bbr_5 _rightArrow_13bbr_24"><svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+        <button
+          @click="dialogImagesRef[imgIndexClicked].parentElement.scrollLeft += dialogImagesRef[imgIndexClicked].offsetWidth"
+          :class="[$style.rightArrow, $style.arrow]"
+          v-if="officeSelected?.images.length > 1"
+        >
+          <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </button>
       </template>
     </Dialog>
   </div>
@@ -71,25 +87,29 @@ import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import AppImage from '@/components/AppImage.vue';
 import BaseSlider from '@/components/BaseSlider.vue';
 import Dialog from '@/components/Dialog.vue';
-import $style from './OfficeSlider.module.scss';
+import $style from '@/scss/OfficeSlider.module.scss';
 import { useSlider } from '@/composables/useSlider.js';
 
 const dialog = ref(null);
 const showModal = () => dialog?.value?.showModal();
-const dialogImagesRef = ref([])
+const dialogImagesRef = ref([]);
 
 const imagesSliderRefs = ref([]);
 const sliders = ref([]);
 const officeSelected = ref(null);
+const imgIndexClicked = ref(0);
+const officeClickedIndex = ref(0);
 
-const openPopup = (value, imgIndex) => {
+const openPopup = (value, imgIndex, officeIndex) => {
   officeSelected.value = value;
-  showModal()
+  officeClickedIndex.value = officeIndex;
+  imgIndexClicked.value = imgIndex;
+  showModal();
   nextTick(() => dialogImagesRef.value[imgIndex].scrollIntoView({
     behavior: 'smooth',
     inline: 'start',
     block: 'nearest',
-  }))
+  }));
 };
 
 const scrollToImage = (idx, buttonClickedIndex) => {
@@ -142,8 +162,7 @@ const observeInnerSliders = () => {
 // Set up slider functionality for each office
 onMounted(() => {
   office.value.forEach((_, index) => {
-    const slider = useSlider(imagesSliderRefs.value[index], { autoplay: true, autoplaySpeed: 3000 });
-    sliders.value[index] = slider;
+    sliders.value[index] = useSlider(imagesSliderRefs.value[index], { autoplay: true, autoplaySpeed: 3000 });
   });
 
   observeInnerSliders();
@@ -157,4 +176,6 @@ const sliderOpts = {
 };
 </script>
 
-<style lang="scss" module></style>
+<style lang="scss" module>
+@use '@/scss/BaseSlider.module.scss';
+</style>

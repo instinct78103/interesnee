@@ -9,37 +9,39 @@
     </div>
   </section>
   <Dialog ref="dialog">
-    <BaseForm
-      v-if="isContactFormLoaded"
-      :select="[
+    <template #body>
+      <BaseForm
+        v-if="isContactFormLoaded"
+        :select="[
             {
               name: 'DevOps',
               value: '1KGkguBAGo',
             },
           ]"
-      :show-camp-city="true"
-      bg-color="#fff"
-      title="Отправить заявку"
-      file-title="Прикрепить резюме"
-      namePostfix=" - Практикант"
-      text-area-placeholder="Или напишите текст здесь"
-    />
+        :show-camp-city="true"
+        bg-color="#fff"
+        title="Отправить заявку"
+        file-title="Прикрепить резюме"
+        namePostfix=" - Практикант"
+        text-area-placeholder="Или напишите текст здесь"
+      />
+    </template>
   </Dialog>
 </template>
 
 <script setup>
-import { defineAsyncComponent, nextTick, ref } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import Dialog from '@/components/Dialog.vue';
 
 const dialog = ref(null);
-const BaseForm = defineAsyncComponent(() => import('@/components/BaseForm.vue'))
+const BaseForm = defineAsyncComponent(() => import('@/components/BaseForm.vue'));
 const isContactFormLoaded = ref(false);
 
 const showModal = () => dialog?.value?.showModal();
 
 const openPopup = () => {
   isContactFormLoaded.value = true;
-  showModal()
+  showModal();
 };
 </script>
 

@@ -5,7 +5,7 @@
     </svg>
   </button>
   <div ref="sliderRef" :class="[$style.slider, {[$style.fade]: options?.fade}]" :style="customStyles" class="slider">
-    <slot name="slider" :activeSlide="slideIndex" :activeClass="$style.active"/>
+    <slot name="slider" :activeSlide="slideIndex" :activeClass="$style.active" />
   </div>
   <button @click="navigate('forward')" v-if="options?.arrows" class="rightArrow" :class="[$style.arrow, $style.rightArrow]">
     <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
@@ -40,57 +40,10 @@ const activeIndex = inject('activeIndex', 0);
 const updateActiveIndex = inject('updateActiveIndex', null);
 
 if (updateActiveIndex) {
-  watch(currentIndex, (newValue) => updateActiveIndex(newValue))
+  watch(currentIndex, (newValue) => updateActiveIndex(newValue));
 }
 
 </script>
 <style lang="scss" module>
-
-.slider {
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-.arrow {
-  position: absolute;
-  border: none;
-  cursor: pointer;
-  width: 30px;
-  height: 30px;
-  top: 50%;
-  background: rgba(31, 45, 61, .5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-  border-radius: 50%;
-}
-
-.leftArrow {
-  left: 0;
-}
-
-.rightArrow {
-  transform: rotate(0.5turn);
-  right: 0;
-}
-
-.fade {
-  display: grid;
-
-  > div {
-    grid-area: 1 / 1;
-    opacity: 0;
-    transition: opacity 0.5s;
-    pointer-events: none;
-    will-change: opacity;
-
-    &.active {
-      pointer-events: all;
-      opacity: 1;
-    }
-  }
-}
-
+@use '@/scss/BaseSlider.module.scss';
 </style>

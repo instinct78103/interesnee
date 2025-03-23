@@ -183,10 +183,11 @@ const filteredJobs = computed(() => {
 }
 
 .title {
-  font-size: clamp(20px, 4vw, 24px);
+  font-size: clamp(20px, 3vw, 24px);
   line-height: 1.3;
   color: var(--gray-dark);
   transition: opacity 0.3s;
+  text-wrap: balance;
 }
 
 .buttonsList {

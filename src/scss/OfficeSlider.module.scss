@@ -1,6 +1,5 @@
 @use '@/scss/helpers';
-
-$slider-brake-point: 768px;
+@use '@/scss/BaseSlider.module.scss';
 
 .root {
     max-width: calc(100% - 20px);
