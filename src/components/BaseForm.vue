@@ -1,16 +1,18 @@
 <template>
 
   <Dialog v-if="isFormSubmitted" ref="dialog">
+    <template #body>
     <div>
       <h3>{{isSuccess ? 'Спасибо!' : 'Что-то пошло не так!'}}</h3>
       <p>
         {{isSuccess
-        ? 'Мы получили ваше сообщение, и свяжемся с вами в ближайшее время.'
+        ? 'Мы получили ваше сообщение и свяжемся с вами в ближайшее время.'
         : 'Не получилось обработать Ваш запрос. Вы можете связаться с нами, отправив письмо на почту <a href="mailto:hr@interesnee.ru">hr@interesnee.ru</a>, или попробовать позже.'
         }}
       </p>
       <button>Закрыть</button>
     </div>
+    </template>
   </Dialog>
 
   <section v-if="filteredJob && renderJob">
