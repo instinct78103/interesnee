@@ -37,7 +37,7 @@ defineExpose({
   align-items: center;
 
   section {
-    display: contents;
+    padding-block: 0;
 
     > * {
       max-height: 100%;

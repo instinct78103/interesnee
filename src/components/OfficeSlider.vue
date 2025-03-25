@@ -62,8 +62,6 @@
             :webp="image.webp"
             alt="Office photo"
             lazy
-            :width="480"
-            :height="320"
           />
         </div>
       </template>

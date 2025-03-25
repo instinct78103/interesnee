@@ -26,7 +26,7 @@
   </section>
 
   <section :class="[$style.root, $style.backgrounded]" :style="{ backgroundColor: bgColor}">
-    <div :class="[$style.container, $style.formContainer]" style="background: #fff">
+    <div :class="[$style.container, $style.formContainer]">
       <h2 :class="$style.title">{{ props.title }}</h2>
       <form @submit.prevent="handleSubmit" style="--gap: 15px;display:flex;flex-flow:row wrap; gap: var(--gap);" autocomplete="off">
 
@@ -204,7 +204,7 @@
           </div>
         </div>
 
-        <button :class="[$style.submit, {[$style.submitCamp]: showCampCity }]" :disabled="job?.id === undefined" type="submit" aria-label="Подтвердить форму">Отправить</button>
+        <button :class="[$style.submit, {[$style.submitCamp]: showCampCity }]" type="submit" aria-label="Подтвердить форму">Отправить</button>
 
       </form>
     </div>
@@ -214,7 +214,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, defineAsyncComponent } from 'vue';
+import { ref, computed, onMounted, defineAsyncComponent, onUnmounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useJobsStore } from '@/store/useJobs.js';
 import { useRoute } from 'vue-router/auto';
@@ -354,9 +354,9 @@ const validateField = (field) => {
   if (field === 'userEmail' && !isEmailValid.value) {
     errors.value.userEmail = 'Поле E-mail обязательно для заполнения';
   }
-  // if (field === 'selectedCamp' && !isSelectCampValid.value) {
-  //   errors.value.selectedCamp = 'Invalid Selected Camp.';
-  // }
+  if (field === 'selectedCamp' && !isSelectCampValid.value) {
+    errors.value.selectedCamp = 'Поле Направление практики обязательно для заполнения';
+  }
   if (field === 'vacancy' && !isVacancyValid.value) {
     errors.value.vacancy = 'Поле Направление практики обязательно для заполнения';
   }
@@ -426,7 +426,7 @@ async function submitForm() {
 
   const data = {
     firstname: form.firstname.value,
-    lastname: `${form.lastname.value}${props.namePostfix ? ' ' + props.namePostfix : ''}`,
+    lastname: `${form.lastname.value}${props.namePostfix ? ` ${props.namePostfix}` : ''}`,
     phone: form.phone.value,
     vacancy: form.vacancy.value,
     email: form.userEmail.value,
@@ -600,16 +600,16 @@ const filteredJob = computed(() => {
 const renderJob = computed(() => !!useRoute().query.job);
 
 function loadRecaptchaScript() {
-  if (document.querySelector('script[src^="https://www.google.com/recaptcha/api.js"]')) return;
-
   const script = document.createElement('script');
   script.src = `https://www.google.com/recaptcha/api.js`;
+  script.id = 'recaptcha';
   script.async = true;
   script.defer = true;
   document.head.appendChild(script);
 }
 
 onMounted(() => loadRecaptchaScript());
+onUnmounted(() => document.querySelector('#recaptcha').remove());
 
 const onReCAPTCHA = (token) => {
   recaptchaVerifyToken.value = token;
@@ -739,6 +739,7 @@ const onReCAPTCHA = (token) => {
   resize: vertical;
   position: relative;
   z-index: 3;
+  field-sizing: content;
 
   &:focus {
     border-color: var(--gray-3);

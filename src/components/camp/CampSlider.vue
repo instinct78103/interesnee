@@ -1,5 +1,5 @@
 <template>
-  <section id="lottery" :class="$style.root">
+  <section :class="$style.root">
 
     <h2 :class="$style.title">Отзывы</h2>
 
@@ -21,6 +21,14 @@
     </div>
 
     <div :class="$style.contentCol">
+      <button
+        @click="navigate('backward')"
+        :class="[$style.leftArrow, $style.arrow]"
+      >
+        <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </button>
       <div :class="$style.scrollSnap" ref="sliderRef">
         <app-image
           v-for="(data, index) in sliderContent"
@@ -31,6 +39,14 @@
           :webp="data.img.webp"
         />
       </div>
+      <button
+        @click="navigate('forward')"
+        :class="[$style.rightArrow, $style.arrow]"
+      >
+        <svg width="18" height="18" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22 8 L12 18 L22 28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </button>
       <ul :class="$style.indicatorsList">
         <li v-for="(_, key) in [...Array(countSlidesRef)]" :key>
           <button :class="{[$style.isActive]: key === currentIndex}" @click="navigate(key)"></button>
@@ -56,6 +72,7 @@ const sliderContent = campFeedbacks;
 
 <style lang="scss" module>
 @use '@/scss/helpers';
+@use '@/scss/BaseSlider.module.scss';
 
 .root {
   @extend %container;
@@ -302,6 +319,7 @@ const sliderContent = campFeedbacks;
 
 .contentImage img {
   width: 100%;
+  min-height: -webkit-fill-available;
   height: -webkit-fill-available;
 }
 </style>
