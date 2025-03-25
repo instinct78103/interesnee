@@ -13,22 +13,13 @@
         <nav id="site-navigation" class="main-navigation" aria-label="Top Menu">
           <div class="menu-top-menu-container">
             <ul id="menu-top-menu" class="main-menu">
-              <li class="menu-item">
-                <router-link to="/camp">Devops camp</router-link>
+              <li class="menu-item" v-for="item in menuItems" :key="item.path">
+                <router-link v-if="!item.external" :to="item.path">{{ item.label }}</router-link>
+                <a v-else :href="item.path">{{ item.label }}</a>
               </li>
-              <li class="menu-item">
-                <router-link to="/projects">Проекты</router-link>
-              </li>
-              <li class="menu-item">
-                <router-link to="/join">Присоединяйся к нам</router-link>
-              </li>
-              <li class="menu-item">
-                <router-link to="/team">Команда</router-link>
-              </li>
-              <li class="menu-item"><a href="#">Блог</a></li>
             </ul>
           </div>
-          <a class="mobile-menu-toggle" href="#">
+          <a class="mobile-menu-toggle" href="#" @click.prevent="isMobileMenuOpen = !isMobileMenuOpen">
             <i class="lines-button">
               <i class="lines"></i>
               <i class="lines"></i>
@@ -38,8 +29,33 @@
       </div>
     </div>
   </header>
+  <div :class="['mobile-menu-container', {'open': isMobileMenuOpen}]" style="top: 72px; height: calc(-72px + 100vh);">
+    <ul class="mobile-nav">
+      <li class="menu-item" v-for="item in menuItems" :key="item.path">
+        <router-link v-if="!item.external" :to="item.path">{{ item.label }}</router-link>
+        <a v-else :href="item.path">{{ item.label }}</a>
+      </li>
+    </ul>
+  </div>
 </template>
 
-<style lang="scss">
+<script setup>
+import { watch, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
-</style>
+const isMobileMenuOpen = ref(false);
+const route = useRoute();
+
+watch(() => route.path, () => {
+  isMobileMenuOpen.value = false;
+});
+
+const menuItems = [
+  { path: '/camp', label: 'Devops camp' },
+  { path: '/projects', label: 'Проекты' },
+  { path: '/join', label: 'Присоединяйся к нам' },
+  { path: '/team', label: 'Команда' },
+  { path: '#', label: 'Блог', external: true },
+];
+
+</script>

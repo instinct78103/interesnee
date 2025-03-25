@@ -11,7 +11,7 @@ $breakpoint: 1024;
 }
 
 .mobile-menu-toggle {
-    @media(min-width: #{$breakpoint}px) {
+    @media(width >= #{$breakpoint}px) {
         display: none;
     }
 
@@ -38,7 +38,7 @@ $breakpoint: 1024;
 
     &.open {
         display: block;
-        position: fixed;
+        position: sticky;
         z-index: 999;
         height: 100%;
 
@@ -60,11 +60,15 @@ $breakpoint: 1024;
                 }
             }
         }
+
+        @media(width >= #{$breakpoint}px) {
+            display: none;
+        }
     }
 }
 
 #menu-top-menu {
-    @media(max-width: #{$breakpoint - 1}px) {
+    @media(width < #{$breakpoint}px) {
         display: none;
     }
 }
@@ -80,13 +84,13 @@ $breakpoint: 1024;
         width: calc(100% - 80px);
         margin: 0 auto;
 
-        @media (min-width: #{$breakpoint}px) {
+        @media (width >= #{$breakpoint}px) {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        @media(max-width: #{$breakpoint - 1}px) {
+        @media(width < #{$breakpoint}px) {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             width: calc(100% - 24px);
