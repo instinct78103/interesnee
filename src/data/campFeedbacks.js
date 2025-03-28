@@ -5,7 +5,6 @@ export default [
       author: 'Александр',
     },
     img: {
-      x1: '/images/photos/interns/2025/03/sasha_savelyev.png',
       webp: '/images/photos/interns/2025/03/sasha_savelyev.webp',
       alt: 'Александр',
     },
@@ -19,7 +18,6 @@ export default [
       author: 'Ирина',
     },
     img: {
-      x1: '/images/photos/interns/2025/03/ira_ostroborodova.png',
       webp: '/images/photos/interns/2025/03/ira_ostroborodova.webp',
       alt: 'Ирина',
     },
@@ -31,8 +29,7 @@ export default [
       author: 'Роман',
     },
     img: {
-      x1: '/images/photos/interns/2025/03/roma_varzin.png',
-      webp: '/images/photos/interns/2025/03/roma_varzin.png',
+      webp: '/images/photos/interns/2025/03/roma_varzin.webp',
       alt: 'Роман',
     },
   },
@@ -44,7 +41,6 @@ export default [
       author: 'Никита',
     },
     img: {
-      x1: '/images/photos/interns/2025/03/nikita_terenyev.png',
       webp: '/images/photos/interns/2025/03/nikita_terenyev.webp',
       alt: 'Никита',
     },
@@ -58,8 +54,7 @@ export default [
       author: 'Анастасия',
     },
     img: {
-      x1: '/images/photos/interns/2025/03/nastya_fongrad.png',
-      webp: '/images/photos/interns/2025/03/nastya_fongrad.png',
+      webp: '/images/photos/interns/2025/03/nastya_fongrad.webp',
       alt: 'Анастасия',
     },
   },
@@ -70,7 +65,6 @@ export default [
       author: 'Максим',
     },
     img: {
-      x1: '/images/photos/interns/2025/03/maxim_tetushkin.png',
       webp: '/images/photos/interns/2025/03/maxim_tetushkin.webp',
       alt: 'Максим',
     },
