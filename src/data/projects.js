@@ -1,4 +1,4 @@
-const projects = [
+export const projects = [
   {
     id: 2,
     name: 'Trivver',
@@ -290,8 +290,7 @@ const projects = [
         '<br> <br> <span class="intend"></span>' +
         'После обсуждения с командой, за основу была взята 3D модель промышленного ангара с краном-подъемником. ' +
         'Далее разработчики добавили недостающие 3D модели и проработали игровой процесс. В результате получился ' +
-        'VR-проект Grabber, который выложили в ' +
-        '<a target="_blank" rel="noopener noreferrer" href="https://www.oculus.com/experiences/quest/4741188125905583?ranking_trace=104878301516[…]1188125905583_SKYLINEWEB_5fcb02fb-37ac-4006-bbe5-86fa650f4251">oculus</a>.',
+        'VR-проект Grabber.',
       process:
         'Одной из самых сложных задач, с которой ребята столкнулись во время разработки - необходимость создания ' +
         'правдоподобного взаимодействия между объектами, учитывая физику и соблюдая баланс массы и жесткости сцепления ' +
@@ -309,10 +308,7 @@ const projects = [
         'а один из сотрудников напечатал их на 3D-принтере.',
       result:
         'Результатом стала разработанная игра, в которой пользователь должен захватить бочки с конвейера и ' +
-        'утилизировать в измельчителе.' +
-        '<br> <br> <span class="intend"></span>' +
-        'Данное приложение доступно для скачивания владельцами VR-шлемов Oculus в ' +
-        '<a target="_blank" rel="noopener noreferrer" href="https://www.oculus.com/experiences/quest/4741188125905583?ranking_trace=104878301516[…]1188125905583_SKYLINEWEB_5fcb02fb-37ac-4006-bbe5-86fa650f4251">oculus</a>.',
+        'утилизировать в измельчителе.'
     },
     images: [
       {
@@ -354,4 +350,4 @@ const projectsIds = [2, 3];
 
 const projectsSlides = projects.filter(p => projectsIds.includes(p.id));
 
-export { projectsSlides, projects };
+export { projectsSlides };
