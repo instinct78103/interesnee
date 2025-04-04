@@ -8,11 +8,16 @@
         <span v-if="index !== 0 && index < contacts.length - 1" :key="`${index}-hr`" :class="$style.linkDelimiter">|</span>
       </template>
     </div>
+    <div>
+      <a
+        :class="$style.mailLink"
+        :href="mainPhone.link">{{ mainPhone.label }}</a>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { contacts } from '@/data/commonInfo.js';
+import { mainPhone, contacts } from '@/data/commonInfo.js';
 </script>
 
 <style lang="scss" module>

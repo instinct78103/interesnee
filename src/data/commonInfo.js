@@ -244,21 +244,26 @@ export const offices = [
   },
 ];
 
+export const mainPhone = {
+  label: '+7 (908) 221-31-04',
+  link: 'tel:+79082213104',
+};
+
 export const contacts = [
   {
     title: 'hr@interesnee.ru',
     value: 'mailto:hr@interesnee.ru',
   },
   {
-    title: 'Красноярск +7 (904) 112-61-04',
-    value: 'tel:+79041126104',
+    title: 'Красноярск',
+    value: mainPhone.link,
   },
   {
-    title: 'Сочи +7 (908) 221-31-04',
-    value: 'tel:+79082213104',
+    title: 'Екатеринбург',
+    value: mainPhone.link,
   },
   {
-    title: 'Екатеринбург +7 (908) 221-31-04',
-    value: 'tel:+79082213104',
+    title: 'Сочи',
+    value: mainPhone.link,
   },
 ];

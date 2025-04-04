@@ -3,10 +3,10 @@
     <div :class="$style.container">
       <app-image
         :class="$style.image"
-        x1="/images/photos/2024/summer-camp-2024-closed@1x.png"
-        x2="/images/photos/2024/summer-camp-2024-closed@2x.png"
-        alt="Summer Camp"
-        webp="/images/photos/2024/summer-camp-2024-closed.webp"
+        x1="/images/camp/summer-camp-2025-closed.webp"
+        x2="/images/camp/summer-camp-2025-closed.webp"
+        alt="Summer Camp 2025 Closed"
+        webp="/images/camp/summer-camp-2025-closed.webp"
       />
     </div>
   </section>

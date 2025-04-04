@@ -1,7 +1,7 @@
 <template>
   <section :class="$style.section">
     <div :class="$style.container">
-      <h2 :class="$style.title">Наши HR</h2>
+      <h2 :class="$style.title">Наш HR</h2>
 
       <div :class="$style.wrapper">
         <div
@@ -51,35 +51,12 @@ import { spriteSvg } from '@/helpers.js';
 const hrs = [
   {
     image: {
-      x1: '/images/photos/HR/Valeriya@1x.jpg',
-      x2: '/images/photos/HR/Valeriya@2x.jpg',
-      placeholder: '/images/photos/Valeriya@1x.jpg',
-    },
-    name: 'Валерия',
-    post: 'Красноярск',
-    social: [
-      {
-        url: 'https://vk.com/id270358537',
-        id: 'vk',
-        width: '22',
-        height: '13',
-      },
-      {
-        url: 'tg://resolve?domain=VSGrishanova',
-        id: 'tg',
-        width: '18',
-        height: '18',
-      },
-    ],
-  },
-  {
-    image: {
       x1: '/images/photos/HR/Marina@1x.jpg',
       x2: '/images/photos/HR/Marina@2x.jpg',
       placeholder: '/images/photos/HR/Marina@1x.jpg',
     },
     name: 'Марина',
-    post: 'Сочи',
+    post: 'Красноярск, Екатеринбург, Сочи',
     social: [
       {
         url: 'https://vk.com/marinapister',
