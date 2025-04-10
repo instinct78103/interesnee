@@ -13,10 +13,14 @@
       <BaseForm
         v-if="isContactFormLoaded"
         :select="[
-            {
-              name: 'DevOps',
-              value: '1KGkguBAGo',
-            },
+            { name: '.NET', value: 'Ofn6Ny', },
+            { name: 'Android', value: 'Ns3S4M', },
+            { name: 'DevOps', value: '1KGkguBAGo', },
+            { name: 'JavaScript', value: 'VbrPUEWE3i', },
+            { name: 'Python', value: 'RW2ekO', },
+            { name: 'QA Automation', value: '6OWrIMNCFu', },
+            { name: 'Unity', value: '5kAduUUV73', },
+            { name: 'iOS', value: '9lA7XN', },
           ]"
         :show-camp-city="true"
         bg-color="#fff"
