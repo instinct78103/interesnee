@@ -10,11 +10,6 @@
         </template>
       </h2>
       <div :class="$style.content">
-        <div :class="$style.contentSide">
-          <div :class="$style.sideItem">
-            <img decoding="async" src="/static/Devops.svg" alt="DevOps">
-          </div>
-        </div>
 
         <div :class="$style.contentMain">
           <div :class="$style.contentRow">

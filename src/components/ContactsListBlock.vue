@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.mailto">
-    <p :class="$style.mailText">Или пишите/звоните нам</p>
+    <p :class="$style.mailText">Пишите/звоните нам</p>
     <div :class="$style.bottomLinkWrap">
       <template v-for="(contact, index) in contacts" :key="index">
         <a :class="$style.mailLink" :aria-label="contact.title" :href="contact.value">{{ contact.title }}</a>

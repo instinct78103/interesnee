@@ -17,9 +17,7 @@
             :alt="item.name"
           >
           <p :class="$style.name">{{ item.name }}</p>
-          <p
-            :class="$style.post"
-            v-html="item.post" />
+
           <div :class="$style.socialWrapper">
             <a
               v-for="(social, socialIndex) in item.social"
@@ -154,10 +152,6 @@ function getSrcSet(image) {
   display: flex;
   justify-content: center;
   align-items: center;
-
-  @media(width  < 1024px) {
-    margin-bottom: 17px;
-  }
 }
 
 .socialLink {
